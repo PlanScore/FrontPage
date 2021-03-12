@@ -30,6 +30,9 @@ jobs:
           at: ~/repo
       - run: aws s3 sync --acl public-read --cache-control 'public, max-age=300' WEBSITE_OUTPUT/ s3://planscore.org-static-site/
       - run: aws s3 sync --acl public-read --cache-control 'public, max-age=300' --delete WEBSITE_OUTPUT/ s3://planscore.org-static-site/
+      - run: |
+          cd WEBSITE_OUTPUT && zip -rq /tmp/WEBSITE_OUTPUT.zip .
+          aws s3 cp --acl public-read --cache-control 'public, max-age=300' /tmp/WEBSITE_OUTPUT.zip s3://planscore.org-static-site/
 
 workflows:
   version: 2
