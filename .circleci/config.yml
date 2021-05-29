@@ -45,4 +45,4 @@ workflows:
           filters:
             branches:
               only:
-                - static-site
+                - main
