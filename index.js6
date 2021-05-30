@@ -231,7 +231,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
         download: true,
         header: true,
         complete: function (results) {
-            // issue 169, if fudgeYearIfNoData is enabled and we have no data for this year, pick another year
+            // https://github.com/PlanScore/PlanScore/issues/169, if fudgeYearIfNoData is enabled and we have no data for this year, pick another year
             // nearest year to our chosen which does have data, favoring more-recent year in event of a tie
             // primarily used when switching district types, as not all district types have the same coverage for every year (e.g. State House 2016)
             if (options.fudgeYearIfNoData) {
@@ -247,7 +247,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                     });
                     let closestyear = wehavetheseyears[0];
 
-                    // special behavior, issue 228
+                    // special behavior, https://github.com/PlanScore/PlanScore/issues/228
                     // if they selected State Senates 2004 or 2014, snap to 2002 or 2012 instead because we have more data there
                     // this will likely need to be updated a few times as we get more data and 2004 & 2014 become acceptably populated, and/or more data-poor years are added which we want to rewrite
                     if      (CURRENT_VIEW.boundtype == 'statesenate' && closestyear == 2014) closestyear = 2012;
@@ -261,7 +261,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                 }
             }
 
-            // issue 217: odd-numbered years
+            // https://github.com/PlanScore/PlanScore/issues/217: odd-numbered years
             // our whole yearpicker concept was based on even-numbered years,
             // but a few states have unusual cycles such as odd-numbered years, and some unusual cases e.g. KY which in 1981-1984 changed from odd-numbered to even-numbered
             // workaround here: rewrite any odd-numbered years to add 1 (1973 becomes 1974) so we still have even numbers
@@ -302,7 +302,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
         $('#map').data('biasdata', data);
 
         // Highcharts trick: load up the us-small data (see the SCRIPT tag for usmapchart.json)
-        // which includes breakout boxes for the small New England States (issue 78)
+        // which includes breakout boxes for the small New England States (https://github.com/PlanScore/PlanScore/issues/78)
         // preprocess it to add the state's ABBR as the label for the boxes
         const polygons = Highcharts.geojson(Highcharts.maps['countries/us/custom/us-small']);
         const has_callout_boxes = [ 'NJ', 'MD', 'DE', 'CT', 'RI', 'MA', 'NH', 'VT' ];
@@ -402,7 +402,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                     // click events: call the popup maker
                     events: {
                         click: function (e) {
-// GDA issue 238 -- temporary measure to have a click proceed directly to the state page; if they choose to keep it, then selectState() goes away in favor of this
+// GDA https://github.com/PlanScore/PlanScore/issues/238 -- temporary measure to have a click proceed directly to the state page; if they choose to keep it, then selectState() goes away in favor of this
 // selectState(e.point.abbr, { closeIfSameState: true });
 // logToGoogleAnalytics('selectstate', e.point.name);
                             // compose URL for the selected state + boundary + year (e.g. /california/#!2010-plan-ushouse) and send them to it

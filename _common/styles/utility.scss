@@ -27,7 +27,7 @@
 }
 
 
-span.mobilespace {  /* a utlity class used to enclose a single space character, so it's only visible (and causes libne-wrap) on very small screens; see issue 99 */
+span.mobilespace {  /* a utlity class used to enclose a single space character, so it's only visible (and causes libne-wrap) on very small screens; see https://github.com/PlanScore/PlanScore/issues/99 */
     display: none;
     @media screen and (max-width: $screen-xxs) {
         display: inline;
