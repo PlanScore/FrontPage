@@ -49,7 +49,7 @@ const CURRENT_VIEW = {
 // not all fields are listed here, just the ones which vary between election view and plan view
 const ELECTION_PLAN_RECORD_FIELDS = {
     'election': {
-        // NOTE per issue 94, the 6 per-election fields (eg, bias, mm + rank) are stripped from CSVs to make them more compact downloads, until we reinstate election-year displays
+        // NOTE per https://github.com/PlanScore/PlanScore/issues/94, the 6 per-election fields (eg, bias, mm + rank) are stripped from CSVs to make them more compact downloads, until we reinstate election-year displays
         'eg': 'eg_adj',
         'egrank': 'eg_percentrank',
         'bias': 'bias',
@@ -187,12 +187,12 @@ window.initYearPickers = () => {
     // and the desktop one forming a set of beads down the side (with colors indicating EG bias that year)
 
     // this basically just sets the delegated event handlers, when the pickers' beads/arrows are clicked
-    // per issue 217, most of the work is in redrawYearPickers()
+    // per https://github.com/PlanScore/PlanScore/issues/217, most of the work is in redrawYearPickers()
     // the years offered are once again based on the years in the CSV data for the selected districttype-and-state
     // since it turns out that not all states have the same years, or may not have the same years between the different district types
 
     // note too that we still support showing Plan data or Election-year data
-    // even though the display of Election-level data is presently disabled (issue 94) but likely to come back
+    // even though the display of Election-level data is presently disabled (https://github.com/PlanScore/PlanScore/issues/94) but likely to come back
 
     // mobile yearpicker
     const $planpicker_mobile  = $('#yearpicker-small > div[data-picker="plan"]');
@@ -230,7 +230,7 @@ window.initYearPickers = () => {
 
     $yearlisting_desktop.on('click', 'a', function () {
         const year = $(this).attr('data-year');
-        // issue 94: for the time being, years also go to Plans and not election-year details
+        // https://github.com/PlanScore/PlanScore/issues/94: for the time being, years also go to Plans and not election-year details
         //selectElectionOrPlan(year, 'election');
         selectElectionOrPlan(year, 'plan');
     });
@@ -273,7 +273,7 @@ window.initLoadStartingConditions = () => {
     const metric   = params.shift() || 'eg';
 
     // toggle which yearpicker-small is displayed
-    // per issue 129 only one of these is visible and that depends on whether the page loads with a plan/election
+    // per https://github.com/PlanScore/PlanScore/issues/129 only one of these is visible and that depends on whether the page loads with a plan/election
     $('#yearpicker-small > div').hide().filter(`[data-picker="${planyear}"]`).show();
 
     // ready, set, go
@@ -291,7 +291,7 @@ window.initLoadStartingConditions = () => {
 window.loadDataForSelectedBoundaryAndYear = (options={}) => {
     if (! CURRENT_VIEW.year || ! CURRENT_VIEW.boundtype) return;  // need both; during startup one will be blank, so this check avoids an error during startup when we're defining one then the other
 
-    // options provides a special case for when the page loads (inspired by issue 223)
+    // options provides a special case for when the page loads (inspired by https://github.com/PlanScore/PlanScore/issues/223)
     // that if we have no data for the selected year, we figure out a better year and then forward them there
     // that's actually done in updateStatsFromCsvContent()
 
@@ -431,7 +431,7 @@ window.selectBoundaryType = (boundtype, options={}) => {
 };
 
 window.updateStatsFromCsvContent = (allcsvdata, options={}) => {
-    // options provides a special case for when the page loads (inspired by issue 223)
+    // options provides a special case for when the page loads (inspired by https://github.com/PlanScore/PlanScore/issues/223)
     // that if we have no data for the selected year, we figure out a better year and then forward them there
     // that's actually done in updateStatsFromCsvContent()
 
@@ -657,7 +657,7 @@ window.updateMetricsTabs = (yeardata) => {
     const hadseats       = favor_party_eg == 'Republican' ? seats_rep : seats_dem;
     const statement_eg   = `${! isbiased_eg ? 'This metric indicates a balanced plan.' : ''} Votes for ${favor_party_eg} candidates were wasted at a rate ${(100 * Math.abs(eg_score)).toFixed(1)}% lower than votes for ${loser_party_eg} candidates.`;
     const biastext_eg    = `${! isbiased_eg ? 'No consistent skew was found in favor of either party.' : ''} This plan is more skewed than ${Math.round(100 * eg_rank)}% of the enacted plans we have analyzed nationwide.`;
-    const roundscore_eg  = Math.round(100 * Math.abs(eg_score));  // per issue 170 these ignore the usual balanced-threshold; we want to show even 1% but keep a balanced color
+    const roundscore_eg  = Math.round(100 * Math.abs(eg_score));  // per https://github.com/PlanScore/PlanScore/issues/170 these ignore the usual balanced-threshold; we want to show even 1% but keep a balanced color
 
     const biaseval_pb    = lookupBias('pb', pb_score, CURRENT_VIEW.boundtype);
     const favor_party_pb = biaseval_pb.party;
@@ -668,7 +668,7 @@ window.updateMetricsTabs = (yeardata) => {
     const isbiased_pb    = biaseval_pb.isbiased;
     const statement_pb   = `${! isbiased_pb ? 'This metric indicates a balanced plan.' : ''} ${favor_party_pb}s would win ${(100 * Math.abs(pb_score)).toFixed(1)}% extra seats in a hypothetical, perfectly tied election.`;
     const biastext_pb    = `${! isbiased_pb ? 'No consistent skew was found in favor of either party.' : ''} This plan is more skewed than ${Math.round(100 * bias_rank)}% of the enacted plans we have analyzed nationwide.`;
-    const roundscore_pb  = Math.round(100 * Math.abs(pb_score));  // per issue 170 these ignore the usual balanced-threshold; we want to show even 1% but keep a balanced color
+    const roundscore_pb  = Math.round(100 * Math.abs(pb_score));  // per https://github.com/PlanScore/PlanScore/issues/170 these ignore the usual balanced-threshold; we want to show even 1% but keep a balanced color
  
     const biaseval_mm    = lookupBias('mm', mm_score, CURRENT_VIEW.boundtype);
     const favor_party_mm = biaseval_mm.party;
@@ -679,7 +679,7 @@ window.updateMetricsTabs = (yeardata) => {
     const isbiased_mm    = biaseval_mm.isbiased;
     const statement_mm   = `${! isbiased_mm ? 'This metric indicates a balanced plan.' : ''} The median ${favor_party_mm} vote share was ${(100 * Math.abs(mm_score)).toFixed(1)}% higher than the mean ${favor_party_mm} vote share.`;
     const biastext_mm    = `${! isbiased_mm ? 'No consistent skew was found in favor of either party.' : ''} This plan is more skewed than ${Math.round(100 * mmd_rank)}% of the enacted plans we have analyzed nationwide.`;
-    const roundscore_mm  = Math.round(100 * Math.abs(mm_score));  // per issue 170 these ignore the usual balanced-threshold; we want to show even 1% but keep a balanced color
+    const roundscore_mm  = Math.round(100 * Math.abs(mm_score));  // per https://github.com/PlanScore/PlanScore/issues/170 these ignore the usual balanced-threshold; we want to show even 1% but keep a balanced color
 
     // color the tab-swatches for the three metrics
     {
@@ -928,20 +928,20 @@ window.updateWastedVotesChart = (yeardata) => {
 
 window.redrawYearPickers = (csvdata, selectedyeardata={}) => {
     // see initYearPickers() for the delegated event handlers and further explanation
-    // per issue 217, the mobile & desktop yearpickers must be redrawn based on the years represented in the CSV
+    // per https://github.com/PlanScore/PlanScore/issues/217, the mobile & desktop yearpickers must be redrawn based on the years represented in the CSV
     // for the given district type & state, since it turns out election years aren't consistent between states, nor between a state's district levels
     // e.g. KY statehouse, ushouse, and statesenate are not the same, and are all a mix of even and odd years
-    // per issue 241 the data we're showing may not be for CURRENT_VIEW.year at all, as we try to show SOMETHING especially in Plan mode
+    // per https://github.com/PlanScore/PlanScore/issues/241 the data we're showing may not be for CURRENT_VIEW.year at all, as we try to show SOMETHING especially in Plan mode
     // so highlighting the current election/plan can be a bit complicated
 
     // there are two separate UIs: the mobile one with "< year >" and a prev/next behavior
     // and the desktop one forming a set of beads down the side (with colors indicating EG bias that year)
 
     // note too that we still support showing Plan data or Election-year data
-    // even though the display of Election-level data is presently disabled (issue 94) until they want it back again
+    // even though the display of Election-level data is presently disabled (https://github.com/PlanScore/PlanScore/issues/94) until they want it back again
 
     // mobile picker - election
-    // disabled per issue 94 but likely to come back, so we have to keep it working even though nobody knows it exists
+    // disabled per https://github.com/PlanScore/PlanScore/issues/94 but likely to come back, so we have to keep it working even though nobody knows it exists
     // empty the links and draw new ones
     // show the current year (hiding years not the current one)
     // show/hide the prev/next links if this is the first/last year
@@ -1011,7 +1011,7 @@ window.redrawYearPickers = (csvdata, selectedyeardata={}) => {
 
     // desktop picker
     // lists years on the right, and draws plan-start circles on the left
-    // try to smooth out "lumpy" distributions by adding null years where we find larger gaps (issue 217)
+    // try to smooth out "lumpy" distributions by adding null years where we find larger gaps (https://github.com/PlanScore/PlanScore/issues/217)
     {
         // a straight list: all available years
         // a lookup dict: year => plan (to tag a each year's link with its plan for display)
