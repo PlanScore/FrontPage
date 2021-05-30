@@ -5,12 +5,11 @@
 // the list of years to offer; used by the year picker so the user may choose dates
 // note that not every state has data at all levels for every year
 export const PLAN_YEARS = [
-    1972, 1974, 1976, 1978,
-    1980, 1982, 1984, 1986, 1988,
-    1990, 1992, 1994, 1996, 1998,
-    2000, 2002, 2004, 2006, 2008,
-    2010, 2012, 2014, 2016, 2018,
-    2020
+    1972, 1974, 1976, 1978, 1980,
+    1982, 1984, 1986, 1988, 1990,
+    1992, 1994, 1996, 1998, 2000,
+    2002, 2004, 2006, 2008, 2010,
+    2012, 2014, 2016, 2018, 2020
 ];
 
 // the color gradient from Republican red to Democrat blue
