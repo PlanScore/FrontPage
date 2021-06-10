@@ -74,7 +74,6 @@ const JS6_FILES = [
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const StringReplacePlugin = require("string-replace-webpack-plugin");
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
@@ -209,7 +208,6 @@ module.exports = {
     plugins: [
         // Lint our JavaScript files
         new ESLintPlugin({
-            failOnError: false, // TODO: flip back to true and address failures
             extensions: ['js', 'js6'],
             exclude: [
                 'node_modules',
