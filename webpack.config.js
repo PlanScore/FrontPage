@@ -140,8 +140,8 @@ module.exports = {
                         loader: 'file-loader',
                         options: {
                             // replace .src.html with just .html
-                            regExp: '([\\w\\-\.]+)\\.src\\.html$',
                             name: '[path][1].html',
+                            regExp: '([\\w\\-\.]+)\\.src\\.html$',
                         },
                     },
                     {
