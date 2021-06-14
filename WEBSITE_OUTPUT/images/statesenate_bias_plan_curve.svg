@@ -1,1 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 536 236.5"><defs><style>.cls-1{fill:#fff;stroke:#a9a9a9;stroke-miterlimit:10;stroke-width:2px;}.cls-2{fill:url(#linear-gradient);}</style><linearGradient id="linear-gradient" x1="64.35" y1="123.18" x2="534.12" y2="123.18" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#0049a8"/><stop offset="0.43" stop-color="#f2e5fa"/><stop offset="1" stop-color="#c71c36"/></linearGradient><symbol id="Hashmarks" data-name="Hashmarks" viewBox="0 0 536 236.5"><line class="cls-1" x1="535" x2="535" y2="235"/><line class="cls-1" x1="266" x2="266" y2="235"/><line class="cls-1" x1="1" x2="1" y2="235"/><line class="cls-1" x1="1" y1="235.5" x2="535" y2="235.5"/></symbol></defs><title>statesenate_bias_plan_curve</title><g id="Layer_2" data-name="Layer 2"><g id="Final_Items_PLAN" data-name="Final Items PLAN"><g id="statesenate_bias_plan_curve"><path id="statesenate_bias_plan_curve_2020" class="cls-2" d="M534.12,228.28s-18.56,7-29.05,0-21-33.55-31.48-41.65-21,9.26-31.48-6.94-21-81-31.48-90.25-21,47.44-31.48,34.71-21-98.35-31.48-111.07-21,32.39-31.48,34.71S295.2,24.69,284.71,27s-21,25.46-31.48,34.71-21,1.16-31.48,20.83-21,79.83-31.48,97.19-21,2.31-31.48,6.94-21,15-31.48,20.83a187.34,187.34,0,0,1-31.48,13.88c-10.49,3.47-31.48,6.94-31.48,6.94v7.18H534Z"/><use width="536" height="236.5" xlink:href="#Hashmarks"/></g></g></g></svg>
+<svg width="536" height="237" viewBox="0 0 536 237" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="536" height="237" fill="white"/>
+<path d="M68.2 235.449H521V232.449C521 232.449 500.9 213.949 490.8 204.649C480.7 195.349 470.7 180.349 460.6 176.849C450.5 173.349 440.5 196.549 430.4 183.749C420.3 171.049 410.3 116.649 400.2 100.449C390.1 84.2495 380.1 100.449 370 86.5495C359.9 72.6495 349.9 13.6495 339.8 17.1495C329.7 20.6495 319.7 102.749 309.6 107.349C299.5 111.949 289.5 50.6495 279.4 44.8495C269.3 39.0495 259.3 57.5495 249.2 72.6495C239.1 87.6495 229.1 120.049 219 135.149C208.9 150.149 198.9 155.949 188.8 162.949C178.7 169.849 168.7 168.749 158.6 176.849C148.5 184.949 138.5 203.449 128.4 211.549C118.3 219.649 108.3 221.949 98.2 225.449C88.1 228.949 68 232.349 68 232.349V235.449H68.2Z" fill="url(#paint0_linear)"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M0 0V235V237H2H268H270H534H536V235V0H534V235H270V0H268V235H2V0H0Z" fill="#C6C6C6"/>
+<defs>
+<linearGradient id="paint0_linear" x1="516.407" y1="138.691" x2="60.8232" y2="138.691" gradientUnits="userSpaceOnUse">
+<stop stop-color="#CD3952"/>
+<stop offset="0.546875" stop-color="#DFDFDF"/>
+<stop offset="1" stop-color="#0A4FAB"/>
+</linearGradient>
+</defs>
+</svg>

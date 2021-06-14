@@ -1,1 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 536 237.06"><defs><style>.cls-1{fill:#fff;stroke:#a9a9a9;stroke-miterlimit:10;stroke-width:2px;}.cls-2{fill:url(#linear-gradient);}</style><linearGradient id="linear-gradient" x1="64.94" y1="154.08" x2="517.75" y2="154.08" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#0049a8"/><stop offset="0.44" stop-color="#f2e5fa"/><stop offset="1" stop-color="#c71c36"/></linearGradient><symbol id="Hashmarks" data-name="Hashmarks" viewBox="0 0 536 236.5"><line class="cls-1" x1="535" x2="535" y2="235"/><line class="cls-1" x1="266" x2="266" y2="235"/><line class="cls-1" x1="1" x2="1" y2="235"/><line class="cls-1" x1="1" y1="235.5" x2="535" y2="235.5"/></symbol></defs><title>ushouse_mmd_plan_curve</title><g id="Layer_2" data-name="Layer 2"><g id="Final_Items_PLAN" data-name="Final Items PLAN"><g id="ushouse_mmd_plan_curve"><path id="ushouse_mmd_plan_curve_2020" class="cls-2" d="M64.94,237.06H517.75v-9.55s-20.13-2.91-30.19-8.74-20.13-16-30.19-26.23-20.12-27.68-30.19-35-20.12-5.82-30.18-8.74-20.13-8.74-30.19-8.74-20.12,5.83-30.19,8.74S316.5,162,306.44,157.57s-20.13-21.85-30.19-35S256.12,86.18,246.06,78.9s-20.12-13.12-30.18,0-20.13,65.56-30.19,78.67-20.13-2.91-30.19,0-20.12,11.66-30.19,17.49-20.12,8.74-30.18,17.48-30.19,35-30.19,35Z"/><use width="536" height="236.5" xlink:href="#Hashmarks"/></g></g></g></svg>
+<svg width="536" height="237" viewBox="0 0 536 237" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="536" height="237" fill="white"/>
+<path d="M68.2 235.216H521V225.216C521 225.216 500.9 235.416 490.8 225.216C480.7 215.016 470.7 172.716 460.6 164.016C450.5 155.316 440.5 172.716 430.4 172.716C420.3 172.716 410.3 174.216 400.2 164.016C390.1 153.816 380.1 113.016 370 111.516C359.9 110.016 349.9 149.416 339.8 155.216C329.7 161.016 319.7 152.316 309.6 146.516C299.5 140.716 289.5 133.416 279.4 120.316C269.3 107.216 259.3 73.7158 249.2 67.8158C239.1 62.0158 229.1 70.7158 219 85.3158C208.9 99.9158 198.9 143.616 188.8 155.216C178.7 166.916 168.7 152.316 158.6 155.216C148.5 158.116 138.5 166.916 128.4 172.716C118.3 178.516 108.3 181.416 98.2 190.216C88.1 198.916 68 225.216 68 225.216V235.216H68.2Z" fill="url(#paint0_linear)"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M0 0V235V237H2H268H270H534H536V235V0H534V235H270V0H268V235H2V0H0Z" fill="#C6C6C6"/>
+<defs>
+<linearGradient id="paint0_linear" x1="516.407" y1="160.265" x2="60.8232" y2="160.265" gradientUnits="userSpaceOnUse">
+<stop stop-color="#CD3952"/>
+<stop offset="0.546567" stop-color="#DFDFDF"/>
+<stop offset="1" stop-color="#0A4FAB"/>
+</linearGradient>
+</defs>
+</svg>
