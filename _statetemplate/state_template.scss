@@ -62,6 +62,8 @@ p.wehavedata {
 }
 
 #yearpicker-big {
+  font-size: 14px;
+  line-height: 20px;
     /* two halves: the elections side and the plans timeline; both are a series of A elements, these being links to the electionyear/plan
        designer should contrive the height of these items so the two columns align into what look like side-by-side years */
     div span {
