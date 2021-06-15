@@ -1,17 +1,19 @@
+const path = require('path');
 // the list of .js6 entry point files
 // in addition to being ES2015 JavaScript code, these may require() the .src.html and .less files to also be compiled into their own outputs
 // tip: require()ing other stuff, or even having JavaScript code in the file, is typical but optional
 // you could have a .js6 file which effectively only serves to create a bundle of third-party code or a shared stylesheet
 
-const JS6_FILES = [
+const GLOBAL_JS6_FILES = [
     // home page and peripheral pages
     './index.js6',
     './error.js6',
     './sitewide.js6',
     './patternlibrary/index.js6',
     './patternlibrary_htmltemplate/index.js6',
+];
 
-
+const STATE_JS6_FILES = [
     // per state pages, which really just use the same _statetemplate template
     './alabama/index.js6',
     './alaska/index.js6',
@@ -65,11 +67,17 @@ const JS6_FILES = [
     './wyoming/index.js6',
 ];
 
+const JS6_FILES = [
+    ...GLOBAL_JS6_FILES,
+    ...STATE_JS6_FILES,
+]
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const StringReplacePlugin = require("string-replace-webpack-plugin");
-const WriteFilePlugin = require("write-file-webpack-plugin");
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const ESLintPlugin = require('eslint-webpack-plugin');
+
 
 const HTML_PARTIALS = {
     footer: require("./htmlpartials/footer"),
@@ -78,6 +86,7 @@ const HTML_PARTIALS = {
 };
 
 module.exports = {
+    mode: 'development',
     /*
      * multiple entry points, one per entry
      * the [name] for each is the basename, e.g. some/path/to/thing so we can add .js and .css suffixes
@@ -85,12 +94,13 @@ module.exports = {
      */
     entry: JS6_FILES.reduce((o, key) => { o[key.replace(/\.js6$/, '')] = key; return o; }, {}),
     output: {
-        path: __dirname,
-        filename: 'WEBSITE_OUTPUT/[name].js'
+        path: path.resolve(__dirname, 'WEBSITE_OUTPUT'),
+        publicPath: "/WEBSITE_OUTPUT/",
+        chunkFilename: '[name].js',
     },
 
     module: {
-        loaders: [
+        rules: [
             /*
              * Plain JS files
              * just kidding; Webpack already does those without any configuration  :)
@@ -98,40 +108,23 @@ module.exports = {
              */
 
             /*
-             * run .js6 files through Babel + ES2015 via loader; lint and transpile into X.js
-             * that's our suffix for ECMAScript 2015 / ES6 files
-             */
-            {
-                test: /\.(js|js6)$/,
-                use: [
-                    { loader: 'babel-loader', options: { presets: ['es2015'] } },
-                    { loader: 'jshint-loader', options: { esversion: 6, emitErrors: true, failOnHint: true } }
-                ],
-                exclude: /node_modules/
-            },
-
-            /*
              * CSS files and also SASS-to-CSS all go into one bundled X.css
              */
             {
-                test: /\.css$/,
-                use: ExtractTextPlugin.extract({
-                    use: [
-                        { loader: 'css-loader', options: { minimize: true, sourceMap: true, url: false } }
-                    ],
-                    fallback: 'style-loader'
-                })
-            },
-            {
-                test: /\.scss$/,
-                use: ExtractTextPlugin.extract({
-                    use: [
-                        { loader: 'css-loader', options: { minimize: true, sourceMap: true, url: false } },
-                        { loader: 'sass-loader', options: { sourceMap:true } },
-                    ],
-                    fallback: 'style-loader'
-                })
-            },
+                test: /\.s[ac]ss$/i,
+                use: [
+                  MiniCssExtractPlugin.loader,
+                  // Translates CSS into CommonJS
+                  "css-loader?url=false",
+                  // Compiles Sass to CSS
+                  "sass-loader",
+                ],
+              },
+
+              {
+                test: /\.css$/i,
+                use: [MiniCssExtractPlugin.loader, "css-loader?url=false"],
+              },
 
             /*
              * HTML Files
@@ -141,13 +134,13 @@ module.exports = {
              * tip: HTML file basenames (like any) should be fairly minimal: letters and numbers, - _ . characters
              */
             {
-                test: /\.src\.html$/,
+                test: /\.src.html$/,
                 use: [
                     {
                         loader: 'file-loader',
                         options: {
                             // replace .src.html with just .html
-                            name: 'WEBSITE_OUTPUT/[path][1].html',
+                            name: '[path][1].html',
                             regExp: '([\\w\\-\.]+)\\.src\\.html$',
                         },
                     },
@@ -157,15 +150,11 @@ module.exports = {
                             {
                                 pattern: /\[hash\]/g,
                                 replacement: function (match, p1, offset, string) {
-                                    const randomhash = new Date().toString();
+                                    const randomhash = Date.now().toString();
                                     return randomhash;
                                 }
                             },
-                        ]})
-                    },
-                    {
-                        loader: StringReplacePlugin.replace({
-                        replacements: [
+
                             // a series of HTML partials to be interpolated
                             {
                                 pattern: /\<!--\[include_footer\]-->/g,
@@ -217,12 +206,20 @@ module.exports = {
      * plugins for the above
      */
     plugins: [
-        // so webpack-dev-server will ALSO write files to disk in addition to in-memory
-        new WriteFilePlugin(),
-        // CSS output from the CSS + LESS handlers above
-        new ExtractTextPlugin({
-            disable: false,
-            filename: 'WEBSITE_OUTPUT/[name].css'
+        // Lint our JavaScript files
+        new ESLintPlugin({
+            extensions: ['js', 'js6'],
+            exclude: [
+                'node_modules',
+                '_common/jslibs',
+                ...STATE_JS6_FILES.slice(1) // lint just one of the states
+            ],
+            overrideConfig: require('./.eslintrc.js')
+        }),
+
+        // CSS output from the CSS + Sass handlers above
+        new MiniCssExtractPlugin({
+            filename: '[name].css'
         }),
         // for doing string replacements on files
         new StringReplacePlugin(),
@@ -232,9 +229,9 @@ module.exports = {
      * plugins for the above
      */
     devServer: {
-      contentBase: './WEBSITE_OUTPUT',
-      host: '0.0.0.0',
-      port: 8000,
-      disableHostCheck: true
+        contentBase: './WEBSITE_OUTPUT',
+        host: '0.0.0.0',
+        port: 8000,
+        disableHostCheck: true
     }
 };
