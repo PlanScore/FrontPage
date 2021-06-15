@@ -1,11 +1,16 @@
 @import 'sitewide';
 
-p.subtitle {
-    font-size: 14px;
+.container-mainbody {
+  //margin-top: 36px;
+}
+
+.title,
+.subtitle {
+  //text-align: center;
 }
 
 #map path.highcharts-key-us-dc {
-    display: none !important;  /* https://github.com/PlanScore/PlanScore/issues/78 adds small-states legend, this hides DC which we don't have */
+  display: none;  /* https://github.com/PlanScore/PlanScore/issues/78 adds small-states legend, this hides DC which we don't have */
 }
 
 #map {
@@ -38,10 +43,12 @@ p.subtitle {
 
     h1 { /* title */
         font-size: 13px;
+        line-height: 1;
         margin: 0;
     }
     h2 { /* subtitle */
         font-size: 11px;
+        line-height: 1;
         margin: 0 0 5px 0;
     }
     h5 { /* No Data */
@@ -118,19 +125,19 @@ p.subtitle {
 }
 
 #yearpicker-big-wrapper {
+  font-size: 14px;
+  line-height: 20px;
 }
 
 #yearpicker-big-playbutton {
     padding-right: 0; /* in a row, but here we want the left and right sides as close as feasible */
-
     line-height: 67px;
-
     width: 50px;  /* we want responsive row, but to force width; see also #yearpicker-big width */
 
     a {
         font-size: 30px;
-        text-decoration: none !important;
-        color: $dark-purple-color !important;
+        text-decoration: none;
+        color: $black;
 
         i {
         }
@@ -140,7 +147,7 @@ p.subtitle {
 #yearpicker-big {
     position: relative;
     height: 35px;
-    z-index:1;
+    z-index: 1;
 
     padding-left: 0; /* in a row, but here we want the left and right sides as close as feasible */
 
@@ -148,12 +155,11 @@ p.subtitle {
 
     div {  /* structure is a series of rectangular DIVs, each one containing a A for the visible circle */
         cursor: pointer;
-        text-align: center;
-
         display: inline;
         float:left;
-
         position: relative; /* so we can absolutely position the .currentyearline */
+        top: 1px;
+        text-align: center;
 
         a {
             display: inline-block;
@@ -165,7 +171,7 @@ p.subtitle {
             border-radius: 50%;
 
             @media screen and (-webkit-min-device-pixel-ratio:0) { /* Chrome and Safari only: the year-beads are off-vertical by 1px */
-                margin-top: 1px;
+              margin-top: 1px;
             }
         }
 
@@ -178,20 +184,20 @@ p.subtitle {
         span.currentyear {
             display: inline-block;
             width: 34px;
+            font-size: 13px;
             height: 17px;  /* contrived to fit font size */
             background-color: black;
             color: white;
 
             border-radius: 3px;
 
-            font-size: 13px;
             text-align: center;
 
             opacity: 0;  /* see div.active subclass below */
         }
         span.currentyearline {
             display: inline-block;
-            background-color: black;
+            background-color: $black;
             height: 20px;
             width: 2px;
 

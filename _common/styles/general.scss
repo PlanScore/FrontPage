@@ -2,8 +2,11 @@
  * GLOBAL GENERAL STYLES
  */
 
-html, body, td {
-    font-family: 'Roboto', sans-serif !important;
+html, body {
+  font-family: 'AvenirLTPro-Medium', sans-serif;
+  font-size: 18px;
+  line-height: 30px;
+  color: $black;
 }
 
 html {
@@ -34,12 +37,12 @@ td:nth-child(1){
     .navbar-toggle {
         border-color: white;
     }
-    
+
     .navbar-nav > li > a {
         color: $navbar-text-color;
         padding-bottom: 4px;
     }
-    
+
     .navbar-nav > li > a:before {
         content: "";
         position: absolute;
@@ -54,20 +57,20 @@ td:nth-child(1){
         -webkit-transition: all 0.1s ease-in-out 0s;
         transition: all 0.1s ease-in-out 0s;
     }
-    
+
     .navbar-nav > li > a:hover:before {
         visibility: visible;
         -webkit-transform: scaleX(1);
         transform: scaleX(1);
     }
-    
+
     @media (min-width: $screen-sm) {
         #brand-logo {
             height: 40px;
             width: auto;
         }
     }
-    
+
     @media (max-width: $screen-sm) {
         #brand-logo {
             height: 30px;
@@ -84,12 +87,12 @@ div.footer {
     background-color: $behind-background-color;
     padding-top: 10px;
     padding-bottom: 10px;
-    
+
     img {
         height: auto;
         width: 2em;
     }
-    
+
     a {
         font-size: 14px;
         text-decoration: none;
@@ -106,7 +109,7 @@ div.footer {
             text-decoration: underline;
         }
     }
-    
+
     #map {
         a {
             text-decoration: none !important;
@@ -216,20 +219,20 @@ ul.nav.nav-tabs {
     li {
         width: 33.3333%;
     }
-    
+
     li a {
         margin-right: 0;
         border: 1px solid #B3B3B3;
         background-color: #F2F2F2;
         text-decoration: none !important;
     }
-    
+
     li a:hover {
         border: 1px solid #B3B3B3;
         background-color: #F2F2F2;
         color: $gray-med;
     }
-    
+
     li.active a {
         border: 1px solid #B3B3B3;
         border-top: 3px solid $dark-purple-color;
@@ -238,7 +241,7 @@ ul.nav.nav-tabs {
         background-color:white;
         color: $gray-med;
     }
-    
+
     @media screen and (max-width: $screen-xs) {
         a {
             font-size: 16px;
@@ -247,7 +250,7 @@ ul.nav.nav-tabs {
             padding: 5px;
         }
     }
-    
+
     @media screen and (max-width: $screen-xxs) {
         li a {
             word-spacing: 10em;
@@ -269,32 +272,28 @@ ul.nav.nav-tabs {
 }
 
 div.metric-block p {
-        font-size: 16px;
-        color: #121212;
-    }   
+      font-size: 16px;
+  }
 
 div.tab-content, div.metric-block {
-    div.metricdrsum {
-        float: left;
-        font-size: 18px;
-        padding: 5px 5px 5px 5px;
-        color: white;
+  div.metricdrsum {
+      float: left;
+      padding: 5px 5px 5px 5px;
+      color: white;
 
-        margin-right: 1em;
-    }
-    div.metricdrblurb {
-        float: left;
-        padding-top: 0.5em;
-    }
+      margin-right: 1em;
+  }
+  div.metricdrblurb {
+      float: left;
+      padding-top: 0.5em;
+  }
 
-    h2 {
-        font-size: 18px;
-        margin-top: 0;
-    }
+  h2 {
+    margin-top: 0;
+  }
 
-    .tab-pane p {
-        font-size: 13px;
-    }
+  .tab-pane p {
+  }
 }
 
 div.left-photo img {
