@@ -2,12 +2,15 @@
  * GLOBAL GENERAL STYLES
  */
 
-html, body, td {
-    font-family: 'Roboto', sans-serif !important;
+html, body {
+  font-family: 'AvenirLTPro-Medium', sans-serif;
+  font-size: 18px;
+  line-height: 30px;
+  color: $black;
 }
 
 html {
-    background-color: $behind-background-color;
+  background-color: $gray-light;
 }
 
 td {
@@ -23,57 +26,56 @@ td:nth-child(1){
 }
 
 .navbar-default {
-    background-image: none;
-    background-color: $navbar-background-color;
+  background-image: none;
+  background-color: white;
 
-    box-shadow: none;
-    border-bottom: 0 none transparent;
+  box-shadow: none;
+  border-bottom: 0 none transparent;
+  min-height: 80px;
 
-    color: $navbar-text-color;
+  .navbar-toggle {
+      border-color: white;
+  }
 
-    .navbar-toggle {
-        border-color: white;
-    }
-    
-    .navbar-nav > li > a {
-        color: $navbar-text-color;
-        padding-bottom: 4px;
-    }
-    
-    .navbar-nav > li > a:before {
-        content: "";
-        position: absolute;
-        width: 100%;
-        height: 1px;
-        bottom: 0;
-        left: 0;
-        background-color: $navbar-text-color;
-        visibility: hidden;
-        -webkit-transform: scaleX(0);
-        transform: scaleX(0);
-        -webkit-transition: all 0.1s ease-in-out 0s;
-        transition: all 0.1s ease-in-out 0s;
-    }
-    
-    .navbar-nav > li > a:hover:before {
-        visibility: visible;
-        -webkit-transform: scaleX(1);
-        transform: scaleX(1);
-    }
-    
-    @media (min-width: $screen-sm) {
-        #brand-logo {
-            height: 40px;
-            width: auto;
-        }
-    }
-    
-    @media (max-width: $screen-sm) {
-        #brand-logo {
-            height: 30px;
-            width: auto;
-        }
-    }
+  .navbar-nav > li > a {
+      color: $black;
+      padding-bottom: 4px;
+  }
+
+  .navbar-nav > li > a:before {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 1px;
+      bottom: 0;
+      left: 0;
+      background-color: $black;
+      visibility: hidden;
+      -webkit-transform: scaleX(0);
+      transform: scaleX(0);
+      -webkit-transition: all 0.1s ease-in-out 0s;
+      transition: all 0.1s ease-in-out 0s;
+  }
+
+  .navbar-nav > li > a:hover:before {
+      visibility: visible;
+      -webkit-transform: scaleX(1);
+      transform: scaleX(1);
+  }
+
+  @media (min-width: $screen-sm) {
+      #brand-logo {
+          height: 60px;
+          width: auto;
+      }
+  }
+
+  @media (max-width: $screen-sm) {
+      #brand-logo {
+          height: 50px;
+          width: auto;
+      }
+  }
 }
 
 .container {
@@ -81,15 +83,15 @@ td:nth-child(1){
 }
 
 div.footer {
-    background-color: $behind-background-color;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    
+  background-color: $gray-light;
+  padding-top: 10px;
+  padding-bottom: 10px;
+
     img {
         height: auto;
         width: 2em;
     }
-    
+
     a {
         font-size: 14px;
         text-decoration: none;
@@ -106,7 +108,7 @@ div.footer {
             text-decoration: underline;
         }
     }
-    
+
     #map {
         a {
             text-decoration: none !important;
@@ -185,7 +187,7 @@ select {
 }
 
 .gray {
-    background-color: $gray-bg;
+    background-color: $gray-med;
     color: white !important;
     padding: 10px;
     margin-top: 30px;
@@ -216,29 +218,29 @@ ul.nav.nav-tabs {
     li {
         width: 33.3333%;
     }
-    
+
     li a {
         margin-right: 0;
         border: 1px solid #B3B3B3;
         background-color: #F2F2F2;
         text-decoration: none !important;
     }
-    
+
     li a:hover {
         border: 1px solid #B3B3B3;
         background-color: #F2F2F2;
         color: $gray-med;
     }
-    
+
     li.active a {
         border: 1px solid #B3B3B3;
-        border-top: 3px solid $dark-purple-color;
+        border-top: 3px solid $black;
         border-bottom-color: transparent;
         margin-top: -1.5px;
         background-color:white;
         color: $gray-med;
     }
-    
+
     @media screen and (max-width: $screen-xs) {
         a {
             font-size: 16px;
@@ -247,7 +249,7 @@ ul.nav.nav-tabs {
             padding: 5px;
         }
     }
-    
+
     @media screen and (max-width: $screen-xxs) {
         li a {
             word-spacing: 10em;
@@ -269,32 +271,28 @@ ul.nav.nav-tabs {
 }
 
 div.metric-block p {
-        font-size: 16px;
-        color: #121212;
-    }   
+      font-size: 16px;
+  }
 
 div.tab-content, div.metric-block {
-    div.metricdrsum {
-        float: left;
-        font-size: 18px;
-        padding: 5px 5px 5px 5px;
-        color: white;
+  div.metricdrsum {
+      float: left;
+      padding: 5px 5px 5px 5px;
+      color: white;
 
-        margin-right: 1em;
-    }
-    div.metricdrblurb {
-        float: left;
-        padding-top: 0.5em;
-    }
+      margin-right: 1em;
+  }
+  div.metricdrblurb {
+      float: left;
+      padding-top: 0.5em;
+  }
 
-    h2 {
-        font-size: 18px;
-        margin-top: 0;
-    }
+  h2 {
+    margin-top: 0;
+  }
 
-    .tab-pane p {
-        font-size: 13px;
-    }
+  .tab-pane p {
+  }
 }
 
 div.left-photo img {
