@@ -10,7 +10,7 @@ html, body {
 }
 
 html {
-    background-color: $behind-background-color;
+  background-color: $gray-light;
 }
 
 td {
@@ -27,19 +27,18 @@ td:nth-child(1){
 
 .navbar-default {
   background-image: none;
-  background-color: $navbar-background-color;
+  background-color: white;
 
   box-shadow: none;
   border-bottom: 0 none transparent;
   min-height: 80px;
-  color: $navbar-text-color;
 
   .navbar-toggle {
       border-color: white;
   }
 
   .navbar-nav > li > a {
-      color: $navbar-text-color;
+      color: $black;
       padding-bottom: 4px;
   }
 
@@ -50,7 +49,7 @@ td:nth-child(1){
       height: 1px;
       bottom: 0;
       left: 0;
-      background-color: $navbar-text-color;
+      background-color: $black;
       visibility: hidden;
       -webkit-transform: scaleX(0);
       transform: scaleX(0);
@@ -84,9 +83,9 @@ td:nth-child(1){
 }
 
 div.footer {
-    background-color: $behind-background-color;
-    padding-top: 10px;
-    padding-bottom: 10px;
+  background-color: $gray-light;
+  padding-top: 10px;
+  padding-bottom: 10px;
 
     img {
         height: auto;
@@ -188,7 +187,7 @@ select {
 }
 
 .gray {
-    background-color: $gray-bg;
+    background-color: $gray-med;
     color: white !important;
     padding: 10px;
     margin-top: 30px;
@@ -235,7 +234,7 @@ ul.nav.nav-tabs {
 
     li.active a {
         border: 1px solid #B3B3B3;
-        border-top: 3px solid $dark-purple-color;
+        border-top: 3px solid $black;
         border-bottom-color: transparent;
         margin-top: -1.5px;
         background-color:white;
