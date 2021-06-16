@@ -43,6 +43,7 @@
     grid-area: nodata;
     background-color: $biascolor-r3;
     background-color: white;
+    border: 1px solid $gray-med;
   }
   .demtext { grid-area: demtext;}
   .reptext {
@@ -202,7 +203,6 @@
     text-align: center;
     font-weight: bold;
     font-size: 20px;
-
     position: absolute; top: 0; left: 0;
     width: 100%;
   }

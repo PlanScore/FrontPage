@@ -1,22 +1,25 @@
-// @import '_common/styles/defines';
-// @import '_common/styles/utility';
-// @import '_common/styles/general';
-// @import '_common/styles/bellcurves';
-// @import '_common/styles/boundarypicker';
-// @import '_common/styles/wastedvotes';
-// @import '_common/styles/seatshare';
-@import 'sitewide';
+@import '_common/styles/defines';
+@import '_common/styles/utility';
+@import '_common/styles/general';
+@import '_common/styles/bellcurves';
+@import '_common/styles/boundarypicker';
+@import '_common/styles/wastedvotes';
+@import '_common/styles/seatshare';
+
 
 h2:first-child {
     margin-top: 0;
 }
 
 h1.state_name {
-  background-color: $gray-light;
-  color: $black;
-  font-size: 26px;
-  margin-top: 0;
-  padding: 5px;
+    margin-top: 0;
+
+    font-size: 26px;
+
+    padding: 5px;
+
+    background-color: #cccccc;
+    color: white;
 }
 
 p.wehavedata {
@@ -65,13 +68,11 @@ p.wehavedata {
        designer should contrive the height of these items so the two columns align into what look like side-by-side years */
     div span {
         display: block;
-        color: #4d599e;
-        font-size: 15px;
         margin-right: 9px;
         line-height: 1.2em;
         padding-bottom: 0.2em;
     }
-
+    
     div.elections {
         padding-left: 5px;
 
@@ -82,25 +83,25 @@ p.wehavedata {
 
             cursor: pointer;
 
-            color: $black;
+            color: $dark-purple-color;
             text-decoration: none !important;
 
             span {  /* a circular swatch inside that year link */
                 display: inline-block;
                 height: 10px;
                 width: 10px;
-                border: 2px solid $black;
+                border: 2px solid $dark-purple-color;
                 border-radius: 50%;
 
                 margin-right: 5px;
 
                 background-color: white;
-                color: $black;
+                color: $dark-purple-color;
             }
         }
         a.active {  /* a year link */
             span {  /* a circular swatch inside that year link */
-                background-color: $black;
+                background-color: $dark-purple-color;
             }
         }
     }
@@ -122,7 +123,7 @@ p.wehavedata {
             }
         }
         a.plan-begin span {
-            border: 2px solid $black;
+            border: 2px solid $dark-purple-color;
             border-radius: 50%;
             background-color: white;
         }
@@ -130,16 +131,16 @@ p.wehavedata {
             width: 1px;
             margin-right: 22px;
             border: 0.05em solid #4d599e;
-            background-color: $black;
+            background-color: $dark-purple-color;
         }
 
         a.plan-begin.active span {
-            background-color: $black; /* overridden in redrawYearPicker() */
+            background-color: $dark-purple-color; /* overridden in redrawYearPicker() */
             color: white;
             border-width: 4px;
         }
         a.plan-continue.active span {
-            background-color: $black; /* overridden in redrawYearPicker() */
+            background-color: $dark-purple-color; /* overridden in redrawYearPicker() */
             width: 4px;
             margin-right: 21px;
         }
