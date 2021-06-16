@@ -42,6 +42,42 @@
         <p class="subtitle">PlanScore presents the most comprehensive <a href="https://planscore.org/about/historical-data/">historical dataset</a> of partisan gerrymandering ever assembled. We also provide tools for policymakers and litigators to transparently score new plans and assess their fairness.</p>
         <!-- the mobile + desktop year picker UIs; see initYearPickers() and of course selectYear() -->
         <br />
+
+    <div class="row" id="boundarypicker">
+        <!-- <div class="col-xs-4"> -->
+            <div class="center" data-boundary="ushouse" title="Show partisan skew analysis for US House district plans">
+                <a href="javascript:void(0);">U.S. House</a>
+            </div>
+        <!-- </div> -->
+        <!-- <div class="col-xs-4"> -->
+            <div class="center" data-boundary="statesenate" title="Show partisan skew analysis for State Senate district plans">
+                <a href="javascript:void(0);">State Senates</a>
+            </div>
+        <!-- </div> -->
+        <!-- <div class="col-xs-4"> -->
+            <div class="center" data-boundary="statehouse" title="Show partisan skew analysis for State House district plans">
+                <a href="javascript:void(0);">State Houses</a>
+            </div>
+        <!-- </div> -->
+    </div>
+    <br/>
+
+    <div id="maplegend">
+        <div class="slice d3"></div>
+        <div class="slice d2"></div>
+        <div class="slice d1"></div>
+        <div class="slice balanced"></div>
+        <div class="slice r1"></div>
+        <div class="slice r2"></div>
+        <div class="slice r3"></div>
+        <div class="slice nodata"></div>
+        <div class="demtext">Skews Democrat</div>
+        <div class="reptext">Skews Republican</div>
+        <div class="nodatatext">No Data</div>
+    </div>
+
+      <div id="map"></div>
+
         <div class="row hidden-xs" id="yearpicker-big-wrapper">
             <div class="col-xs-1" id="yearpicker-big-playbutton">
                 <a data-status="paused" href="javascript:void(0);" title="Play an animation showing change in plan skew over time"><i class="glyphicon glyphicon-play"></i></a>
@@ -58,37 +94,6 @@
             </div>
         </div>
 
-        <div id="map"></div>
-
-        <div id="maplegend">
-            <h1>Extent of partisan skew</h1>
-            <h2>(based on efficiency gap)</h2>
-
-            <div class="slice d3"><span>D</span></div><div class="slice d2"><span>&nbsp;</span></div><div class="slice d1"><span>&nbsp;</span></div><div class="slice balanced"><span>&nbsp;</span></div><div class="slice r1"><span>&nbsp;</span></div><div class="slice r2"><span>&nbsp;</span></div><div class="slice r3"><span>R</span></div>
-
-            <div class="slice nodata"><span>&nbsp;</span></span></div>
-            <h5>No Data</h5>
-        </div>
-
-        <div class="row" id="boundarypicker">
-            <div class="col-xs-4">
-                <div class="col-xs-12 center" data-boundary="ushouse" title="Show partisan skew analysis for US House district plans">
-                    <a href="javascript:void(0);">U.S. House</a>
-                </div>
-            </div>
-            <div class="col-xs-4">
-                <div class="col-xs-12 center" data-boundary="statesenate" title="Show partisan skew analysis for State Senate district plans">
-                    <a href="javascript:void(0);">State Senates</a>
-                </div>
-            </div>
-            <div class="col-xs-4">
-                <div class="col-xs-12 center" data-boundary="statehouse" title="Show partisan skew analysis for State House district plans">
-                    <a href="javascript:void(0);">State Houses</a>
-                </div>
-            </div>
-        </div>
-
-        <br/>
 
         <div class="container">
             <!-- be careful of changing the structure: updateStateListingSwatches() expects A with span + statename in order to key to a state -->

@@ -3,8 +3,14 @@
  * the selector for statehouse/ushouse/senate
  */
 #boundarypicker {
+  border: 1px solid $gray-med;
+  border-radius: 5px;
+  display: grid;
+  grid-template-columns: auto auto auto;
+  margin: auto;
+  max-width: 488px;
     /* small-enough screens, force these to 100% as they will linewrap before Bootstrap will "xs" them to stack */
-    
+
     @media screen and (max-width: $screen-sm) {
         > div {
             padding-right: 10px;
@@ -17,7 +23,7 @@
             padding-right: 15px;
         }
     }
-    
+
     @media screen and (max-width: $screen-xs) {
         > div {
             padding-right: 5px;
@@ -30,7 +36,7 @@
             padding-right: 15px;
         }
     }
-    
+
     @media screen and (max-width: $screen-xxs) {
         > div {
             padding-right: 2px;
@@ -43,7 +49,7 @@
             padding-right: 15px;
         }
     }
-    
+
     @media screen and (max-width: 480px) {
         > div {
             word-spacing: 10em;
