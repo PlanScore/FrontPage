@@ -84,6 +84,7 @@ td:nth-child(1){
 
 div.footer {
   background-color: $gray-light;
+  font-size: 14px;
   padding-top: 10px;
   padding-bottom: 10px;
 
@@ -165,6 +166,10 @@ p {
   line-height: 28px;
 }
 
+a {
+  color: $blue-link;
+}
+
 select {
   padding: 5px;
   color: $gray-med;
@@ -207,25 +212,23 @@ select {
 }
 
 .gray {
-  background-color: $gray-dark;
-  color: white !important;
+  background-color: $gray-light;
+  color: $black;
   padding: 10px;
   margin-top: 30px;
-}
-
-.gray p {
-  color: white !important;
-  margin-bottom: 2px;
-}
-
-.gray .btn {
-  display: block;
-  margin: 14px auto 5px;
-  width: 100%;
+  p {
+    margin-bottom: 2px;
+  }
+  .btn {
+    background-color: $black;
+    color: white;
+    display: block;
+    margin: 14px auto 5px;
+    width: 100%;
+  }
 }
 
 ul.nav.nav-tabs {
-  border-bottom: 1px solid #B3B3B3;
   padding-top: 15px;
 
   a {
