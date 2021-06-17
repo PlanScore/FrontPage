@@ -1,25 +1,15 @@
-@import '_common/styles/defines';
-@import '_common/styles/utility';
-@import '_common/styles/general';
-@import '_common/styles/bellcurves';
-@import '_common/styles/boundarypicker';
-@import '_common/styles/wastedvotes';
-@import '_common/styles/seatshare';
-
+@import 'sitewide';
 
 h2:first-child {
     margin-top: 0;
 }
 
 h1.state_name {
-    margin-top: 0;
-
-    font-size: 26px;
-
-    padding: 5px;
-
-    background-color: $gray-med;
-    color: white;
+  background-color: $gray-light;
+  color: $black;
+  font-size: 26px;
+  margin-top: 0;
+  padding: 5px;
 }
 
 p.wehavedata {
