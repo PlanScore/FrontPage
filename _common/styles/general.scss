@@ -6,7 +6,6 @@ html, body {
   font-family: 'AvenirLTPro-Medium', sans-serif;
   font-size: 18px;
   line-height: 30px;
-  color: $black;
 }
 
 html {
@@ -34,47 +33,47 @@ td:nth-child(1){
   min-height: 80px;
 
   .navbar-toggle {
-      border-color: white;
+    border-color: white;
   }
 
   .navbar-nav > li > a {
-      color: $black;
-      padding-bottom: 4px;
+    color: $black;
+    padding-bottom: 4px;
   }
 
   .navbar-nav > li > a:before {
-      content: "";
-      position: absolute;
-      width: 100%;
-      height: 1px;
-      bottom: 0;
-      left: 0;
-      background-color: $black;
-      visibility: hidden;
-      -webkit-transform: scaleX(0);
-      transform: scaleX(0);
-      -webkit-transition: all 0.1s ease-in-out 0s;
-      transition: all 0.1s ease-in-out 0s;
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    bottom: 0;
+    left: 0;
+    background-color: $black;
+    visibility: hidden;
+    -webkit-transform: scaleX(0);
+    transform: scaleX(0);
+    -webkit-transition: all 0.1s ease-in-out 0s;
+    transition: all 0.1s ease-in-out 0s;
   }
 
   .navbar-nav > li > a:hover:before {
-      visibility: visible;
-      -webkit-transform: scaleX(1);
-      transform: scaleX(1);
+    visibility: visible;
+    -webkit-transform: scaleX(1);
+    transform: scaleX(1);
   }
 
   @media (min-width: $screen-sm) {
-      #brand-logo {
-          height: 60px;
-          width: auto;
-      }
+    #brand-logo {
+        height: 60px;
+        width: auto;
+    }
   }
 
   @media (max-width: $screen-sm) {
-      #brand-logo {
-          height: 50px;
-          width: auto;
-      }
+    #brand-logo {
+        height: 50px;
+        width: auto;
+    }
   }
 }
 
@@ -83,21 +82,21 @@ td:nth-child(1){
 }
 
 div.footer {
-  background-color: $gray-light;
+  background-color: $gray-lighter;
   font-size: 14px;
-  padding-top: 10px;
+  padding-top: 36px;
   padding-bottom: 10px;
 
   img {
-      height: auto;
-      width: 2em;
+    height: auto;
+    width: 2em;
   }
 
   a {
-      font-size: 14px;
-      text-decoration: none;
-      white-space:nowrap; /* prevent a single link (logo+words) from wrapping internally */
-      margin-right: 10px;
+    font-size: 14px;
+    text-decoration: none;
+    white-space:nowrap; /* prevent a single link (logo+words) from wrapping internally */
+    margin-right: 10px;
   }
 }
 
@@ -105,15 +104,15 @@ div.footer {
   padding-bottom: 50px;
 
   p, h3, li {
-      a {
-          text-decoration: underline;
-      }
+    a {
+      text-decoration: underline;
+    }
   }
 
   #map {
-      a {
-          text-decoration: none !important;
-      }
+    a {
+      text-decoration: none !important;
+    }
   }
 }
 
@@ -232,90 +231,89 @@ ul.nav.nav-tabs {
   padding-top: 15px;
 
   a {
-      font-size: 18px;
-      border-radius: 0;
-      color: $black;
-      text-align: center;
+    font-size: 18px;
+    border-radius: 0;
+    color: $black;
+    text-align: center;
   }
 
   li {
-      width: 33.3333%;
+    width: 33.3333%;
   }
 
   li a {
-      margin-right: 0;
-      border: 1px solid #B3B3B3;
-      background-color: #F2F2F2;
-      text-decoration: none !important;
+    margin-right: 0;
+    border: 1px solid #B3B3B3;
+    background-color: #F2F2F2;
+    text-decoration: none !important;
   }
 
   li a:hover {
-      border: 1px solid $gray-dark;
-      background-color: $gray-dark;
-      color: $gray-med;
+    border: 1px solid $gray-dark;
+    background-color: $gray-dark;
+    color: $gray-med;
   }
 
   li.active a {
-      border: 1px solid #B3B3B3;
-      border-top: 3px solid $black;
-      border-bottom-color: transparent;
-      margin-top: -1.5px;
-      background-color:white;
-      color: $black;
+    border: 1px solid #B3B3B3;
+    border-top: 3px solid $black;
+    border-bottom-color: transparent;
+    margin-top: -1.5px;
+    background-color:white;
+    color: $black;
   }
 
   @media screen and (max-width: $screen-xs) {
-      a {
-          font-size: 16px;
-      }
-      li a {
-          padding: 5px;
-      }
+    a {
+      font-size: 16px;
+    }
+    li a {
+      padding: 5px;
+    }
   }
 
   @media screen and (max-width: $screen-xxs) {
-      li a {
-          word-spacing: 10em;
-      }
+    li a {
+      word-spacing: 10em;
+    }
   }
 }
 
 .tab-content {
   .tab-pane {
-      padding: 1em 1em 1em 1em;
-      border: 1px solid #B3B3B3;
-      border-top-color: transparent;
+    padding: 1em 1em 1em 1em;
+    border: 1px solid #B3B3B3;
+    border-top-color: transparent;
 
-      p {
-          font-size: 16px;
-          color: #121212;
-      }
+    p {
+      font-size: 16px;
+      color: #121212;
+    }
   }
 }
 
 div.metric-block p {
-      font-size: 16px;
+    font-size: 16px;
   }
 
 div.tab-content, div.metric-block {
   div.metricdrsum {
-      float: left;
-      padding: 5px 5px 5px 5px;
-      color: white;
+    float: left;
+    padding: 5px 15px;
+    color: white;
 
-      margin-right: 1em;
+    margin-right: 1em;
   }
+
   div.metricdrblurb {
-      float: left;
-      padding-top: 0.5em;
+    float: left;
+    padding-top: 0.5em;
   }
 
   h2 {
     margin-top: 0;
   }
 
-  .tab-pane p {
-  }
 }
 
 div.left-photo img {
