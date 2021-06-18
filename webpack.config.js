@@ -11,6 +11,7 @@ const GLOBAL_JS6_FILES = [
     './sitewide.js6',
     './patternlibrary/index.js6',
     './patternlibrary_htmltemplate/index.js6',
+    './about/index.js6',
 ];
 
 const STATE_JS6_FILES = [
