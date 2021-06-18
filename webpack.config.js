@@ -12,6 +12,11 @@ const GLOBAL_JS6_FILES = [
     './patternlibrary/index.js6',
     './patternlibrary_htmltemplate/index.js6',
     './about/index.js6',
+    './about/historical-data/index.js6',
+    './metrics/index.js6',
+    './metrics/efficiencygap/index.js6',
+    './metrics/meanmedian/index.js6',
+    './metrics/partisanbias/index.js6',
 ];
 
 const STATE_JS6_FILES = [
