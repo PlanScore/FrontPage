@@ -233,6 +233,7 @@ module.exports = {
         contentBase: './WEBSITE_OUTPUT',
         host: '0.0.0.0',
         port: 8000,
-        disableHostCheck: true
+        disableHostCheck: true,
+        writeToDisk: true,
     }
 };
