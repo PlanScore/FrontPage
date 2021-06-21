@@ -11,6 +11,13 @@ const GLOBAL_JS6_FILES = [
     './sitewide.js6',
     './patternlibrary/index.js6',
     './patternlibrary_htmltemplate/index.js6',
+    './about/index.js6',
+    './about/historical-data/index.js6',
+    './about/friends-resources/index.js6',
+    './metrics/index.js6',
+    './metrics/efficiencygap/index.js6',
+    './metrics/meanmedian/index.js6',
+    './metrics/partisanbias/index.js6',
 ];
 
 const STATE_JS6_FILES = [
@@ -232,6 +239,7 @@ module.exports = {
         contentBase: './WEBSITE_OUTPUT',
         host: '0.0.0.0',
         port: 8000,
-        disableHostCheck: true
+        disableHostCheck: true,
+        writeToDisk: true,
     }
 };

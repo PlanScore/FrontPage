@@ -19,15 +19,15 @@ Data dictionary for bias CSVs: https://docs.google.com/spreadsheets/d/1aBffpd3Fv
 
 1.  Use Docker to cover for Mac/Linux case-sensitive `sed`, with Circle CI image matching Node version used in test/deploy script:
     
-        docker pull circleci/node:8.2
+        docker pull circleci/node:lts
 
 2.  Install required Node packages:
     
-        docker run --rm -it -v `pwd`:/vol -w /vol circleci/node:8.2 yarn install
+        docker run --rm -it -v `pwd`:/vol -w /vol circleci/node:lts yarn install
 
 3.  Build content of `WEBSITE_OUTPUT` and serve it locally at http://0.0.0.0:8000 (this step may take time to build):
     
-        docker run --rm -it -v `pwd`:/vol -w /vol -p 8000:8000 circleci/node:8.2 npm run serve
+        docker run --rm -it -v `pwd`:/vol -w /vol -p 8000:8000 circleci/node:lts npm run serve
 
 4.  Update raw data in `WEBSITE_OUTPUT/data` directory.
 
