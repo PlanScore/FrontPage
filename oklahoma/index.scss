@@ -11,11 +11,13 @@ h2:first-child {
 h1.state_name {
   background-color: $gray-light;
   color: $black;
-  font-size: 26px;
-  margin-top: 0;
-  padding: 5px;
-}
+  font-size: 28px;
+  line-height: 36px;
+  padding: 12px 40px 8px 16px;}
 
+#boundarypicker {
+  margin-left: 0;
+}
 p.wehavedata {
     a {
         text-decoration: none !important;
@@ -23,159 +25,155 @@ p.wehavedata {
 }
 
 #yearpicker-small {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
+  position: relative;  /* readout is overlaid atop a 6/6 split, to maximize hit area on both halves */
 
-    position: relative;  /* readout is overlaid atop a 6/6 split, to maximize hit area on both halves */
+  div.nextprev {
+    cursor: pointer;
+    z-index: 1;
+  }
+  div.nextprev.disabled {
+    opacity: 0;
+  }
+  i {  /* the prev and next buttons */
+    font-size: 24px;
+    cursor: pointer;
+  }
+  div.readout {  /* the year/plan readout */
+    text-align: center;
+    font-weight: bold;
+    font-size: 20px;
 
-    div.nextprev {
-        cursor: pointer;
-        z-index: 1;
-    }
-    div.nextprev.disabled {
-        opacity: 0;
-    }
-    div.right {
-    }
-    div.left {
-    }
-    i {  /* the prev and next buttons */
-        font-size: 24px;
-        cursor: pointer;
-    }
-    div.readout {  /* the year/plan readout */
-        text-align: center;
-        font-weight: bold;
-        font-size: 20px;
-
-        position: absolute; top: 0; left: 0;
-        width: 100%;
-    }
-}
-#yearpicker-small.hidden {
-    display: none !important;  /* BS's .visible-xs-block and .hidden et al get confused here, and "hidden" won't really hide it unless we make the rule realy specific like this */
+    position: absolute; top: 0; left: 0;
+    width: 100%;
+  }
+  &.hidden {
+      display: none !important;  /* BS's .visible-xs-block and .hidden et al get confused here, and "hidden" won't really hide it unless we make the rule realy specific like this */
+  }
 }
 
 #yearpicker-big {
   font-size: 14px;
   line-height: 20px;
-    /* two halves: the elections side and the plans timeline; both are a series of A elements, these being links to the electionyear/plan
-       designer should contrive the height of these items so the two columns align into what look like side-by-side years */
-    div span {
-        display: block;
-        margin-right: 9px;
-        line-height: 1.2em;
-        padding-bottom: 0.2em;
+  /* two halves: the elections side and the plans timeline; both are a series of A elements, these being links to the electionyear/plan
+     designer should contrive the height of these items so the two columns align into what look like side-by-side years */
+  div span {
+    display: block;
+    margin-right: 9px;
+    line-height: 1.2em;
+    padding-bottom: 0.2em;
+  }
+
+  div.elections {
+    padding-left: 5px;
+    text-align: center;
+
+    a {  /* a year link */
+      display: block;
+      height: 24px;
+      line-height: 24px;
+
+      cursor: pointer;
+
+      color: $black;
+      text-decoration: none !important;
+
+      span {  /* a circular swatch inside that year link */
+        display: inline-block;
+        height: 10px;
+        width: 10px;
+        border: 2px solid $black;
+        border-radius: 50%;
+
+        margin-right: 5px;
+
+        background-color: white;
+        color: $black;
+      }
+    }
+    a.active {  /* a year link */
+      span {  /* a circular swatch inside that year link */
+          background-color: $black;
+      }
+    }
+  }
+  div.plans {
+    text-align: right;
+    padding-right: 0;
+    padding-left: 0;
+
+    a {
+      display: block;
+      cursor: pointer;
+
+      span {
+        display: inline-block;
+        height: 24px;
+        width: 24px;
+        vertical-align: middle;
+        margin-right: 11px;
+      }
+    }
+    a.plan-begin span {
+      border: 2px solid $black;
+      border-radius: 50%;
+      background-color: white;
+    }
+    a.plan-continue span {
+      width: 1px;
+      margin-right: 22px;
+      border: 0.05em solid #4d599e;
+      background-color: $black;
     }
 
-    div.elections {
-        padding-left: 5px;
-
-        a {  /* a year link */
-            display: block;
-            height: 24px;
-            line-height: 24px;
-
-            cursor: pointer;
-
-            color: $black;
-            text-decoration: none !important;
-
-            span {  /* a circular swatch inside that year link */
-                display: inline-block;
-                height: 10px;
-                width: 10px;
-                border: 2px solid $black;
-                border-radius: 50%;
-
-                margin-right: 5px;
-
-                background-color: white;
-                color: $black;
-            }
-        }
-        a.active {  /* a year link */
-            span {  /* a circular swatch inside that year link */
-                background-color: $black;
-            }
-        }
+    a.plan-begin.active span {
+      background-color: $black; /* overridden in redrawYearPicker() */
+      color: white;
+      border-width: 4px;
     }
-    div.plans {
-        text-align: right;
-        padding-right: 0;
-        padding-left: 0;
-
-        a {
-            display: block;
-            cursor: pointer;
-
-            span {
-                display: inline-block;
-                height: 24px;
-                width: 24px;
-                vertical-align: middle;
-                margin-right: 11px;
-            }
-        }
-        a.plan-begin span {
-            border: 2px solid $black;
-            border-radius: 50%;
-            background-color: white;
-        }
-        a.plan-continue span {
-            width: 1px;
-            margin-right: 22px;
-            border: 0.05em solid #4d599e;
-            background-color: $black;
-        }
-
-        a.plan-begin.active span {
-            background-color: $black; /* overridden in redrawYearPicker() */
-            color: white;
-            border-width: 4px;
-        }
-        a.plan-continue.active span {
-            background-color: $black; /* overridden in redrawYearPicker() */
-            width: 4px;
-            margin-right: 21px;
-        }
-
-        a.plan-begin.r-3 span {
-            background-color: $biascolor-r3;
-        }
-        a.plan-begin.r-2 span {
-            background-color: $biascolor-r2;
-        }
-        a.plan-begin.r-1 span {
-            background-color: $biascolor-r1;
-        }
-        a.plan-begin.nobias span {
-            background-color: $biascolor-0;
-        }
-        a.plan-begin.d-1 span {
-            background-color: $biascolor-d1;
-        }
-        a.plan-begin.d-2 span {
-            background-color: $biascolor-d2;
-        }
-        a.plan-begin.d-3 span {
-            background-color: $biascolor-d3;
-        }
+    a.plan-continue.active span {
+      background-color: $black; /* overridden in redrawYearPicker() */
+      width: 4px;
+      margin-right: 21px;
     }
+
+    a.plan-begin.r-3 span {
+      background-color: $biascolor-r3;
+    }
+    a.plan-begin.r-2 span {
+      background-color: $biascolor-r2;
+    }
+    a.plan-begin.r-1 span {
+      background-color: $biascolor-r1;
+    }
+    a.plan-begin.nobias span {
+      background-color: $biascolor-0;
+    }
+    a.plan-begin.d-1 span {
+      background-color: $biascolor-d1;
+    }
+    a.plan-begin.d-2 span {
+      background-color: $biascolor-d2;
+    }
+    a.plan-begin.d-3 span {
+      background-color: $biascolor-d3;
+    }
+  }
 }
 
 ul.nav-tabs a span.biasicon {
-    display: inline-block;
-    height: 18px;
-    width: 18px;
+  display: inline-block;
+  height: 18px;
+  width: 18px;
 
-    text-align: center;
-    font-size: 15px;
-    line-height: 18px;
+  text-align: center;
+  font-size: 14px;
+  line-height: 20px;
 
-    background-color: transparent; /* unless assigned a specific bias class below, they're effectively invisible */
-    color: white;
+  background-color: transparent; /* unless assigned a specific bias class below, they're effectively invisible */
+  color: white;
 
-    text-transform: uppercase;
+  text-transform: uppercase;
 }
 
 @media screen and (max-width: $screen-xs) {

@@ -6,6 +6,7 @@
   border: 1px solid $gray-med;
   border-radius: 5px;
   display: grid;
+  font-size: 16px;
   grid-template-columns: auto auto auto;
   margin: auto;
   max-width: 488px;
@@ -22,17 +23,14 @@
         border-right: 1px solid $gray-med;
         border-left: 1px solid $gray-med;
         border-collapse: collapse;
-        font-size: 18px;
-        padding-bottom: 15px;
-        padding-top: 15px;
+        padding-bottom: 9px;
+        padding-top: 9px;
         width: 100%;
         a {
           text-decoration: none;
           color: $black;
         }
-        // border-radius: 2px;
-        // box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, .16);
-     &.active {
+      &.active {
           background-color: transparent;
           color: $black;
           a {
