@@ -1,36 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>PlanScore</title>
+  <title>PlanScore</title>
 
-    <!--[include_head]-->
+  <!--[include_head]-->
 
-    <!-- Highcharts does charts and also maps -->
-    <script src="https://code.highcharts.com/maps/8.0.4/highmaps.js"></script>
-    <script src="https://code.highcharts.com/maps/modules/data.js"></script>
-    <script src="/data/usmapchart.json"></script>
+  <!-- Highcharts does charts and also maps -->
+  <script src="https://code.highcharts.com/maps/8.0.4/highmaps.js"></script>
+  <script src="https://code.highcharts.com/maps/modules/data.js"></script>
+  <script src="/data/usmapchart.json"></script>
 
-    <!-- PapaParse CSV reader -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.3.6/papaparse.min.js"></script>
+  <!-- PapaParse CSV reader -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.3.6/papaparse.min.js"></script>
 
-    <!-- various polyfills required by IE -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.6.15/browser-polyfill.min.js"></script>
+  <!-- various polyfills required by IE -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.6.15/browser-polyfill.min.js"></script>
 
-    <!-- local config -->
-    <link href="index.css?[hash]" rel="stylesheet" />
-    <script src="index.js?[hash]"></script>
+  <!-- local config -->
+  <link href="index.css?[hash]" rel="stylesheet" />
+  <script src="index.js?[hash]"></script>
 
-    <!-- OG tags -->
-    <meta property="og:title" content="PlanScore" />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://planscore.org" />
-    <meta property="og:image" content="https://planscore.org/images/OG-default-01.jpg" />
-    <meta property="og:description" content="PlanScore is a first-of-its-kind gerrymandering scoring service for new district plans, allowing users to upload maps and instantly receive projected data about their partisan consequences. You can also use historical data to discover how partisan advantage has influenced redistricting in your state." />
+  <!-- OG tags -->
+  <meta property="og:title" content="PlanScore" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://planscore.org" />
+  <meta property="og:image" content="https://planscore.org/images/OG-default-01.jpg" />
+  <meta property="og:description" content="PlanScore is a first-of-its-kind gerrymandering scoring service for new district plans, allowing users to upload maps and instantly receive projected data about their partisan consequences. You can also use historical data to discover how partisan advantage has influenced redistricting in your state." />
 
-    <!-- Twitter tags note that per https://developer.twitter.com/en/docs/tweets/optimize-with-cards/guides/getting-started, we need only use the card metas that differ from OG -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:card" content="summary" />
-    <meta name="twitter:site" content="@PlanScore" />
+  <!-- Twitter tags note that per https://developer.twitter.com/en/docs/tweets/optimize-with-cards/guides/getting-started, we need only use the card metas that differ from OG -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@PlanScore" />
 
 </head>
 <body>
@@ -38,8 +38,9 @@
     <!--[include_navbar]-->
 
     <div class="container container-mainbody">
-        <h1 class="title">Partisan Gerrymandering Historical Data</h1>
-        <p class="subtitle">PlanScore presents the most comprehensive <a href="/about/historical-data/">historical dataset</a> of partisan gerrymandering ever assembled. We also provide tools for policymakers and litigators to transparently score new plans and assess their fairness.</p>
+        <h1 class="title">Compare New Gerrymandering Data to Historic Maps</h1>
+        <h2 class="subtitle">Maps are live! Use PlanScore to measure voting maps and evaluate their fairness.</h2>
+        <p class="intro">PlanScore presents the most comprehensive <a href="/about/historical-data/">historical dataset</a> of partisan gerrymandering ever assembled. We also provide tools for policymakers and litigators to transparently score new maps and assess their fairness.</p>
         <br />
 
         <!-- the mobile + desktop year picker UIs; see initYearPickers() and of course selectYear() -->
@@ -276,11 +277,11 @@
 
         <h2>What is Partisan Gerrymandering?</h2>
 
-        <p>Partisan gerrymandering means drawing district lines to benefit one party and disadvantage the opposing party. Through gerrymandering, a party is able to translate its votes into seats more efficiently than its opponent. With more seats comes more legislative power and, ultimately, more control over the policies the government enacts.</p>
+        <p>In order to understand the impact of gerrymandering on our voting maps, we need to be able to measure it. Gerrymandering is the process by which politicians draw voting maps to make it easier to get reelected. Through gerrymandering, a party is able to translate its votes into seats more efficiently than its opponent. Seats translate to legislative power and more control over the policies the government enacts.</p>
 
         <h3>How Do We Measure It?</h3>
 
-        <p>We use three distinct measures of partisan gerrymandering: the efficiency gap, partisan bias, and the mean-median difference. All of these metrics are reliable when a state is competitive, but only the efficiency gap should be trusted when one party predominates in a state.</p>
+        <p>We use three distinct measures of partisan gerrymandering: the efficiency gap, partisan bias, and the mean-median difference. All of these metrics are reliable when a state is competitive, but only the efficiency gap should be used when one party controls a state house.</p>
 
         <ul class="nav nav-tabs" id="tabs-metrics">
             <li class="active"><a href="#tab-efficiencygap" data-toggle="tab">Efficiency Gap</a></li>

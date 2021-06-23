@@ -2,10 +2,11 @@
 @import '_common/styles/boundarypicker';
 
 .title,
-.subtitle {
+.subtitle,
+.intro {
   text-align: center;
   max-width: 756px;
-  margin: auto;
+  margin: 36px auto;
 }
 
 .title {
