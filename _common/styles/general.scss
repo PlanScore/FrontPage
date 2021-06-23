@@ -9,7 +9,7 @@ html, body {
 }
 
 html {
-  background-color: $gray-light;
+  background-color: $gray-lighter;
 }
 
 td {
@@ -31,6 +31,14 @@ td:nth-child(1){
   box-shadow: none;
   border-bottom: 0 none transparent;
   min-height: 80px;
+
+  .navbar-brand{
+    height: 80px;
+  }
+  .navbar-collapse,
+  .navbar-form {
+    border: none;
+  }
 
   .navbar-toggle {
     border-color: white;
