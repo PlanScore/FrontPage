@@ -207,7 +207,7 @@ div.footer {
   &:focus,
   &:active {
     color: white;
-    background-color: #gray-dark;
+    background-color: $gray-dark;
   }
 
   &:active {

@@ -12,7 +12,7 @@ const htmlblock = `
             </div>
             <div class="collapse navbar-collapse" id="navbar">
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="https://planscore.org/upload.html">Score a Plan</a></li>
+                    <li><a href="/upload.html">Score a Plan</a></li>
                     <li><a href="/about/">What is PlanScore?</a></li>
                 </ul>
             </div>
