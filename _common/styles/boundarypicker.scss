@@ -2,57 +2,69 @@
  * BOUNDARY PICKER
  * the selector for statehouse/ushouse/senate
  */
+
 #boundarypicker {
+  background-color: $gray-light;
   border: 1px solid $gray-med;
   border-radius: 5px;
-  display: grid;
+  display: flex;
   font-size: 16px;
   grid-template-columns: auto auto auto;
   margin: auto;
   max-width: 488px;
 
-    @media screen and (max-width: 480px) {
-        > div {
-            word-spacing: 10em;
-        }
+  @media screen and (max-width: 480px) {
+    > div {
+      word-spacing: 10em;
+    }
+  }
+
+  div[data-boundary] {
+    cursor: pointer;
+    flex-grow: 1;
+    border-right: 1px solid $gray-med;
+    border-left: 1px solid $gray-med;
+    border-collapse: collapse;
+    padding-bottom: 9px;
+    padding-top: 9px;
+
+    a {
+      text-decoration: none;
+      color: $black;
     }
 
-    div[data-boundary] {
-        cursor: pointer;
-        background-color: $gray-light;
-        border-right: 1px solid $gray-med;
-        border-left: 1px solid $gray-med;
-        border-collapse: collapse;
-        padding-bottom: 9px;
-        padding-top: 9px;
-        width: 100%;
-        a {
-          text-decoration: none;
-          color: $black;
-        }
-      &.active {
-          background-color: transparent;
-          color: $black;
-          a {
-              font-family: "AvenirLTPro-Heavy", sans-serif;
-              color: $black;
-          }
-        }
-      &:first-child{
-        border-left: none;
-      }
-      &:last-child{
-        border-right: none;
+    &.active {
+      background-color: white;
+      cursor: default;
+
+      a {
+        font-family: "AvenirLTPro-Heavy", sans-serif;
       }
     }
 
-    div[data-boundary="ushouse"] {
+    &:hover:not(.active) {
+      background-color: $gray-dark;
+
+      a {
+        color: white;
+      }
     }
-    div[data-boundary="statesenate"] {
+
+    &:first-child{
+      border-left: none;
+      border-top-left-radius: 5px;
+      border-bottom-left-radius: 5px;
     }
-    div[data-boundary="statehouse"] {
+
+    &:last-child{
+      border-right: none;
+      border-top-right-radius: 5px;
+      border-bottom-right-radius: 5px;
     }
-    &:before{
-      content: none;
-    }
+
+
+    // &:before{
+    //   content: none;
+    // }
+  }
 }

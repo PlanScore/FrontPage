@@ -2,10 +2,11 @@
 @import '_common/styles/bellcurves';
 @import '_common/styles/boundarypicker';
 @import '_common/styles/seatshare';
+@import '_common/styles/tabbedcontent';
 @import '_common/styles/wastedvotes';
 
 h2:first-child {
-    margin-top: 0;
+  margin-top: 0;
 }
 
 h1.state_name {
@@ -19,9 +20,9 @@ h1.state_name {
   margin-left: 0;
 }
 p.wehavedata {
-    a {
-        text-decoration: none !important;
-    }
+  a {
+    text-decoration: none !important;
+  }
 }
 
 #yearpicker-small {
@@ -32,13 +33,16 @@ p.wehavedata {
     cursor: pointer;
     z-index: 1;
   }
+
   div.nextprev.disabled {
     opacity: 0;
   }
+
   i {  /* the prev and next buttons */
     font-size: 24px;
     cursor: pointer;
   }
+
   div.readout {  /* the year/plan readout */
     text-align: center;
     font-weight: bold;
@@ -47,6 +51,7 @@ p.wehavedata {
     position: absolute; top: 0; left: 0;
     width: 100%;
   }
+
   &.hidden {
       display: none !important;  /* BS's .visible-xs-block and .hidden et al get confused here, and "hidden" won't really hide it unless we make the rule realy specific like this */
   }
@@ -57,6 +62,7 @@ p.wehavedata {
   line-height: 20px;
   /* two halves: the elections side and the plans timeline; both are a series of A elements, these being links to the electionyear/plan
      designer should contrive the height of these items so the two columns align into what look like side-by-side years */
+
   div span {
     display: block;
     margin-right: 9px;
@@ -91,12 +97,14 @@ p.wehavedata {
         color: $black;
       }
     }
+
     a.active {  /* a year link */
       span {  /* a circular swatch inside that year link */
           background-color: $black;
       }
     }
   }
+
   div.plans {
     text-align: right;
     padding-right: 0;
@@ -114,11 +122,13 @@ p.wehavedata {
         margin-right: 11px;
       }
     }
+
     a.plan-begin span {
       border: 2px solid $black;
       border-radius: 50%;
       background-color: white;
     }
+
     a.plan-continue span {
       width: 1px;
       margin-right: 22px;
@@ -131,6 +141,7 @@ p.wehavedata {
       color: white;
       border-width: 4px;
     }
+
     a.plan-continue.active span {
       background-color: $black; /* overridden in redrawYearPicker() */
       width: 4px;
@@ -140,21 +151,27 @@ p.wehavedata {
     a.plan-begin.r-3 span {
       background-color: $biascolor-r3;
     }
+
     a.plan-begin.r-2 span {
       background-color: $biascolor-r2;
     }
+
     a.plan-begin.r-1 span {
       background-color: $biascolor-r1;
     }
+
     a.plan-begin.nobias span {
       background-color: $biascolor-0;
     }
+
     a.plan-begin.d-1 span {
       background-color: $biascolor-d1;
     }
+
     a.plan-begin.d-2 span {
       background-color: $biascolor-d2;
     }
+
     a.plan-begin.d-3 span {
       background-color: $biascolor-d3;
     }
@@ -177,16 +194,16 @@ ul.nav-tabs a span.biasicon {
 }
 
 @media screen and (max-width: $screen-xs) {
-    ul.nav-tabs a span.biasicon {
-        display: block;
-        margin: 0 auto;
-    }
+  ul.nav-tabs a span.biasicon {
+    display: block;
+    margin: 0 auto;
+  }
 }
 
 #map {
-    width: 100%;
-    height: 50vh;
-    min-height: 400px;
+  width: 100%;
+  height: 50vh;
+  min-height: 400px;
 
-    margin-top: 0.25in;
+  margin-top: 0.25in;
 }

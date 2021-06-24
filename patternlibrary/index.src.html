@@ -5,8 +5,8 @@
 
     <!--[include_head]-->
 
-    <!-- PlanScore Website Framework -->    
-    <link href="/sitewide.css" rel="stylesheet" />
+    <!-- PlanScore Website Framework -->
+    <link href="/index.css" rel="stylesheet" />
     <script src="/sitewide.js"></script>
 
     <!-- OG tags -->
@@ -81,21 +81,15 @@
             <h2>Boundary Picker</h2>
             <p>Just set <code>class="active"</code> on whichever geography is live. The static site uses <code>ushouse</code>, <code>statehouse</code>, and when we get data we'll also use <code>statesenate</code> in our code to note which geometry is active.
             <div class="row" id="boundarypicker">
-                <div class="col-xs-4">
-                    <div class="col-xs-12 center active" data-boundary="ushouse" title="Show partisan bias analysis for US House district plans">
-                        <a href="#">US House</a>
-                    </div>
-                </div>
-                <div class="col-xs-4">
-                    <div class="col-xs-12 center" data-boundary="statesenate" title="Show partisan bias analysis for State Senate district plans">
-                        <a href="#">State Senate</a>
-                    </div>
-                </div>
-                <div class="col-xs-4">
-                    <div class="col-xs-12 center" data-boundary="statehouse" title="Show partisan bias analysis for State House district plans">
-                        <a href="#">State House</a>
-                    </div>
-                </div>
+                  <div class="center active" data-boundary="ushouse" title="Show partisan bias analysis for US House district plans">
+                      <a href="#">US House</a>
+                  </div>
+                  <div class="center" data-boundary="statesenate" title="Show partisan bias analysis for State Senate district plans">
+                      <a href="#">State Senate</a>
+                  </div>
+                  <div class="center" data-boundary="statehouse" title="Show partisan bias analysis for State House district plans">
+                      <a href="#">State House</a>
+                  </div>
             </div>
 
             <h2>Tab Block</h2>
@@ -195,25 +189,25 @@
                 </div>
             </div>
 
-     
+
             <h2>Tables</h2>
 
             <h3>Three-column table where all columns are equal</h3>
                 <div class="table-responsive ">
-                    <table class="table table-hover"> 
+                    <table class="table table-hover">
                         <thead>
                             <tr>
                                 <th>Column 1</th>
                                 <th>Column 2</th>
                                 <th>Column 3</th>
-                            </tr> 
-                        </thead> 
-                        <tbody> 
+                            </tr>
+                        </thead>
+                        <tbody>
                             <tr>
                                 <td>Item 1</td>
                                 <td>Item 2</td>
                                 <td>Item 3</td>
-                            </tr> 
+                            </tr>
                             <tr>
                                 <td>Item 1</td>
                                 <td>Item 2</td>
@@ -231,7 +225,7 @@
             <h3>Seven Column matrix where first column is more important</h3>
 
                 <div class="table-responsive col-xs-12 col-sm-12">
-                    <table class="table table-hover"> 
+                    <table class="table table-hover">
                         <thead>
                             <tr>
                                 <th>District</th>
@@ -241,9 +235,9 @@
                                 <th>Metric 4</th>
                                 <th>Metric 5</th>
                                 <th>Metric 6</th>
-                            </tr> 
-                        </thead> 
-                        <tbody> 
+                            </tr>
+                        </thead>
+                        <tbody>
                             <tr>
                                 <th scope="row">##</th>
                                 <td>Item 1</td>
@@ -252,7 +246,7 @@
                                 <td>Item 4</td>
                                 <td>Item 5</td>
                                 <td>Item 6</td>
-                            </tr> 
+                            </tr>
                             <tr>
                                 <th scope="row">##</th>
                                 <td>Item 1</td>
