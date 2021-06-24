@@ -191,38 +191,41 @@ div.footer {
   }
 }
 
-.btn-default {
-  text-shadow: none;
-  color: $gray-med;
-  background-color: #F2F2F2;
+.btn {
+  color: $black;
+  background-color: $gray-light;
+  margin: 16px 14px 16px 0;
+  padding: 12px 20px;
+  // bootstrap overrides
   background-image: none  !important;
   border: none;
-  border-radius: 2px;
-  box-shadow: 2px 2px 2px 1px rgba(0,0,0,.16);
-  margin-right: 4px;
-  outline:0;
+  border-radius: 0;
+  box-shadow: none;
+  text-shadow: none;
+
+  &:hover,
+  &:focus,
+  &:active {
+    color: white;
+    background-color: #gray-dark;
+  }
+
+  &:active {
+    cursor: default;
+  }
 }
 
-.btn-default:hover {
-  color: $gray-med;
-  background-color: #F2F2F2;
-  border-color: none;
-  outline:0;
-}
+.btn-primary {
+  color: white;
+  background-color: $black;
 
-.btn-default:focus {
-  color: #333;
-  background-color: #e6e6e6;
-  background-image: 2px 2px 2px 1px rgba(0,0,0,.16);
-  -webkit-box-shadow: 2px 2px 2px 1px rgba(0,0,0,.16);
-  outline:0;
-}
+  &:hover,
+  &:focus,
+  &:active {
+    color: white;
+    background-color: $blue-clc;
+  }
 
-.btn-default:active {
-  background-image: none  !important;
-  -webkit-box-shadow: none 2px 2px 2px 1px rgba(0,0,0,.16);
-  box-shadow: none  2px 2px 2px 1px rgba(0,0,0,.16);
-  outline:0;
 }
 
 .gray {

@@ -1,4 +1,9 @@
 // this page's HTML template with the [hash] cache-buster
 // no other stylesheets nor code, as we want to actually factually use the sitewide.js and sitewide.css
 // since the point of this page is to show off those styles + functions
+
+require('./index.scss');
 require('./index.src.html');
+
+import { drawBiasBellChart } from "../_common/functions";
+window.drawBiasBellChart = drawBiasBellChart;

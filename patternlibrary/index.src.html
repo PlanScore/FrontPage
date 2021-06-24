@@ -5,9 +5,9 @@
 
     <!--[include_head]-->
 
-    <!-- PlanScore Website Framework -->
-    <link href="/index.css" rel="stylesheet" />
-    <script src="/sitewide.js"></script>
+    <!-- this page's own JS + CSS -->
+    <link href="index.css?[hash]" rel="stylesheet" />
+    <script src="index.js?[hash]"></script>
 
     <!-- OG tags -->
     <meta property="og:title" content="PlanScore" />
@@ -153,13 +153,17 @@
 
 
             <h2>Button Styles</h2>
-
+            <h3>Default</h3>
             <a class="btn btn-default" href="#" role="button">Link</a>
             <button class="btn btn-default" type="submit">Button</button>
             <input class="btn btn-default" type="button" value="Input">
             <input class="btn btn-default" type="submit" value="Submit">
-            <br><br>
 
+            <h3>Primary</h3>
+            <a class="btn btn-primary" href="#" role="button">Link</a>
+            <button class="btn btn-primary" type="submit">Button</button>
+            <input class="btn btn-primary" type="button" value="Input">
+            <input class="btn btn-primary" type="submit" value="Submit">
 
             <h2>Bias Scoring Histograms</h2>
             <p>Create the DIVs with the code below, then use <code>drawBiasBellChart()</code> to fill in their curves and markers. View Source to see actual code.</p>
