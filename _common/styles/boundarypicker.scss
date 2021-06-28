@@ -13,12 +13,6 @@
   margin: auto;
   max-width: 488px;
 
-  @media screen and (max-width: 480px) {
-    > div {
-      word-spacing: 10em;
-    }
-  }
-
   div[data-boundary] {
     cursor: pointer;
     flex-grow: 1;

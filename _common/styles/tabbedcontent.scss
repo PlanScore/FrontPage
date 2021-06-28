@@ -68,19 +68,13 @@
      }
    }
 
-   @media screen and (max-width: $screen-xs) {
+   @media screen and (max-width: $screen-sm) {
      a {
-       font-size: 16px;
+       font-size: 14px;
      }
 
      li a {
-       padding: 5px;
-     }
-   }
-
-   @media screen and (max-width: $screen-xxs) {
-     li a {
-       word-spacing: 10em;
+       padding: 10px;
      }
    }
  }
