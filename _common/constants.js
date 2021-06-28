@@ -209,8 +209,24 @@ export const BELLCURVE_SPREAD = {
     },
 };
 
+// The metricid's passed to drawBiasBellChart don't match the images/*_curve.svg filename pattern exactly.
+export const BELLCURVE_METRIC_TO_FILENAME_SLUG = {
+    'mm': 'mmd',
+    'pb': 'bias',
+    'eg': 'eg',
+};
+
 // Efficiency Gap wasted vote chart; colors
 export const WASTEDVOTE_CHART_WASTED_D = '#0049A8';
 export const WASTEDVOTE_CHART_WASTED_R = '#C71C36';
 export const WASTEDVOTE_CHART_USEFUL_D = '#99b7dc';
 export const WASTEDVOTE_CHART_USEFUL_R = '#e8a4ad';
+
+// What host the sitewite assets are being pulled from
+let current_origin;
+try {
+    current_origin = new URL(document.currentScript.src).origin
+} catch (e) {
+    current_origin = 'https://planscore.org'
+}
+export const STATIC_CONTENT_ORIGIN = current_origin;

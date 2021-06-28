@@ -2,9 +2,7 @@
 // SHARED UTILITY FUNCTIONS
 //
 
-import { BIAS_BALANCED_THRESHOLD } from './constants';
-import { COLOR_GRADIENT } from './constants';
-import { BELLCURVE_SPREAD } from './constants';
+import { BIAS_BALANCED_THRESHOLD, COLOR_GRADIENT, BELLCURVE_SPREAD, BELLCURVE_METRIC_TO_FILENAME_SLUG, STATIC_CONTENT_ORIGIN } from './constants';
 
 
 /*
@@ -49,15 +47,17 @@ export const lookupBias = (whichmetric, score, boundtype) => {
     };
 };
 
-// the bell charts are a bit of a trick: a DIV with CSS to give an image background, then DIVs for the marker line and labels
-// the div.metric-bellchart has additional CSS classes, to use a colorful background-image which looks like a bell curve
+// the bell charts are a bit of a trick. An IMG that's stretched, then DIVs for the marker line and labels
 // see also bellcurves.scss
-export const drawBiasBellChart = (whichone, datavalue, htmldivid, boundtype, planorelection) => {
-    // replace CSS classes to change which curve image is being displayed as the backdrop
+export const drawBiasBellChart = (metricid, datavalue, htmldivid, boundtype, planorelection) => {
     const $div = $(`#${htmldivid}`);
-    $div.removeClass('pb').removeClass('eg').removeClass('mm').addClass(whichone);
-    $div.removeClass('ushouse').removeClass('statehouse').removeClass('statesenate').addClass(boundtype);
-    $div.removeClass('election').removeClass('plan').addClass(planorelection);
+    // Set the img src according to the combo of metricid + plan/election + office.
+    $div.find('img.curve').remove();
+    const curveimg = document.createElement('img');
+    curveimg.className = 'curveimg';
+    console.assert(BELLCURVE_METRIC_TO_FILENAME_SLUG[metricid]);
+    curveimg.src = `${STATIC_CONTENT_ORIGIN}/images/${boundtype}_${BELLCURVE_METRIC_TO_FILENAME_SLUG[metricid]}_${planorelection}_curve.svg`;
+    $div.find('div.curve').prepend(curveimg);
 
     // normalize the value into a range of 0% to 100% within that range, to form an X axis position
     // 0% is the furthest left; 100% furthest right; 50% balanced
@@ -66,10 +66,10 @@ export const drawBiasBellChart = (whichone, datavalue, htmldivid, boundtype, pla
     // so SUBTRACT the bias to shift a positive/democrat bias toward blue left
     const $markline  = $div.find('div.markline');
     const $marklabel = $div.find('div.marklabel');
-    const spread = BELLCURVE_SPREAD[boundtype][whichone];
+    const spread = BELLCURVE_SPREAD[boundtype][metricid];
     let percentile = 0.5 - (0.5 * datavalue / spread);
     percentile = Math.min(Math.max(percentile, 0), 1);
-    // console.log([ `drawBiasBellChart() ${whichone}`, spread, datavalue, percentile ]);
+    // console.log([ `drawBiasBellChart() ${metricid}`, spread, datavalue, percentile ]);
 
     $markline.css({ 'left':`${100 * percentile}%` });
     $marklabel.css({ 'left':`${100 * percentile}%` });
