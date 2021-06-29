@@ -1,235 +1,234 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>PlanScore :: Massachusetts</title>
+  <title>PlanScore :: Massachusetts</title>
 
-    <!--[include_head]-->
+  <!--[include_head]-->
 
-    <!-- Highcharts does charts and also maps -->
-    <script src="https://code.highcharts.com/highcharts.js"></script>
+  <!-- Highcharts does charts and also maps -->
+  <script src="https://code.highcharts.com/highcharts.js"></script>
 
-    <!-- PapaParse CSV reader -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.3.6/papaparse.min.js"></script>
+  <!-- PapaParse CSV reader -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.3.6/papaparse.min.js"></script>
 
-    <!-- Leaflet for the map -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+  <!-- Leaflet for the map -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
 
-    <!-- local config -->
-    <script>
-    var SELECTED_STATE = 'Massachusetts';
-    </script>
-    <link href="index.css?[hash]" rel="stylesheet" />
-    <script src="index.js?[hash]"></script>
+  <!-- local config -->
+  <script>
+  var SELECTED_STATE = 'Massachusetts';
+  </script>
+  <link href="index.css?[hash]" rel="stylesheet" />
+  <script src="index.js?[hash]"></script>
 
-    <!-- OG tags -->
-    <meta property="og:title" content="PlanScore: Massachusetts" />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://planscore.org/massachusetts" />
-    <meta property="og:image" content="https://planscore.org/images/OG-massachusetts-01.jpg" />
-    <meta property="og:description" content="PlanScore is a first-of-its-kind gerrymandering scoring service for new district plans, allowing users to upload maps and instantly receive projected data about their partisan consequences. You can also use historical data to discover how partisan advantage has influenced redistricting in Massachusetts." />
+  <!-- OG tags -->
+  <meta property="og:title" content="PlanScore: Massachusetts" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://planscore.org/massachusetts" />
+  <meta property="og:image" content="https://planscore.org/images/OG-massachusetts-01.jpg" />
+  <meta property="og:description" content="PlanScore is a first-of-its-kind gerrymandering scoring service for new district plans, allowing users to upload maps and instantly receive projected data about their partisan consequences. You can also use historical data to discover how partisan advantage has influenced redistricting in Massachusetts." />
 
-    <!-- Twitter tags note that per https://developer.twitter.com/en/docs/tweets/optimize-with-cards/guides/getting-started, we need only use the card metas that differ from OG -->
-    <meta name="twitter:card" content="summary_large_image">    <meta name="twitter:card" content="summary" />
-    <meta name="twitter:site" content="@PlanScore" />
+  <!-- Twitter tags note that per https://developer.twitter.com/en/docs/tweets/optimize-with-cards/guides/getting-started, we need only use the card metas that differ from OG -->
+  <meta name="twitter:card" content="summary_large_image">    <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@PlanScore" />
 </head>
 <body>
 
-    <!--[include_navbar]-->
+  <!--[include_navbar]-->
 
-    <div class="container container-mainbody">
-        <div class="row">
-            <div class="col-xs-12 col-sm-3" id="sidebar">
-                <h1 class="state_name">Massachusetts</h1>
-
-                <span data-hasdata-atall="true">
-                    <!-- mobile yearpicker -->
-                    <div class="visible-xs-block" id="yearpicker-small">
-                        <div data-picker="plan" class="row">
-                            <div class="col-xs-6 left nextprev" title="Previous districting plan"><i class="glyphicon glyphicon-chevron-left"></i></div>
-                            <div class="col-xs-6 right nextprev" title="Next districting plan"><i class="glyphicon glyphicon-chevron-right"></i></div>
-                            <div class="readout"></div>
-                        </div>
-                        <div data-picker="election" class="row">
-                            <div class="col-xs-6 left nextprev" title="Previous election year"><i class="glyphicon glyphicon-chevron-left"></i></div>
-                            <div class="col-xs-6 right nextprev" title="Next election year"><i class="glyphicon glyphicon-chevron-right"></i></div>
-                            <div class="readout"></div>
-                        </div>
-                    </div>
-
-                    <!-- this note comes below the yearpicker on mobile, and above the yearpicker on desktop -->
-                    <p class="wehavedata">We have <a href="/about/historical-data/">data about <span data-metric="plancount" class="bold">0</span> plans, covering <span data-metric="electioncount" class="bold">0</span> elections</a>.</p>
-
-                    <!-- desktop yearpicker -->
-                    <div class="hidden-xs row" id="yearpicker-big">
-                        <div class="plans col-xs-5"></div>
-                        <div class="elections col-xs-7"></div>
-                    </div>
-
-                    <div class="gray hidden-xs" style="clear: both;">
-                        <p>New Plans</p>
-                        <span>Drawing your own district map of Massachusetts? Upload it here to find out how well it scores on these and other metrics.</span>
-                        <a class="btn btn-primary" href="https://planscore.org/upload.html">Upload Plan</a>
-                    </div>
-                </span>
-                <span data-hasdata-atall="false">
-                    <!-- message here in sidebar, if no data available for this whole district type -->
-                </span>
+  <div class="container container-mainbody">
+    <div class="row">
+      <div class="col-xs-12 col-sm-3" id="sidebar">
+        <h1 class="state_name">Massachusetts</h1>
+        <span data-hasdata-atall="true">
+          <!-- mobile yearpicker -->
+          <div class="visible-xs-block" id="yearpicker-small">
+            <div data-picker="plan" class="row">
+              <div class="col-xs-6 left nextprev" title="Previous districting plan"><i class="glyphicon glyphicon-chevron-left"></i></div>
+              <div class="col-xs-6 right nextprev" title="Next districting plan"><i class="glyphicon glyphicon-chevron-right"></i></div>
+              <div class="readout"></div>
             </div>
-            <div class="col-xs-12 col-sm-9" id="maincontent">
-                <!--
-                be robust against a year+district that has no data
-                the appropriate '#maincontent span[data-hasdata-atall]' will be shown when loadDataForSelectedBoundaryAndYear() finds data... or does not
-                -->
-                <span data-hasdata-atall="true">
-                    <h2 class="hidden-xs" style="margin-bottom: 20px;"><span data-field="title"></span></h2>
-                </span>
-
-                <div id="boundarypicker">
-                  <div class="center" data-boundary="ushouse" title="Show partisan bias analysis for US House district plans">
-                      <a href="javascript:void(0);">U.S. House</a>
-                  </div>
-                  <div class="center" data-boundary="statesenate" title="Show partisan bias analysis for State Senate district plans">
-                      <a href="javascript:void(0);">State Senates</a>
-                  </div>
-                  <div class="center" data-boundary="statehouse" title="Show partisan bias analysis for State House district plans">
-                      <a href="javascript:void(0);">State Houses</a>
-                  </div>
-                </div>
-
-                <br/>
-
-                <span data-hasdata-atall="true" data-hasdata-thisyear="true">
-                    <p><span data-metric="biasstatementhowmanymetrics"></span> <span data-metric="biasstatementconclusion"></span></p>
-
-                    <ul class="nav nav-tabs" id="tabs-metrics">
-                        <li class="active"><a href="#tab-efficiencygap" data-metric="eg" data-toggle="tab">Efficiency Gap <span class="biasicon"></span></a></li>
-                        <li><a href="#tab-partisanbias" data-metric="pb" data-toggle="tab">Partisan Bias <span class="biasicon"></span></a></li>
-                        <li><a href="#tab-meanmedian" data-metric="mm" data-toggle="tab">Mean-<span class="mobilespace"> </span>Median <span class="biasicon"></span></a></li>
-                    </ul>
-                    <div class="tab-content">
-                        <div class="tab-pane fade in active" id="tab-efficiencygap">
-                            <span data-have-metric="true"><!-- we may or may not have calculated this metric -->
-                                <div class="metricdrsum"><span data-field="metricdrsum"></span></div>
-                                <div class="metricdrblurb">
-                                    <span data-field="metricstatement"></span>
-                                </div>
-                                <br style="clear: both;" />
-                                <br/>
-                                <div class="row">
-                                    <div class="col-xs-12 col-md-6">
-                                        <h2>How Does This Plan Compare?</h2>
-                                        <p class="big"><span data-field="biasstatement"></span></p>
-                                        <div class="metric-bellchart" id="metric-bellchart-eg">
-                                            <div class="curve"><div class="marklabel">This Plan</div><div class="markline"></div></div>
-                                            <div class="row metric-bellchart-legend">
-                                                <div class="col-xs-4 left">+<span data-field="metric-bellchart-spread"></span>% D</div>
-                                                <div class="col-xs-4 center">Balanced</div>
-                                                <div class="col-xs-4 right">+<span data-field="metric-bellchart-spread"></span>% R</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-xs-12 col-md-6">
-                                        <p>The efficiency gap is the difference between the parties’ respective wasted votes in an election divided by the total number of votes cast. <a href="/metrics/efficiencygap/">Learn more about the Efficiency Gap <i class="glyphicon glyphicon-chevron-right" style="font-size:0.8em;"></i></a></p>
-
-                                        <div id="chart-egvoteswasted"></div>
-                                    </div>
-                                </div>
-                            </span>
-                            <span data-have-metric="false"><!-- we may or may not have calculated this metric -->
-                                <br/>
-                                <h2>This metric was not calculated for this districting plan.</h2><!-- actual words are replaced in code, to substitute state name, year, etc. -->
-                            </span>
-                        </div>
-                        <div class="tab-pane fade" id="tab-partisanbias">
-                            <span data-have-metric="true"><!-- we may or may not have calculated this metric -->
-                                <div class="metricdrsum"><span data-field="metricdrsum"></span></div>
-                                <div class="metricdrblurb">
-                                    <span data-field="metricstatement" class="big"></span>
-                                </div>
-                                <br style="clear: both;" />
-                                <br/>
-                                <div class="row">
-                                    <div class="col-xs-12 col-sm-6">
-                                        <h2>How Does This Plan Compare?</h2>
-                                        <p class="big"><span data-field="biasstatement"></span></p>
-                                        <div class="metric-bellchart" id="metric-bellchart-pb">
-                                            <div class="curve"><div class="marklabel">This Plan</div><div class="markline"></div></div>
-                                            <div class="row metric-bellchart-legend">
-                                                <div class="col-xs-4 left">+<span data-field="metric-bellchart-spread"></span>% D</div>
-                                                <div class="col-xs-4 center">Balanced</div>
-                                                <div class="col-xs-4 right">+<span data-field="metric-bellchart-spread"></span>% R</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-xs-12 col-sm-6">
-                                        <p>Partisan bias is the difference between each party’s seat share and 50% in a hypothetical, perfectly tied election. <a href="/metrics/partisanbias/">Learn more about Partisan Bias <i class="glyphicon glyphicon-chevron-right" style="font-size:0.8em;"></i></a></p>
-
-                                        <div id="chart-pbseatshare"></div>
-                                    </div>
-                                </div>
-                            </span>
-                            <span data-have-metric="false"><!-- we may or may not have calculated this metric -->
-                                <br/>
-                                <h2>This metric was not calculated for this districting plan.</h2><!-- actual words are replaced in code, to substitute state name, year, etc. -->
-                            </span>
-                        </div>
-                        <div class="tab-pane fade" id="tab-meanmedian">
-                            <span data-have-metric="true"><!-- we may or may not have calculated this metric -->
-                                <div class="metricdrsum"><span data-field="metricdrsum"></span></div>
-                                <div class="metricdrblurb">
-                                    <span data-field="metricstatement" class="big"></span>
-                                </div>
-                                <br style="clear: both;" />
-                                <br/>
-                                <div class="row">
-                                    <div class="col-xs-12 col-sm-6">
-                                        <h2>How Does This Plan Compare?</h2>
-                                        <p class="big"><span data-field="biasstatement"></span></p>
-                                        <div class="metric-bellchart" id="metric-bellchart-mm">
-                                            <div class="curve"><div class="marklabel">This Plan</div><div class="markline"></div></div>
-                                            <div class="row metric-bellchart-legend">
-                                                <div class="col-xs-4 left">+<span data-field="metric-bellchart-spread"></span>% D</div>
-                                                <div class="col-xs-4 center">Balanced</div>
-                                                <div class="col-xs-4 right">+<span data-field="metric-bellchart-spread"></span>% R</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-xs-12 col-sm-6">
-                                        <p>The mean-median difference is a party’s median vote share minus its mean vote share, across all of a plan’s districts. <a href="/metrics/meanmedian/">Learn more about Mean-Median <i class="glyphicon glyphicon-chevron-right" style="font-size:0.8em;"></i></a></p>
-                                    </div>
-                                </div>
-                            </span>
-                            <span data-have-metric="false"><!-- we may or may not have calculated this metric -->
-                                <br/>
-                                <h2>This metric was not calculated for this districting plan.</h2><!-- actual words are replaced in code, to substitute state name, year, etc. -->
-                            </span>
-                        </div>
-                    </div>
-                </span>
-
-                <!-- the map of election outcomes / plan winners -->
-                <span data-hasdata-atall="true" data-hasdata-thisyear="true">
-                    <div id="map"></div>
-                </span>
-
-
-                <!-- the NO DATA messages -->
-                <span data-hasdata-atall="false">
-                    <p>No plan data are available for the selected district type.</p>
-                    <p>Try a different district type.</p>
-                </span>
-                <span data-hasdata-atall="true" data-hasdata-thisyear="false">
-                    <p>No plan data are available for the selected year for this district type.</p>
-                    <p>The closest we have to the year you asked for is <a href="javascript:void(0);" data-year="" onClick="selectElectionOrPlan(this.getAttribute('data-year'));"><span data-field="closestyear">YYYY</span></a>.</p>
-                </span>
+            <div data-picker="election" class="row">
+              <div class="col-xs-6 left nextprev" title="Previous election year"><i class="glyphicon glyphicon-chevron-left"></i></div>
+              <div class="col-xs-6 right nextprev" title="Next election year"><i class="glyphicon glyphicon-chevron-right"></i></div>
+              <div class="readout"></div>
             </div>
+          </div>
+
+          <!-- this note comes below the yearpicker on mobile, and above the yearpicker on desktop -->
+          <p class="wehavedata">We have <a href="/about/historical-data/">data about <span data-metric="plancount" class="bold">0</span> plans, covering <span data-metric="electioncount" class="bold">0</span> elections</a>.</p>
+
+          <!-- desktop yearpicker -->
+          <div class="hidden-xs row" id="yearpicker-big">
+            <div class="plans col-xs-5"></div>
+            <div class="elections col-xs-7"></div>
+          </div>
+
+          <div class="gray hidden-xs" style="clear: both;">
+            <p>New Plans</p>
+            <span>Drawing your own district map of Massachusetts? Upload it here to find out how well it scores on these and other metrics.</span>
+            <a class="btn btn-primary" href="https://planscore.org/upload.html">Upload Plan</a>
+          </div>
+        </span>
+        <span data-hasdata-atall="false">
+          <!-- message here in sidebar, if no data available for this whole district type -->
+        </span>
+      </div>
+      <div class="col-xs-12 col-sm-9" id="maincontent">
+        <!--
+        be robust against a year+district that has no data
+        the appropriate '#maincontent span[data-hasdata-atall]' will be shown when loadDataForSelectedBoundaryAndYear() finds data... or does not
+        -->
+        <span data-hasdata-atall="true">
+          <h2 class="hidden-xs" style="margin-bottom: 20px;"><span data-field="title"></span></h2>
+        </span>
+
+        <div id="boundarypicker">
+          <div class="center" data-boundary="ushouse" title="Show partisan bias analysis for US House district plans">
+            <a href="javascript:void(0);">U.S. House</a>
+          </div>
+          <div class="center" data-boundary="statesenate" title="Show partisan bias analysis for State Senate district plans">
+            <a href="javascript:void(0);">State Senates</a>
+          </div>
+          <div class="center" data-boundary="statehouse" title="Show partisan bias analysis for State House district plans">
+            <a href="javascript:void(0);">State Houses</a>
+          </div>
         </div>
 
-    </div><!--/container-mainbody-->
+        <br/>
 
-    <!--[include_footer]-->
+        <span data-hasdata-atall="true" data-hasdata-thisyear="true">
+          <p><span data-metric="biasstatementhowmanymetrics"></span> <span data-metric="biasstatementconclusion"></span></p>
+
+          <ul class="nav nav-tabs" id="tabs-metrics">
+            <li class="active"><a href="#tab-efficiencygap" data-metric="eg" data-toggle="tab">Efficiency Gap <span class="biasicon"></span></a></li>
+            <li><a href="#tab-partisanbias" data-metric="pb" data-toggle="tab">Partisan Bias <span class="biasicon"></span></a></li>
+            <li><a href="#tab-meanmedian" data-metric="mm" data-toggle="tab">Mean-<span class="mobilespace"> </span>Median <span class="biasicon"></span></a></li>
+          </ul>
+          <div class="tab-content">
+            <div class="tab-pane fade in active" id="tab-efficiencygap">
+              <span data-have-metric="true"><!-- we may or may not have calculated this metric -->
+                <div class="metricdrsum"><span data-field="metricdrsum"></span></div>
+                <div class="metricdrblurb">
+                  <span data-field="metricstatement"></span>
+                </div>
+                <br style="clear: both;" />
+                <br/>
+                <div class="row">
+                  <div class="col-xs-12 col-md-6">
+                    <h2>How Does This Plan Compare?</h2>
+                    <p class="big"><span data-field="biasstatement"></span></p>
+                    <div class="metric-bellchart" id="metric-bellchart-eg">
+                      <div class="curve"><div class="marklabel">This Plan</div><div class="markline"></div></div>
+                      <div class="row metric-bellchart-legend">
+                        <div class="col-xs-4 left">+<span data-field="metric-bellchart-spread"></span>% D</div>
+                        <div class="col-xs-4 center">Balanced</div>
+                        <div class="col-xs-4 right">+<span data-field="metric-bellchart-spread"></span>% R</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-xs-12 col-md-6">
+                    <p>The efficiency gap is the difference between the parties’ respective wasted votes in an election divided by the total number of votes cast. <a href="/metrics/efficiencygap/">Learn more about the Efficiency Gap <i class="glyphicon glyphicon-chevron-right" style="font-size:0.8em;"></i></a></p>
+
+                    <div id="chart-egvoteswasted"></div>
+                  </div>
+                </div>
+              </span>
+              <span data-have-metric="false"><!-- we may or may not have calculated this metric -->
+                <br/>
+                <h2>This metric was not calculated for this districting plan.</h2><!-- actual words are replaced in code, to substitute state name, year, etc. -->
+              </span>
+            </div>
+            <div class="tab-pane fade" id="tab-partisanbias">
+              <span data-have-metric="true"><!-- we may or may not have calculated this metric -->
+                <div class="metricdrsum"><span data-field="metricdrsum"></span></div>
+                <div class="metricdrblurb">
+                  <span data-field="metricstatement" class="big"></span>
+                </div>
+                <br style="clear: both;" />
+                <br/>
+                <div class="row">
+                  <div class="col-xs-12 col-sm-6">
+                    <h2>How Does This Plan Compare?</h2>
+                    <p class="big"><span data-field="biasstatement"></span></p>
+                    <div class="metric-bellchart" id="metric-bellchart-pb">
+                      <div class="curve"><div class="marklabel">This Plan</div><div class="markline"></div></div>
+                      <div class="row metric-bellchart-legend">
+                        <div class="col-xs-4 left">+<span data-field="metric-bellchart-spread"></span>% D</div>
+                        <div class="col-xs-4 center">Balanced</div>
+                        <div class="col-xs-4 right">+<span data-field="metric-bellchart-spread"></span>% R</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-xs-12 col-sm-6">
+                    <p>Partisan bias is the difference between each party’s seat share and 50% in a hypothetical, perfectly tied election. <a href="/metrics/partisanbias/">Learn more about Partisan Bias <i class="glyphicon glyphicon-chevron-right" style="font-size:0.8em;"></i></a></p>
+
+                    <div id="chart-pbseatshare"></div>
+                  </div>
+                </div>
+              </span>
+              <span data-have-metric="false"><!-- we may or may not have calculated this metric -->
+                <br/>
+                <h2>This metric was not calculated for this districting plan.</h2><!-- actual words are replaced in code, to substitute state name, year, etc. -->
+              </span>
+            </div>
+            <div class="tab-pane fade" id="tab-meanmedian">
+              <span data-have-metric="true"><!-- we may or may not have calculated this metric -->
+                <div class="metricdrsum"><span data-field="metricdrsum"></span></div>
+                <div class="metricdrblurb">
+                  <span data-field="metricstatement" class="big"></span>
+                </div>
+                <br style="clear: both;" />
+                <br/>
+                <div class="row">
+                  <div class="col-xs-12 col-sm-6">
+                    <h2>How Does This Plan Compare?</h2>
+                    <p class="big"><span data-field="biasstatement"></span></p>
+                    <div class="metric-bellchart" id="metric-bellchart-mm">
+                      <div class="curve"><div class="marklabel">This Plan</div><div class="markline"></div></div>
+                      <div class="row metric-bellchart-legend">
+                        <div class="col-xs-4 left">+<span data-field="metric-bellchart-spread"></span>% D</div>
+                        <div class="col-xs-4 center">Balanced</div>
+                        <div class="col-xs-4 right">+<span data-field="metric-bellchart-spread"></span>% R</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-xs-12 col-sm-6">
+                    <p>The mean-median difference is a party’s median vote share minus its mean vote share, across all of a plan’s districts. <a href="/metrics/meanmedian/">Learn more about Mean-Median <i class="glyphicon glyphicon-chevron-right" style="font-size:0.8em;"></i></a></p>
+                  </div>
+                </div>
+              </span>
+              <span data-have-metric="false"><!-- we may or may not have calculated this metric -->
+                <br/>
+                <h2>This metric was not calculated for this districting plan.</h2><!-- actual words are replaced in code, to substitute state name, year, etc. -->
+              </span>
+            </div>
+          </div>
+        </span>
+
+        <!-- the map of election outcomes / plan winners -->
+        <span data-hasdata-atall="true" data-hasdata-thisyear="true">
+          <div id="map"></div>
+        </span>
+
+
+        <!-- the NO DATA messages -->
+        <span data-hasdata-atall="false">
+          <p>No plan data are available for the selected district type.</p>
+          <p>Try a different district type.</p>
+        </span>
+        <span data-hasdata-atall="true" data-hasdata-thisyear="false">
+          <p>No plan data are available for the selected year for this district type.</p>
+          <p>The closest we have to the year you asked for is <a href="javascript:void(0);" data-year="" onClick="selectElectionOrPlan(this.getAttribute('data-year'));"><span data-field="closestyear">YYYY</span></a>.</p>
+        </span>
+      </div>
+    </div>
+
+  </div><!--/container-mainbody-->
+
+  <!--[include_footer]-->
 
 </body>
 </html>

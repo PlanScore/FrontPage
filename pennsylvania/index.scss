@@ -9,20 +9,43 @@ h2:first-child {
   margin-top: 0;
 }
 
+#sidebar {
+
+  @media (max-width: $screen-sm) {
+    background-color: $gray-light;
+    margin-bottom: 24px;
+
+    .wehavedata{
+      text-align: center;
+    }
+
+    .glyphicon {
+      color: $blue-link;
+    }
+  }
+}
+
 h1.state_name {
   background-color: $gray-light;
   color: $black;
   font-size: 28px;
   line-height: 36px;
-  padding: 12px 40px 8px 16px;}
+  padding: 12px 40px 8px 16px;
+
+  @media (max-width: $screen-sm) {
+    text-align: center;
+  }
+}
 
 #boundarypicker {
   margin-left: 0;
-}
-p.wehavedata {
-  a {
-    text-decoration: none !important;
+
+  @media (max-width: $screen-sm) {
+    margin: auto;
   }
+}
+p.wehavedata a {
+  text-decoration: none !important;
 }
 
 #yearpicker-small {
@@ -84,23 +107,32 @@ p.wehavedata {
       color: $black;
       text-decoration: none !important;
 
-      span {  /* a circular swatch inside that year link */
-        display: inline-block;
-        height: 10px;
-        width: 10px;
-        border: 2px solid $black;
-        border-radius: 50%;
-
-        margin-right: 5px;
-
-        background-color: white;
-        color: $black;
+      &:hover .year{
+        background-color: $gray-light;
       }
-    }
 
-    a.active {  /* a year link */
-      span {  /* a circular swatch inside that year link */
-          background-color: $black;
+      span {
+        display: inline-block;
+
+        &.swatch {  /* a circular swatch inside that year link */
+          height: 10px;
+          width: 10px;
+          border: 2px solid $black;
+          border-radius: 50%;
+
+          margin-right: 5px;
+
+          background-color: white;
+          color: $black;
+        }
+
+        &.year {
+          padding: 4px 6px 0;
+        }
+      }
+
+      &.active .swatch {
+        background-color: $black;  
       }
     }
   }
@@ -191,10 +223,8 @@ ul.nav-tabs a span.biasicon {
   color: white;
 
   text-transform: uppercase;
-}
 
-@media screen and (max-width: $screen-xs) {
-  ul.nav-tabs a span.biasicon {
+  @media screen and (max-width: $screen-xs) {
     display: block;
     margin: 0 auto;
   }
