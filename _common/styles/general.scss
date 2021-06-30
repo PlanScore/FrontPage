@@ -311,9 +311,15 @@ div.metric-block {
 
 }
 
-div.left-photo img {
-  width: 100%;
-  margin-top: 25px;
+div.left-photo {
+  @media (max-width: $screen-sm){
+    text-align: center;
+  }
+  img {
+    width: 100%;
+    max-width: 300px;
+    margin-top: 25px;
+  }
 }
 
 div.right-text {
