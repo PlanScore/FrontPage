@@ -173,11 +173,12 @@ td:nth-child(1){
 div.footer {
   background-color: $gray-lighter;
   font-size: 14px;
+  text-align: center;
   padding: 36px 0;
 
   img {
-    height: auto;
-    width: 2em;
+    max-width: 120px;
+    margin-bottom: 24px;
   }
 
   a {
@@ -186,6 +187,28 @@ div.footer {
     white-space:nowrap; /* prevent a single link (logo+words) from wrapping internally */
     margin-right: 10px;
     line-height: 44px;
+  }
+
+  .links {
+    background-color: $gray-light;
+    padding: 20px 102px 0;
+    display: flex;
+    align-items: center;
+
+
+    img {
+      height: auto;
+      width: 2em;
+    }
+
+    .legal {
+      flex-basis: 100%;
+      align-self: flex-start;
+      text-align: left;
+      @media (min-width: $screen-sm){
+        order: -1;
+      }
+    }
   }
 }
 
