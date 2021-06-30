@@ -175,7 +175,6 @@ td:nth-child(1){
 
 div.footer {
   background-color: $gray-lighter;
-  font-size: 14px;
   text-align: center;
   padding: 36px 0 0;
 
@@ -193,11 +192,15 @@ div.footer {
 
     img {
       height: auto;
-      width: 2em;
+      width: 32px;
       margin: 0 20px 24px;
+      @media (min-width: $screen-sm) {
+        margin-bottom: 0;
+      }
     }
 
     .legal {
+      font-size: 14px;
       flex-basis: 100%;
       flex-grow: 1;
       width: 100%;
@@ -205,7 +208,6 @@ div.footer {
 
       @media (min-width: $screen-sm) {
         flex-grow: 0;
-        flex-wrap: nowrap;
         order: -1;
         text-align: left;
       }
