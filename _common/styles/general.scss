@@ -9,7 +9,10 @@ html, body {
 }
 
 html {
-  background-color: $gray-lighter;
+  background-color: $gray-light;
+  @media (max-width: $screen-sm){
+    background-color: $gray-lighter;
+  }
 }
 
 
@@ -174,27 +177,30 @@ div.footer {
   background-color: $gray-lighter;
   font-size: 14px;
   text-align: center;
-  padding: 36px 0;
+  padding: 36px 0 0;
+
+  p {
+    padding: 0 12px;
+  }
 
   img {
     max-width: 120px;
     margin-bottom: 24px;
   }
 
-  a {
-    font-size: 14px;
-    text-decoration: none;
-    white-space:nowrap; /* prevent a single link (logo+words) from wrapping internally */
-    margin-right: 10px;
-    line-height: 44px;
-  }
-
   .links {
-    background-color: $gray-light;
-    padding: 20px 102px 0;
     display: flex;
     align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 12px;
 
+    a {
+      font-size: 14px;
+      text-decoration: none;
+      white-space:nowrap; /* prevent a single link (logo+words) from wrapping internally */
+      margin: 0 20px;
+    }
 
     img {
       height: auto;
@@ -203,11 +209,23 @@ div.footer {
 
     .legal {
       flex-basis: 100%;
+      flex-grow: 1;
+      width: 100%;
       align-self: flex-start;
-      text-align: left;
-      @media (min-width: $screen-sm){
+
+      @media (min-width: $screen-sm) {
+        flex-grow: 0;
+        flex-wrap: nowrap;
         order: -1;
+        text-align: left;
+
       }
+    }
+
+    @media (min-width: $screen-sm) {
+      background-color: $gray-light;
+      flex-wrap: nowrap;
+      padding: 20px 62px 0;
     }
   }
 }
