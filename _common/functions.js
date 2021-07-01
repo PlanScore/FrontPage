@@ -52,7 +52,7 @@ export const lookupBias = (whichmetric, score, boundtype) => {
 export const drawBiasBellChart = (metricid, datavalue, htmldivid, boundtype, planorelection) => {
     const $div = $(`#${htmldivid}`);
     // Set the img src according to the combo of metricid + plan/election + office.
-    $div.find('img.curve').remove();
+    $div.find('img.curveimg').remove();
     const curveimg = document.createElement('img');
     curveimg.className = 'curveimg';
     console.assert(BELLCURVE_METRIC_TO_FILENAME_SLUG[metricid]);
