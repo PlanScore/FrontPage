@@ -14,6 +14,12 @@
   }
 }
 
+h1.title {
+  @media (max-width: $screen-sm) {
+    font-size: 36px;
+  }
+}
+
 h2,
 h3,
 .nav-tabs {
@@ -25,63 +31,85 @@ h3,
   font-size: 12px;
   grid-template-areas:
     "d3 d2 d1 balanced r1 r2 r3 . nodata"
-    "demtext demtext demtext . reptext reptext reptext nodatatext nodatatext";
-  grid-template-columns: repeat(9, 40px);
+    "demtext demtext demtext reptext reptext reptext reptext nodatatext nodatatext";
+  grid-template-columns: repeat(9, minmax(30px, 40px));
   grid-template-rows: 20px auto;
   margin: auto;
-  max-width: 400px;
+  max-width: 360px;
 
   .d3 {
     grid-area: d3;
     background-color: $biascolor-d3;
   }
+
   .d2 {
     grid-area: d2;
     background-color: $biascolor-d2;
   }
+
   .d1 {
     grid-area: d1;
     background-color: $biascolor-d1;
   }
+
   .balanced {
     grid-area: balanced;
     background-color: $biascolor-0;
   }
+
   .r1 {
     grid-area: r1;
     background-color: $biascolor-r1;
   }
+
   .r2 {
     grid-area: r2;
     background-color: $biascolor-r2;
   }
+
   .r3 {
     grid-area: r3;
     background-color: $biascolor-r3;
   }
+
   .nodata {
     grid-area: nodata;
     background-color: $biascolor-r3;
     background-color: white;
     border: 1px solid $gray-med;
   }
-  .demtext { grid-area: demtext;}
+
+  .demtext {
+    grid-area: demtext;
+  }
+
   .reptext {
     grid-area: reptext;
     justify-self: end;
   }
+
   .nodatatext {
     grid-area: nodatatext;
     justify-self: end;
+  }
+
+  @media (max-width: $screen-xs) {
+    max-width: 324px;
+  }
+
+  @media (max-width: $screen-xxs) {
+    max-width: 280px;
   }
 }
 
 #map {
   height: 400px;
   width: 100%;
+
   @media screen and (max-width: $screen-sm) {
     max-height: 66vw; /* phone screens, try not to have extra space at top+bottom */
   }
+
   path.highcharts-key-us-dc {
     display: none;  /* https://github.com/PlanScore/PlanScore/issues/78 adds small-states legend, this hides DC which we don't have */
   }
@@ -98,6 +126,7 @@ h3,
     line-height: 67px;
     width: 50px;  /* we want responsive row, but to force width; see also #yearpicker-big width */
     top: 7px;
+
     a {
       font-size: 30px;
       text-decoration: none;
@@ -110,9 +139,7 @@ h3,
     height: 35px;
     top: 3px;
     z-index: 1;
-
     padding-left: 0; /* in a row, but here we want the left and right sides as close as feasible */
-
     width: calc(100% - 50px);  /* we want responsive row, but to force width; see also #yearpicker-big-playbutton width */
 
     div {  /* structure is a series of rectangular DIVs, each one containing a A for the visible circle */
@@ -142,10 +169,10 @@ h3,
       }
 
       span.yearlabel {  /* year labels */
-          display: block;
-          color: $black;
-          font-size: 16px;
-          margin-top: 2px;
+        display: block;
+        color: $black;
+        font-size: 16px;
+        margin-top: 2px;
       }
 
       span.currentyear {
@@ -155,35 +182,28 @@ h3,
         height: 17px;  /* contrived to fit font size */
         background-color: $black;
         color: white;
-
         border-radius: 3px;
-
         text-align: center;
-
         opacity: 0;  /* see div.active subclass below */
       }
+
       span.currentyearline {
         background-color: $black;
         display: inline-block;
         height: 20px;
         width: 2px;
-
         position: absolute;
         left: 50%;
         top: 10px;
         margin-left: -1px; /* half of width */
-
         z-index: -1;
-
         opacity: 0;  /* see div.active subclass below */
       }
     }
 
-    div.decplan {  /* larger dots for decennial plans */
-      a {
-          width: 20px;
-          height: 20px;
-      }
+    div.decplan a { /* larger dots for decennial plans */
+      width: 20px;
+      height: 20px;
     }
 
     div.active {  /* the currently-selected year */
@@ -194,6 +214,7 @@ h3,
         opacity: 1; /* show/hide for visibility, breaks spacing since we expect these labels to occupy space even when not visible */
       }
     }
+
     &:after {
       content: "";
       border-top: solid 1px $black;
@@ -213,20 +234,25 @@ h3,
   div.nextprev {
     cursor: pointer;
     z-index: 1;
+
+    &.disabled {
+      opacity: 0;
+    }
   }
-  div.nextprev.disabled {
-    opacity: 0;
-  }
+
   div.right {
     padding-right: 0;
   }
+
   div.left {
     padding-left: 0;
   }
+
   i {  /* the prev and next buttons */
     font-size: 24px;
     cursor: pointer;
   }
+
   div.readout {  /* the year/plan readout */
     text-align: center;
     font-weight: bold;
@@ -238,7 +264,10 @@ h3,
 
 .states-listing {
   div {  /* any of the "columns" */
-      white-space: nowrap;
+    white-space: nowrap;
+    @media (max-width: $screen-xs){
+      padding-left: 6px;
+    }
   }
 
   a {  /* any of the "rows" */
@@ -247,7 +276,13 @@ h3,
     font-size: 18px;
     text-decoration: none;
     padding: 3px 3px 0px 5px;
+
+    @media (max-width: $screen-xxs){
+      font-size: 15px;
+      padding: 0;
+    }
   }
+
   a:hover {
     background-color: $gray-light;
   }
