@@ -254,10 +254,16 @@ div.footer {
     flex-wrap: wrap;
     padding: 20px 62px 24px;
 
-    img {
+    svg {
       height: auto;
       width: 32px;
       margin: 0 20px 24px;
+      fill: $black;
+
+      &:hover {
+        fill: $blue-clc;
+      }
+
       @media (min-width: $screen-sm) {
         margin-bottom: 0;
       }
@@ -268,7 +274,6 @@ div.footer {
       flex-basis: 100%;
       flex-grow: 1;
       width: 100%;
-      align-self: flex-start;
 
       @media (min-width: $screen-sm) {
         flex-grow: 0;

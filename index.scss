@@ -92,112 +92,118 @@ h3,
   line-height: 20px;
   margin-bottom: 36px;
   margin-top: 36px;
-}
 
-#yearpicker-big-playbutton {
-  padding-right: 0; /* in a row, but here we want the left and right sides as close as feasible */
-  line-height: 67px;
-  width: 50px;  /* we want responsive row, but to force width; see also #yearpicker-big width */
-  top: 7px;
-  a {
-    font-size: 30px;
-    text-decoration: none;
-    color: $black;
-  }
-}
-
-#yearpicker-big {
-  position: relative;
-  height: 35px;
-  top: 3px;
-  z-index: 1;
-
-  padding-left: 0; /* in a row, but here we want the left and right sides as close as feasible */
-
-  width: calc(100% - 50px);  /* we want responsive row, but to force width; see also #yearpicker-big-playbutton width */
-
-  div {  /* structure is a series of rectangular DIVs, each one containing a A for the visible circle */
-    cursor: pointer;
-    display: inline;
-    float:left;
-    position: relative; /* so we can absolutely position the .currentyearline */
-    top: 1px;
-    text-align: center;
+  #yearpicker-big-playbutton {
+    padding-right: 0; /* in a row, but here we want the left and right sides as close as feasible */
+    line-height: 67px;
+    width: 50px;  /* we want responsive row, but to force width; see also #yearpicker-big width */
+    top: 7px;
     a {
-      background-color: white;
-      border: 2px solid $black;
-      border-radius: 50%;
-      display: inline-block;
-      height: 10px;
-      vertical-align: middle;
-      width: 10px;
-      @media screen and (-webkit-min-device-pixel-ratio:0) { /* Chrome and Safari only: the year-beads are off-vertical by 1px */
-        margin-top: 1px;
+      font-size: 30px;
+      text-decoration: none;
+      color: $black;
+    }
+  }
+
+  #yearpicker-big {
+    position: relative;
+    height: 35px;
+    top: 3px;
+    z-index: 1;
+
+    padding-left: 0; /* in a row, but here we want the left and right sides as close as feasible */
+
+    width: calc(100% - 50px);  /* we want responsive row, but to force width; see also #yearpicker-big-playbutton width */
+
+    div {  /* structure is a series of rectangular DIVs, each one containing a A for the visible circle */
+      cursor: pointer;
+      display: inline;
+      float:left;
+      position: relative; /* so we can absolutely position the .currentyearline */
+      top: 1px;
+      text-align: center;
+
+      a {
+        background-color: white;
+        border: 2px solid $black;
+        border-radius: 50%;
+        display: inline-block;
+        height: 10px;
+        vertical-align: middle;
+        width: 10px;
+
+        &:hover {
+          background-color: $blue-clc;
+        }
+
+        @media screen and (-webkit-min-device-pixel-ratio:0) { /* Chrome and Safari only: the year-beads are off-vertical by 1px */
+          margin-top: 1px;
+        }
+      }
+
+      span.yearlabel {  /* year labels */
+          display: block;
+          color: $black;
+          font-size: 16px;
+          margin-top: 2px;
+      }
+
+      span.currentyear {
+        display: inline-block;
+        width: 34px;
+        font-size: 13px;
+        height: 17px;  /* contrived to fit font size */
+        background-color: $black;
+        color: white;
+
+        border-radius: 3px;
+
+        text-align: center;
+
+        opacity: 0;  /* see div.active subclass below */
+      }
+      span.currentyearline {
+        background-color: $black;
+        display: inline-block;
+        height: 20px;
+        width: 2px;
+
+        position: absolute;
+        left: 50%;
+        top: 10px;
+        margin-left: -1px; /* half of width */
+
+        z-index: -1;
+
+        opacity: 0;  /* see div.active subclass below */
       }
     }
 
-    span.yearlabel {  /* year labels */
-        display: block;
-        color: $black;
-        font-size: 16px;
-        margin-top: 2px;
+    div.decplan {  /* larger dots for decennial plans */
+      a {
+          width: 20px;
+          height: 20px;
+      }
     }
 
-    span.currentyear {
-      display: inline-block;
-      width: 34px;
-      font-size: 13px;
-      height: 17px;  /* contrived to fit font size */
-      background-color: $black;
-      color: white;
-
-      border-radius: 3px;
-
-      text-align: center;
-
-      opacity: 0;  /* see div.active subclass below */
+    div.active {  /* the currently-selected year */
+      a {
+        background-color: $black;
+      }
+      span.currentyear, span.currentyearline {
+        opacity: 1; /* show/hide for visibility, breaks spacing since we expect these labels to occupy space even when not visible */
+      }
     }
-    span.currentyearline {
-      background-color: $black;
-      display: inline-block;
-      height: 20px;
-      width: 2px;
-
-      position: absolute;
-      left: 50%;
-      top: 10px;
-      margin-left: -1px; /* half of width */
-
-      z-index: -1;
-
-      opacity: 0;  /* see div.active subclass below */
+    &:after {
+      content: "";
+      border-top: solid 1px $black;
+      display: block;
+      height: 1px;
+      position: relative;
+      top: 31px;
+      width: 100%;
+      z-index:-1;
     }
-  }
-
-  div.decplan {  /* larger dots for decennial plans */
-    a {
-        width: 20px;
-        height: 20px;
-    }
-  }
-
-  div.active {  /* the currently-selected year */
-    a {
-      background-color: $black;
-    }
-    span.currentyear, span.currentyearline {
-      opacity: 1; /* show/hide for visibility, breaks spacing since we expect these labels to occupy space even when not visible */
-    }
-  }
-  &:after {
-    content: "";
-    border-top: solid 1px $black;
-    display: block;
-    height: 1px;
-    position: relative;
-    top: 31px;
-    width: 100%;
-    z-index:-1;
   }
 }
 
