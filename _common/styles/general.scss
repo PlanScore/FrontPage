@@ -116,36 +116,105 @@ td:nth-child(1){
   border-bottom: 0 none transparent;
   min-height: 80px;
 
-  .navbar-brand{
-    height: 80px;
+  #brand-logo {
+      height: 52px;
+      width: auto;
   }
 
   .navbar-collapse,
-  .navbar-form {
+  .navbar-form,
+  .navbar-toggle {
     border: none;
   }
+
   .navbar-toggle {
-    border-color: white;
+    height: 56px;
+    width: 56px;
+
+    .icon-bar {
+      height: 3px;
+      width: 36px;
+      transition: all 0.1s;
+    }
+
+    &:not(.collapsed) {
+      z-index: 10;
+      position: fixed;
+      top: 0;
+      right: 15px;
+      background-color: transparent;
+
+      .icon-bar {
+        background-color: white;
+        transition: all 0.1s;
+      }
+
+      .icon-bar:nth-child(2){
+        transform: rotate(45deg) translateY(5px);
+      }
+
+      .icon-bar:nth-child(3) {
+        background-color: transparent;
+      }
+
+      .icon-bar:nth-child(4){
+        transform: rotate(-45deg) translate(5px, -10px);
+      }
+    }
+  }
+
+  .mobile-only {
+    @media (min-width: $screen-sm){
+      display: none;
+    }
   }
 
   .navbar-nav > li > a {
     color: $black;
     padding-bottom: 4px;
+    text-shadow: none;
+
+    &:before {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 1px;
+      bottom: 0;
+      left: 0;
+      background-color: $black;
+      visibility: hidden;
+      -webkit-transform: scaleX(0);
+      transform: scaleX(0);
+      -webkit-transition: all 0.1s ease-in-out 0s;
+      transition: all 0.1s ease-in-out 0s;
+    }
   }
 
-  .navbar-nav > li > a:before {
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 1px;
-    bottom: 0;
-    left: 0;
-    background-color: $black;
-    visibility: hidden;
-    -webkit-transform: scaleX(0);
-    transform: scaleX(0);
-    -webkit-transition: all 0.1s ease-in-out 0s;
+  #navbar.in,
+  #navbar.collapsing {
+    background-color: $blue-clc;
     transition: all 0.1s ease-in-out 0s;
+    padding: 52px 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 5;
+
+    a {
+      color: white;
+      font-size: 28px;
+      line-height: 36px;
+      margin: 10px;
+      padding: 10px 32px;
+      transition: 0.25s ease;
+
+      &:hover,
+      &:focus {
+        background-color: $black;
+      }
+    }
   }
 
   .navbar-nav > li > a:hover:before {
@@ -154,17 +223,12 @@ td:nth-child(1){
     transform: scaleX(1);
   }
 
-  @media (min-width: $screen-sm) {
-    #brand-logo {
-        height: 60px;
-        width: auto;
-    }
-  }
-
-  @media (max-width: $screen-sm) {
-    #brand-logo {
-        height: 50px;
-        width: auto;
+  @media (max-width: $screen-sm){
+    .container {
+      .navbar-header,
+      .navbar-collapse {
+        margin: 0;
+      }
     }
   }
 }
