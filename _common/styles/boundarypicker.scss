@@ -21,10 +21,12 @@
     border-collapse: collapse;
     padding-bottom: 9px;
     padding-top: 9px;
+    transition: 0.25s ease;
 
     a {
       text-decoration: none;
       color: $black;
+      transition: 0.25s ease;
     }
 
     &.active {

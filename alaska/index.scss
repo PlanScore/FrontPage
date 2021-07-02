@@ -20,7 +20,7 @@ h2:first-child {
     }
 
     .glyphicon {
-      color: $blue-link;
+      color: $blue-clc;
     }
   }
 }
@@ -101,11 +101,10 @@ p.wehavedata a {
       display: block;
       height: 24px;
       line-height: 24px;
-
       cursor: pointer;
-
       color: $black;
-      text-decoration: none !important;
+      text-decoration: none;
+      transition: 0.25s ease;
 
       &:hover .year{
         background-color: $gray-light;
@@ -113,15 +112,14 @@ p.wehavedata a {
 
       span {
         display: inline-block;
+        transition: 0.25s ease;
 
         &.swatch {  /* a circular swatch inside that year link */
           height: 10px;
           width: 10px;
           border: 2px solid $black;
           border-radius: 50%;
-
           margin-right: 5px;
-
           background-color: white;
           color: $black;
         }
@@ -132,7 +130,7 @@ p.wehavedata a {
       }
 
       &.active .swatch {
-        background-color: $black;  
+        background-color: $black;
       }
     }
   }
@@ -145,6 +143,7 @@ p.wehavedata a {
     a {
       display: block;
       cursor: pointer;
+      transition: 0.25s ease;
 
       span {
         display: inline-block;
@@ -152,6 +151,7 @@ p.wehavedata a {
         width: 24px;
         vertical-align: middle;
         margin-right: 11px;
+        transition: 0.25s ease;
       }
     }
 

@@ -77,7 +77,12 @@ p {
 }
 
 a {
-  color: $blue-link;
+  color: $black;
+  transition: 0.25s ease;
+
+  &:hover {
+    color: $blue-clc;
+  }
 }
 
 select {
@@ -261,6 +266,7 @@ div.footer {
       width: 32px;
       margin: 0 20px 24px;
       fill: $black;
+      transition: 0.25s ease;
 
       &:hover {
         fill: $blue-clc;
@@ -312,6 +318,8 @@ div.footer {
   background-color: $gray-light;
   margin: 16px 14px 16px 0;
   padding: 12px 20px;
+  transition: 0.25s ease;
+
   // bootstrap overrides
   background-image: none  !important;
   border: none;
@@ -334,6 +342,7 @@ div.footer {
 .btn-primary {
   color: white;
   background-color: $black;
+  transition: 0.25s ease;
 
   &:hover,
   &:focus,
