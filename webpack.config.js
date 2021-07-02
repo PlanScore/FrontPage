@@ -241,5 +241,9 @@ module.exports = {
         port: 8000,
         disableHostCheck: true,
         writeToDisk: true,
+        headers: {
+            // When running PlanScore repo alongside, ACAO lets webfonts served by the dev server
+            "Access-Control-Allow-Origin": "*",
+        }
     }
 };
