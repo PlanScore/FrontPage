@@ -6,6 +6,7 @@ html, body {
   font-family: 'AvenirLTPro-Medium', sans-serif;
   font-size: 18px;
   line-height: 30px;
+  color: $navy;
 }
 
 html {
@@ -23,7 +24,7 @@ h1, h2, h3 {
 h1 {
   font-size: 60px;
   line-height: 70px;
-  color: $black;
+  color: $navy;
 
   @media (max-width: $screen-sm) {
     font-size: 42px;
@@ -34,7 +35,7 @@ h1 {
 h2 {
   font-size: 36px;
   line-height: 40px;
-  color: $black;
+  color: $navy;
 
   @media (max-width: $screen-sm) {
     font-size: 24px;
@@ -49,7 +50,7 @@ h2:first-child {
 h3 {
   font-size: 28px;
   line-height: 36px;
-  color: $black;
+  color: $navy;
 }
 
 h4, h5 {
@@ -77,7 +78,7 @@ p {
 }
 
 a {
-  color: $black;
+  color: $navy;
   transition: 0.25s ease;
 
   &:hover {
@@ -176,7 +177,7 @@ td:nth-child(1){
   }
 
   .navbar-nav > li > a {
-    color: $black;
+    color: $navy;
     padding-bottom: 4px;
     text-shadow: none;
 
@@ -187,7 +188,7 @@ td:nth-child(1){
       height: 1px;
       bottom: 0;
       left: 0;
-      background-color: $black;
+      background-color: $navy;
       visibility: hidden;
       -webkit-transform: scaleX(0);
       transform: scaleX(0);
@@ -219,7 +220,7 @@ td:nth-child(1){
 
       &:hover,
       &:focus {
-        background-color: $black;
+        background-color: $navy;
       }
     }
   }
@@ -265,7 +266,7 @@ div.footer {
       height: auto;
       width: 32px;
       margin: 0 20px 24px;
-      fill: $black;
+      fill: $navy;
       transition: 0.25s ease;
 
       &:hover {
@@ -314,7 +315,7 @@ div.footer {
 }
 
 .btn {
-  color: $black;
+  color: $navy;
   background-color: $gray-light;
   margin: 16px 14px 16px 0;
   padding: 12px 20px;
@@ -341,7 +342,7 @@ div.footer {
 
 .btn-primary {
   color: white;
-  background-color: $black;
+  background-color: $navy;
   transition: 0.25s ease;
 
   &:hover,
@@ -355,7 +356,7 @@ div.footer {
 
 .gray {
   background-color: $gray-light;
-  color: $black;
+  color: $navy;
   padding: 10px;
   margin-top: 30px;
 
@@ -377,7 +378,7 @@ div.metric-block {
     color: white;
     margin-right: 1em;
     &.balanced{
-      color: $black;
+      color: $navy;
     }
   }
 

@@ -26,7 +26,7 @@ ul.nav.nav-tabs {
 
     a {
       border: none !important; //bootstrap override
-      color: $black;
+      color: $navy;
       margin-right: 0;
       text-decoration: none;
       transition: 0.25s ease;
@@ -51,7 +51,7 @@ ul.nav.nav-tabs {
 
       &:after {
         content: "";
-        background-color: $black;
+        background-color: $navy;
         position: absolute;
         left: -1px;
         top: 0;
@@ -92,7 +92,7 @@ ul.nav.nav-tabs {
 
     p {
       font-size: 16px;
-      color: $black;
+      color: $navy;
     }
   }
 }
