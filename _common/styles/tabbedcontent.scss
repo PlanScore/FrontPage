@@ -20,8 +20,8 @@ ul.nav.nav-tabs {
     flex-grow: 1;
     float: none;
     margin: 0;
-    padding-top: 8px;
     transition: 0.25s ease;
+    position: relative;
 
 
     a {
@@ -34,29 +34,25 @@ ul.nav.nav-tabs {
       &:hover{
         background-color: transparent;
       }
-    }
 
-    &:hover:not(.active),
-    &:focus {
-    background-color: $gray-dark;
-
-      a {
-        color: white;
+      &.active {
+        background-color:white;
+        border-bottom-color: transparent;
+  
+        &:after {
+          content: "";
+          background-color: $navy;
+          position: absolute;
+          left: -1px;
+          top: 0;
+          height: 8px;
+          width: calc(100% + 2px);
+        }
       }
-    }
-
-    &.active {
-      background-color:white;
-      border-bottom-color: transparent;
-
-      &:after {
-        content: "";
-        background-color: $navy;
-        position: absolute;
-        left: -1px;
-        top: 0;
-        height: 8px;
-        width: calc(100% + 2px);
+      &:hover:not(.active),
+      &:focus:not(.active) {
+        background-color: $gray-dark;
+        color: white;
       }
     }
 
