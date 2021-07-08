@@ -426,7 +426,7 @@ div.right-text {
     display: block;
   }
   .fade {
-    opacity: 1;
+    opacity: 1 !important;
   }
 }
 @media only screen {
