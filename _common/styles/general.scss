@@ -251,7 +251,7 @@ div.footer {
   padding: 36px 0 0;
 
   img {
-    max-width: 120px;
+    max-width: 120px !important; /* bootstrap v3 print styles neccessitate the !important */
     margin-bottom: 24px;
   }
 
@@ -406,4 +406,16 @@ div.left-photo {
 div.right-text {
   margin: 25px 0px;
   clear: both;
+}
+
+
+/* revert many of bootstrap v3 print styles. https://github.com/PlanScore/FrontPage/issues/4
+   TODO: upgrade to bootstrap 4+, which doesnt have these. */
+@media print {
+  a[href]:after {
+      content: none;
+  }
+  .navbar {
+    display: block;
+  }
 }
