@@ -418,4 +418,19 @@ div.right-text {
   .navbar {
     display: block;
   }
+  /* hhide metrics tab links because we're showing contents of all 3 */
+  #tabs-metrics {
+    display: none;
+  }
+  .tab-content>.tab-pane {
+    display: block;
+  }
+  .fade {
+    opacity: 1;
+  }
+}
+@media only screen {
+  .only-print {
+    display: none;
+  }
 }
