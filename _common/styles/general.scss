@@ -310,3 +310,15 @@ div.right-text {
 .highcharts-title {
     font-family: 'Roboto', sans-serif !important;
 }
+
+
+/* revert many of bootstrap v3 print styles. https://github.com/PlanScore/FrontPage/issues/4
+   TODO: upgrade to bootstrap 4+, which doesnt have these. */
+@media print {
+  a[href]:after {
+      content: none;
+  }
+  .navbar {
+    display: block;
+  }
+}
