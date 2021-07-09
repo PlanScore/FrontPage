@@ -16,6 +16,10 @@ html {
   }
 }
 
+.h1, .h2, .h3, h1, h2, h3 { /* ported from bootstrap v3 for compat */
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
 
 h1, h2, h3 {
   font-family:'AvenirLTPro-Black';

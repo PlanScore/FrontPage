@@ -36,6 +36,9 @@
       a {
         font-family: "AvenirLTPro-Heavy", sans-serif;
       }
+      @media print {
+        font-weight: bold;
+      }
     }
 
     &:hover:not(.active) {
