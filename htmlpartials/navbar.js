@@ -1,23 +1,19 @@
 const htmlblock = `
-  <nav class="navbar navbar-default">
-    <div class="container">
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="/"><img id="brand-logo" src="/images/logo.svg" alt="PlanScore: a project of Campaign Legal Center"/></a>
-    </div>
-    <div class="collapse navbar-collapse" id="navbar">
+  <div class="container">
+    <nav class="navbar navbar-light navbar-expand-md">
+      <a class="navbar-brand" href="/"><img id="brand-logo" src="/images/logo.svg" alt="PlanScore: a project of Campaign Legal Center"/></a>
+      <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse d-flex justify-content-end" id="navbar">
         <ul class="nav navbar-nav navbar-right">
-          <li class="mobile-only"><a href="/">Home</a></li>
-          <li><a href="/upload.html">Score a Plan</a></li>
-          <li><a href="/about/">What is PlanScore?</a></li>
+          <li class="nav-item mobile-only"><a class="nav-link" href="/">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="/upload.html">Score a Plan</a></li>
+          <li class="nav-item"><a class="nav-link" href="/about/">What is PlanScore?</a></li>
         </ul>
       </div>
-    </div>
-  </nav>
+    </nav>
+  </div>
 `;
 module.exports = htmlblock;
