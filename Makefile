@@ -15,3 +15,7 @@ WEBSITE_OUTPUT/data/electionoutcomes_statesenate-raw.csv: WEBSITE_OUTPUT/data/10
 		| csvgrep -c etype -r '[gs]+$$' \
 		| csvcut -c outcome,sen,etype,dno,sab,year,partyt \
 		| pv -l > $@
+
+WEBSITE_OUTPUT/data/districtpolygons/%.json: WEBSITE_OUTPUT/data/districtpolygons/%.geojson
+	docker run --rm -it -v `pwd`:/vol -w /vol circleci/node:lts \
+		./geo2topo.sh $^ $@
