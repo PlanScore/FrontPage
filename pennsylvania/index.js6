@@ -655,7 +655,7 @@ window.updateMetricsTabs = (yeardata) => {
     const cssclass_eg    = biaseval_eg.cssclass;
     const isbiased_eg    = biaseval_eg.isbiased;
     const hadseats       = favor_party_eg == 'Republican' ? seats_rep : seats_dem;
-    const statement_eg   = `${! isbiased_eg ? 'This metric indicates a balanced plan.' : ''} Votes for ${favor_party_eg} candidates were wasted at a rate ${(100 * Math.abs(eg_score)).toFixed(1)}% lower than votes for ${loser_party_eg} candidates.`;
+    const statement_eg   = `${! isbiased_eg ? 'This metric indicates a balanced plan.' : ''} Votes for ${favor_party_eg} candidates were inefficient at a rate ${(100 * Math.abs(eg_score)).toFixed(1)}% lower than votes for ${loser_party_eg} candidates.`;
     const biastext_eg    = `${! isbiased_eg ? 'No consistent skew was found in favor of either party.' : ''} This plan is more skewed than ${Math.round(100 * eg_rank)}% of the enacted plans we have analyzed nationwide.`;
     const roundscore_eg  = Math.round(100 * Math.abs(eg_score));  // per https://github.com/PlanScore/PlanScore/issues/170 these ignore the usual balanced-threshold; we want to show even 1% but keep a balanced color
 
@@ -862,7 +862,7 @@ window.updateWastedVotesChart = (yeardata) => {
     // construct the chart series
     const votechartdata = [
         {
-            name: 'Wasted Votes',
+            name: 'Inefficient Votes',
             data: [0, 0],
             colors: [ WASTEDVOTE_CHART_WASTED_D, WASTEDVOTE_CHART_WASTED_R ],
         },
@@ -888,7 +888,7 @@ window.updateWastedVotesChart = (yeardata) => {
             enabled: false,
         },
         title: {
-            text: 'Efficient Votes and Wasted Votes',
+            text: 'Efficient Votes and Inefficient Votes',
             margin:0,
         },
         xAxis: {
