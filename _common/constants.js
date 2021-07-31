@@ -22,6 +22,7 @@ export const BIAS_BALANCED_THRESHOLD = {
     'eg': 0.04,
     'pb': 0.04,
     'mm': 0.02,
+    'd2': 0.20,
 };
 
 // for remapping state name to a short code
@@ -201,6 +202,7 @@ export const BELLCURVE_SPREAD = {
         eg: 0.25,
         mm: 0.12,
         pb: 0.25,
+        d2: 0.81,
     },
     statesenate: {
         eg: 0.22,
@@ -214,6 +216,7 @@ export const BELLCURVE_METRIC_TO_FILENAME_SLUG = {
     'mm': 'mmd',
     'pb': 'bias',
     'eg': 'eg',
+    'd2': 'dec2',
 };
 
 // Efficiency Gap wasted vote chart; colors

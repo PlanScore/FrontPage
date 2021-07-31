@@ -700,9 +700,9 @@ window.updateMetricsTabs = (yeardata) => {
     const loser_code_d2  = biaseval_d2.otherparty;
     const cssclass_d2    = biaseval_d2.cssclass;
     const isbiased_d2    = biaseval_d2.isbiased;
-    const statement_d2   = `${! isbiased_d2 ? 'This tktktktk metric indicates a balanced plan.' : ''} The median ${favor_party_d2} vote share was ${(100 * Math.abs(d2_score)).toFixed(1)}% higher than the mean ${favor_party_d2} vote share.`;
+    const statement_d2   = `${! isbiased_d2 ? 'This tktktktk metric indicates a balanced plan.' : ''} The tktktk ${favor_party_d2} vote share was ${(100 * Math.abs(d2_score)).toFixed(1)}% higher than the mean ${favor_party_d2} vote share.`;
     const biastext_d2    = `${! isbiased_d2 ? 'No tktktktk consistent skew was found in favor of either party.' : ''} This plan is more skewed than ${Math.round(100 * dec2_rank)}% of the enacted plans we have analyzed nationwide.`;
-    const roundscore_d2  = Math.round(100 * Math.abs(d2_score));  // per https://github.com/PlanScore/PlanScore/issues/170 these ignore the usual balanced-threshold; we want to show even 1% but keep a balanced color
+    const roundscore_d2  = Math.round(100 * Math.abs(d2_score)) / 100;
 
     // color the tab-swatches for the three metrics
     {
@@ -800,8 +800,8 @@ window.updateMetricsTabs = (yeardata) => {
         $('#tab-meanmedian span[data-field="biasstatement"]').text(biastext_mm);
     }
     {
-        let metricdrsum_d2   = '0% Balanced';
-        if (roundscore_d2) metricdrsum_d2 = `+${roundscore_d2}% ${favor_party_d2}`;
+        let metricdrsum_d2   = '0.0 Balanced';
+        if (roundscore_d2) metricdrsum_d2 = `+${roundscore_d2} ${favor_party_d2}`;
 
         $('#tab-declination2 span[data-field="metricdrsum"]').text(metricdrsum_d2);
         $('#tab-declination2 span[data-field="metricstatement"]').text(statement_d2);
