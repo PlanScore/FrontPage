@@ -512,6 +512,7 @@ window.updateStatsFromCsvContent = (allcsvdata, options={}) => {
     // refresh some charts: Efficiency Gap Wasted Votes, Partisan Bias Seat Share
     updateWastedVotesChart(thisyeardata);
     updateSeatShareChart(thisyeardata);
+    updateDeclinationChart(thisyeardata);
 
     // the bell charts indicating this plan's relative bias rating for each metric
     drawBiasBellCharts(thisyeardata);
@@ -978,6 +979,41 @@ window.updateWastedVotesChart = (yeardata) => {
             }
         },
         series: votechartdata,
+    });
+};
+
+window.updateDeclinationChart = (yeardata) => {
+    console.log('window.updateDeclinationChart', yeardata);
+    const whichplan = yeardata.plan;
+    const whichlevel = CURRENT_VIEW.boundtype;
+    const whichyear = CURRENT_VIEW.year;
+    const planorelection = CURRENT_VIEW.planorelection;
+    const csvurl = `/data/electionoutcomes_${whichlevel}.csv`;
+
+    // 
+    Papa.parse(csvurl, {
+        download: true,
+        header: true,
+        complete: function (results) {
+            // filter to year + state, or year + plan
+            // filtering down the data in a separate step, makes it a lot easier to isolate the relevant results, separately from the polygon-style code later
+            if (planorelection == 'election') {
+                // election year; filter by "year" and the "plan" field starting with this state code
+                results = results.data.filter((row) => {
+                    return row.year == whichyear && row.plan.substr(0, 2) == statecode;
+                });
+            }
+            else {
+                // must be a plan; filter by the "plan" field
+                results = results.data.filter((row) => {
+                    return row.plan == whichplan;
+                });
+            }
+            console.log([ 'window.updateDeclinationChart() parse:', results ]);
+        }, // end of CSV download
+        error: function () {
+            // an error, meaning bad network or missing CSV
+        },
     });
 };
 
