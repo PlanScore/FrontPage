@@ -45,6 +45,20 @@ jobs:
       - run: aws s3 sync --acl public-read --cache-control 'public, max-age=30' WEBSITE_OUTPUT/ s3://planscore.org-dev-website/
       - run: aws s3 sync --acl public-read --cache-control 'public, max-age=30' --delete WEBSITE_OUTPUT/ s3://planscore.org-dev-website/
 
+  # Deploy to S3, declination version.
+  Declination-Deploy:
+    docker:
+      - image: circleci/python:3.8
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - run: pip3 install awscli
+      - attach_workspace:
+          at: ~/repo
+      - run: find WEBSITE_OUTPUT -type f | xargs perl -pi -e 's#https://planscore.org#http://planscore.org-declination-static-site.s3-website-us-east-1.amazonaws.com#'
+      - run: aws s3 sync --acl public-read --cache-control 'public, max-age=30' WEBSITE_OUTPUT/ s3://planscore.org-declination-static-site/
+      - run: aws s3 sync --acl public-read --cache-control 'public, max-age=30' --delete WEBSITE_OUTPUT/ s3://planscore.org-declination-static-site/
+
 workflows:
   version: 2
   everything:
@@ -64,3 +78,10 @@ workflows:
             branches:
               only:
                 - development
+      - Declination-Deploy:
+          requires:
+            - Test
+          filters:
+            branches:
+              only:
+                - migurski/add-declination
