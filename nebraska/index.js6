@@ -1010,6 +1010,67 @@ window.updateDeclinationChart = (yeardata) => {
                 });
             }
             console.log([ 'window.updateDeclinationChart() parse:', results ]);
+            
+            var series = results.map(row => ({
+                y: parseFloat(row.dem_share),
+            }))
+            .filter(datum => (!isNaN(datum.y)))
+            .sort((d1, d2) => (d1.y > d2.y));
+            
+            console.log([ 'window.updateDeclinationChart() series:', series ]);
+
+            // now chart it
+            // and show the chart, in case it was previously hidden
+            $('#chart-d2districts').show();
+            Highcharts.chart('chart-d2districts', {
+                chart: {
+                    type: 'line'
+                },
+                title: {
+                    text: 'District Vote Shares'
+                },
+                legend: {
+                    enabled: false
+                },
+                yAxis: {
+                    min: 0,
+                    max: 1,
+                    tickAmount: 3,
+                    title: {
+                        enabled: false
+                    }
+                },
+                xAxis: {
+                    labels: {
+                        enabled: false
+                    }
+                },
+                plotOptions: {
+                    line: {
+                        dataLabels: {
+                            enabled: false
+                        },
+                        enableMouseTracking: false
+                    }
+                },
+                series: [{
+                    name: 'Districts',
+                    data: series,
+                    lineWidth: 0,
+                    zones: [
+                        {
+                            value: 0.5,
+                            color: WASTEDVOTE_CHART_WASTED_R
+                        },
+                        {
+                            color: WASTEDVOTE_CHART_WASTED_D
+                        }
+                    ],
+                    marker: {
+                        enabled: true
+                    }
+                }],
+            });
         }, // end of CSV download
         error: function () {
             // an error, meaning bad network or missing CSV

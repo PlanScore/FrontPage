@@ -1,0 +1,18 @@
+/*
+ * DECLINATION DIAGRAMS
+ */
+#chart-d2districts {
+    height: 205px;
+    width: 300px;
+    margin: 0 auto;
+    
+    @media screen and (min-width: $screen-lg) {
+        height: 205px;
+        width: 332px;
+    }
+    
+    @media screen and (max-width: $screen-md) {
+        height: 205px;
+        width: 100%;
+    }
+}
