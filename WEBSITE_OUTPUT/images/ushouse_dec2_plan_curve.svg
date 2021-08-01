@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="536px" height="237px" viewBox="0 0 536 237" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <!-- Generator: Sketch 51.3 (57544) - http://www.bohemiancoding.com/sketch -->
-    <title>Artboard</title>
+    <title>ushouse_dec2_plan_curve</title>
     <desc>Created with Sketch.</desc>
     <defs>
         <polygon id="path-1" points="0.55 0.416668 536.45 0.416668 536.45 236.45 0.55 236.45"></polygon>
@@ -11,7 +11,7 @@
             <stop stop-color="#0A4FAB" offset="100%"></stop>
         </linearGradient>
     </defs>
-    <g id="Artboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <g id="ushouse_dec2_plan_curve" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <g id="USH-Declination" transform="translate(268.500000, 118.500000) scale(-1, 1) translate(-268.500000, -118.500000) ">
             <mask id="mask-2" fill="white">
                 <use xlink:href="#path-1"></use>
