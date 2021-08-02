@@ -251,7 +251,7 @@ div.footer {
   padding: 36px 0 0;
 
   img {
-    max-width: 120px;
+    max-width: 120px !important; /* bootstrap v3 print styles neccessitate the !important */
     margin-bottom: 24px;
   }
 
