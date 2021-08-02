@@ -1,318 +1,322 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>PlanScore</title>
+  <title>PlanScore</title>
 
-    <!--[include_head]-->
+  <!--[include_head]-->
 
-    <!-- Highcharts does charts and also maps -->
-    <script src="https://code.highcharts.com/maps/8.0.4/highmaps.js"></script>
-    <script src="https://code.highcharts.com/maps/modules/data.js"></script>
-    <script src="/data/usmapchart.json"></script>
+  <!-- Highcharts does charts and also maps -->
+  <script src="https://code.highcharts.com/maps/8.0.4/highmaps.js"></script>
+  <script src="https://code.highcharts.com/maps/modules/data.js"></script>
+  <script src="/data/usmapchart.json"></script>
 
-    <!-- PapaParse CSV reader -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.3.6/papaparse.min.js"></script>
+  <!-- PapaParse CSV reader -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.3.6/papaparse.min.js"></script>
 
-    <!-- various polyfills required by IE -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.6.15/browser-polyfill.min.js"></script>
+  <!-- various polyfills required by IE -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.6.15/browser-polyfill.min.js"></script>
 
-    <!-- local config -->
-    <link href="index.css?[hash]" rel="stylesheet" />
-    <script src="index.js?[hash]"></script>
+  <!-- local config -->
+  <link href="index.css?[hash]" rel="stylesheet" />
+  <script src="index.js?[hash]"></script>
 
-    <!-- OG tags -->
-    <meta property="og:title" content="PlanScore" />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://planscore.org" />
-    <meta property="og:image" content="https://planscore.org/images/OG-default-01.jpg" />
-    <meta property="og:description" content="PlanScore is a first-of-its-kind gerrymandering scoring service for new district plans, allowing users to upload maps and instantly receive projected data about their partisan consequences. You can also use historical data to discover how partisan advantage has influenced redistricting in your state." />
+  <!-- OG tags -->
+  <meta property="og:title" content="PlanScore" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://planscore.org" />
+  <meta property="og:image" content="https://planscore.org/images/OG-default-01.jpg" />
+  <meta property="og:description" content="PlanScore is a first-of-its-kind gerrymandering scoring service for new district plans, allowing users to upload maps and instantly receive projected data about their partisan consequences. You can also use historical data to discover how partisan advantage has influenced redistricting in your state." />
 
-    <!-- Twitter tags note that per https://developer.twitter.com/en/docs/tweets/optimize-with-cards/guides/getting-started, we need only use the card metas that differ from OG -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:card" content="summary" />
-    <meta name="twitter:site" content="@PlanScore" />
+  <!-- Twitter tags note that per https://developer.twitter.com/en/docs/tweets/optimize-with-cards/guides/getting-started, we need only use the card metas that differ from OG -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@PlanScore" />
 
 </head>
 <body>
 
-    <!--[include_navbar]-->
+  <!--[include_navbar]-->
 
-    <div class="container container-mainbody">
-        <h2>Partisan Gerrymandering Historical Data</h2>
-        <p class="subtitle">PlanScore presents the most comprehensive <a href="/about/historical-data/">historical dataset</a> of partisan gerrymandering ever assembled. We also provide tools for policymakers and litigators to transparently score new plans and assess their fairness.</p>
-
-        <br />
-
-        <!-- the mobile + desktop year picker UIs; see initYearPickers() and of course selectYear() -->
-        <div class="row hidden-xs" id="yearpicker-big-wrapper">
-            <div class="col-xs-1" id="yearpicker-big-playbutton">
-                <a data-status="paused" href="javascript:void(0);" title="Play an animation showing change in plan skew over time"><i class="glyphicon glyphicon-play"></i></a>
-                <a data-status="playing" class="hidden" href="javascript:void(0);" title="Pause the animation"><i class="glyphicon glyphicon-pause"></i></a>
-            </div>
-            <div class="col-xs-11" id="yearpicker-big"></div>
-        </div>
-        <div class="container visible-xs-block">
-            <div id="yearpicker-small" class="row">
-                <!-- two giant hit boxes for next/prev; year readout is positioned over top -->
-                <div class="col-xs-6 left nextprev" title="Previous year"><i class="glyphicon glyphicon-chevron-left"></i></div>
-                <div class="col-xs-6 right nextprev" title="Next year"><i class="glyphicon glyphicon-chevron-right"></i></div>
-                <div class="readout center"></div>
-            </div>
-        </div>
-
-        <div id="map"></div>
-
-        <div id="maplegend">
-            <h1>Extent of partisan skew</h1>
-            <h2>(based on efficiency gap)</h2>
-
-            <div class="slice d3"><span>D</span></div><div class="slice d2"><span>&nbsp;</span></div><div class="slice d1"><span>&nbsp;</span></div><div class="slice balanced"><span>&nbsp;</span></div><div class="slice r1"><span>&nbsp;</span></div><div class="slice r2"><span>&nbsp;</span></div><div class="slice r3"><span>R</span></div>
-
-            <div class="slice nodata"><span>&nbsp;</span></span></div>
-            <h5>No Data</h5>
-        </div>
-
-        <div class="row" id="boundarypicker">
-            <div class="col-xs-4">
-                <div class="col-xs-12 center" data-boundary="ushouse" title="Show partisan skew analysis for US House district plans">
-                    <a href="javascript:void(0);">U.S. House</a>
-                </div>
-            </div>
-            <div class="col-xs-4">
-                <div class="col-xs-12 center" data-boundary="statesenate" title="Show partisan skew analysis for State Senate district plans">
-                    <a href="javascript:void(0);">State Senates</a>
-                </div>
-            </div>
-            <div class="col-xs-4">
-                <div class="col-xs-12 center" data-boundary="statehouse" title="Show partisan skew analysis for State House district plans">
-                    <a href="javascript:void(0);">State Houses</a>
-                </div>
-            </div>
-        </div>
-
-        <br/>
-
-        <div class="container">
-            <!-- be careful of changing the structure: updateStateListingSwatches() expects A with span + statename in order to key to a state -->
-            <!-- note that there are multiple of these for varying screen widths -->
-            <!-- note too that updateStateListingHashes() will update the lirnks below to include #! components, to link to the state with year+district selected -->
-            <div class="row states-listing visible-lg-block">
-                <div class="col-lg-3">
-                    <a href="/alabama/"><span class="swatch"></span> Alabama</a>
-                    <a href="/alaska/"><span class="swatch"></span> Alaska</a>
-                    <a href="/arizona/"><span class="swatch"></span> Arizona</a>
-                    <a href="/arkansas/"><span class="swatch"></span> Arkansas</a>
-                    <a href="/california/"><span class="swatch"></span> California</a>
-                    <a href="/colorado/"><span class="swatch"></span> Colorado</a>
-                    <a href="/connecticut/"><span class="swatch"></span> Connecticut</a>
-                    <a href="/delaware/"><span class="swatch"></span> Delaware</a>
-                    <a href="/florida/"><span class="swatch"></span> Florida</a>
-                    <a href="/georgia/"><span class="swatch"></span> Georgia</a>
-                    <a href="/hawaii/"><span class="swatch"></span> Hawaii</a>
-                    <a href="/idaho/"><span class="swatch"></span> Idaho</a>
-                    <a href="/illinois/"><span class="swatch"></span> Illinois</a>
-                </div>
-                <div class="col-lg-3">
-                    <a href="/indiana/"><span class="swatch"></span> Indiana</a>
-                    <a href="/iowa/"><span class="swatch"></span> Iowa</a>
-                    <a href="/kansas/"><span class="swatch"></span> Kansas</a>
-                    <a href="/kentucky/"><span class="swatch"></span> Kentucky</a>
-                    <a href="/louisiana/"><span class="swatch"></span> Louisiana</a>
-                    <a href="/maine/"><span class="swatch"></span> Maine</a>
-                    <a href="/maryland/"><span class="swatch"></span> Maryland</a>
-                    <a href="/massachusetts/"><span class="swatch"></span> Massachusetts</a>
-                    <a href="/michigan/"><span class="swatch"></span> Michigan</a>
-                    <a href="/minnesota/"><span class="swatch"></span> Minnesota</a>
-                    <a href="/mississippi/"><span class="swatch"></span> Mississippi</a>
-                    <a href="/missouri/"><span class="swatch"></span> Missouri</a>
-                    <a href="/montana/"><span class="swatch"></span> Montana</a>
-                </div>
-                <div class="col-lg-3">
-                    <a href="/nebraska/"><span class="swatch"></span> Nebraska</a>
-                    <a href="/nevada/"><span class="swatch"></span> Nevada</a>
-                    <a href="/new_hampshire/"><span class="swatch"></span> New Hampshire</a>
-                    <a href="/new_jersey/"><span class="swatch"></span> New Jersey</a>
-                    <a href="/new_mexico/"><span class="swatch"></span> New Mexico</a>
-                    <a href="/new_york/"><span class="swatch"></span> New York</a>
-                    <a href="/north_carolina/"><span class="swatch"></span> North Carolina</a>
-                    <a href="/north_dakota/"><span class="swatch"></span> North Dakota</a>
-                    <a href="/ohio/"><span class="swatch"></span> Ohio</a>
-                    <a href="/oklahoma/"><span class="swatch"></span> Oklahoma</a>
-                    <a href="/oregon/"><span class="swatch"></span> Oregon</a>
-                    <a href="/pennsylvania/"><span class="swatch"></span> Pennsylvania</a>
-                </div>
-                <div class="col-lg-3">
-                    <a href="/rhode_island/"><span class="swatch"></span> Rhode Island</a>
-                    <a href="/south_carolina/"><span class="swatch"></span> South Carolina</a>
-                    <a href="/south_dakota/"><span class="swatch"></span> South Dakota</a>
-                    <a href="/tennessee/"><span class="swatch"></span> Tennessee</a>
-                    <a href="/texas/"><span class="swatch"></span> Texas</a>
-                    <a href="/utah/"><span class="swatch"></span> Utah</a>
-                    <a href="/vermont/"><span class="swatch"></span> Vermont</a>
-                    <a href="/virginia/"><span class="swatch"></span> Virginia</a>
-                    <a href="/washington/"><span class="swatch"></span> Washington</a>
-                    <a href="/west_virginia/"><span class="swatch"></span> West Virginia</a>
-                    <a href="/wisconsin/"><span class="swatch"></span> Wisconsin</a>
-                    <a href="/wyoming/"><span class="swatch"></span> Wyoming</a>
-                </div>
-            </div>
-            <div class="row states-listing visible-sm-block visible-md-block">
-                <div class="col-sm-4">
-                    <a href="/alabama/"><span class="swatch"></span> Alabama</a>
-                    <a href="/alaska/"><span class="swatch"></span> Alaska</a>
-                    <a href="/arizona/"><span class="swatch"></span> Arizona</a>
-                    <a href="/arkansas/"><span class="swatch"></span> Arkansas</a>
-                    <a href="/california/"><span class="swatch"></span> California</a>
-                    <a href="/colorado/"><span class="swatch"></span> Colorado</a>
-                    <a href="/connecticut/"><span class="swatch"></span> Connecticut</a>
-                    <a href="/delaware/"><span class="swatch"></span> Delaware</a>
-                    <a href="/florida/"><span class="swatch"></span> Florida</a>
-                    <a href="/georgia/"><span class="swatch"></span> Georgia</a>
-                    <a href="/hawaii/"><span class="swatch"></span> Hawaii</a>
-                    <a href="/idaho/"><span class="swatch"></span> Idaho</a>
-                    <a href="/illinois/"><span class="swatch"></span> Illinois</a>
-                    <a href="/indiana/"><span class="swatch"></span> Indiana</a>
-                    <a href="/iowa/"><span class="swatch"></span> Iowa</a>
-                    <a href="/kansas/"><span class="swatch"></span> Kansas</a>
-                    <a href="/kentucky/"><span class="swatch"></span> Kentucky</a>
-                </div>
-                <div class="col-sm-4">
-                    <a href="/louisiana/"><span class="swatch"></span> Louisiana</a>
-                    <a href="/maine/"><span class="swatch"></span> Maine</a>
-                    <a href="/maryland/"><span class="swatch"></span> Maryland</a>
-                    <a href="/massachusetts/"><span class="swatch"></span> Massachusetts</a>
-                    <a href="/michigan/"><span class="swatch"></span> Michigan</a>
-                    <a href="/minnesota/"><span class="swatch"></span> Minnesota</a>
-                    <a href="/mississippi/"><span class="swatch"></span> Mississippi</a>
-                    <a href="/missouri/"><span class="swatch"></span> Missouri</a>
-                    <a href="/montana/"><span class="swatch"></span> Montana</a>
-                    <a href="/nebraska/"><span class="swatch"></span> Nebraska</a>
-                    <a href="/nevada/"><span class="swatch"></span> Nevada</a>
-                    <a href="/new_hampshire/"><span class="swatch"></span> New Hampshire</a>
-                    <a href="/new_jersey/"><span class="swatch"></span> New Jersey</a>
-                    <a href="/new_mexico/"><span class="swatch"></span> New Mexico</a>
-                    <a href="/new_york/"><span class="swatch"></span> New York</a>
-                    <a href="/north_carolina/"><span class="swatch"></span> North Carolina</a>
-                    <a href="/north_dakota/"><span class="swatch"></span> North Dakota</a>
-                </div>
-                <div class="col-sm-4">
-                    <a href="/ohio/"><span class="swatch"></span> Ohio</a>
-                    <a href="/oklahoma/"><span class="swatch"></span> Oklahoma</a>
-                    <a href="/oregon/"><span class="swatch"></span> Oregon</a>
-                    <a href="/pennsylvania/"><span class="swatch"></span> Pennsylvania</a>
-                    <a href="/rhode_island/"><span class="swatch"></span> Rhode Island</a>
-                    <a href="/south_carolina/"><span class="swatch"></span> South Carolina</a>
-                    <a href="/south_dakota/"><span class="swatch"></span> South Dakota</a>
-                    <a href="/tennessee/"><span class="swatch"></span> Tennessee</a>
-                    <a href="/texas/"><span class="swatch"></span> Texas</a>
-                    <a href="/utah/"><span class="swatch"></span> Utah</a>
-                    <a href="/vermont/"><span class="swatch"></span> Vermont</a>
-                    <a href="/virginia/"><span class="swatch"></span> Virginia</a>
-                    <a href="/washington/"><span class="swatch"></span> Washington</a>
-                    <a href="/west_virginia/"><span class="swatch"></span> West Virginia</a>
-                    <a href="/wisconsin/"><span class="swatch"></span> Wisconsin</a>
-                    <a href="/wyoming/"><span class="swatch"></span> Wyoming</a>
-                </div>
-            </div>
-            <div class="row states-listing visible-xs-block">
-                <div class="col-xs-6">
-                    <a href="/alabama/"><span class="swatch"></span> Alabama</a>
-                    <a href="/alaska/"><span class="swatch"></span> Alaska</a>
-                    <a href="/arizona/"><span class="swatch"></span> Arizona</a>
-                    <a href="/arkansas/"><span class="swatch"></span> Arkansas</a>
-                    <a href="/california/"><span class="swatch"></span> California</a>
-                    <a href="/colorado/"><span class="swatch"></span> Colorado</a>
-                    <a href="/connecticut/"><span class="swatch"></span> Connecticut</a>
-                    <a href="/delaware/"><span class="swatch"></span> Delaware</a>
-                    <a href="/florida/"><span class="swatch"></span> Florida</a>
-                    <a href="/georgia/"><span class="swatch"></span> Georgia</a>
-                    <a href="/hawaii/"><span class="swatch"></span> Hawaii</a>
-                    <a href="/idaho/"><span class="swatch"></span> Idaho</a>
-                    <a href="/illinois/"><span class="swatch"></span> Illinois</a>
-                    <a href="/indiana/"><span class="swatch"></span> Indiana</a>
-                    <a href="/iowa/"><span class="swatch"></span> Iowa</a>
-                    <a href="/kansas/"><span class="swatch"></span> Kansas</a>
-                    <a href="/kentucky/"><span class="swatch"></span> Kentucky</a>
-                    <a href="/louisiana/"><span class="swatch"></span> Louisiana</a>
-                    <a href="/maine/"><span class="swatch"></span> Maine</a>
-                    <a href="/maryland/"><span class="swatch"></span> Maryland</a>
-                    <a href="/massachusetts/"><span class="swatch"></span> Massachusetts</a>
-                    <a href="/michigan/"><span class="swatch"></span> Michigan</a>
-                    <a href="/minnesota/"><span class="swatch"></span> Minnesota</a>
-                    <a href="/mississippi/"><span class="swatch"></span> Mississippi</a>
-                    <a href="/missouri/"><span class="swatch"></span> Missouri</a>
-                    <a href="/montana/"><span class="swatch"></span> Montana</a>
-                </div>
-                <div class="col-xs-6">
-                    <a href="/nebraska/"><span class="swatch"></span> Nebraska</a>
-                    <a href="/nevada/"><span class="swatch"></span> Nevada</a>
-                    <a href="/new_hampshire/"><span class="swatch"></span> New Hampshire</a>
-                    <a href="/new_jersey/"><span class="swatch"></span> New Jersey</a>
-                    <a href="/new_mexico/"><span class="swatch"></span> New Mexico</a>
-                    <a href="/new_york/"><span class="swatch"></span> New York</a>
-                    <a href="/north_carolina/"><span class="swatch"></span> North Carolina</a>
-                    <a href="/north_dakota/"><span class="swatch"></span> North Dakota</a>
-                    <a href="/ohio/"><span class="swatch"></span> Ohio</a>
-                    <a href="/oklahoma/"><span class="swatch"></span> Oklahoma</a>
-                    <a href="/oregon/"><span class="swatch"></span> Oregon</a>
-                    <a href="/pennsylvania/"><span class="swatch"></span> Pennsylvania</a>
-                    <a href="/rhode_island/"><span class="swatch"></span> Rhode Island</a>
-                    <a href="/south_carolina/"><span class="swatch"></span> South Carolina</a>
-                    <a href="/south_dakota/"><span class="swatch"></span> South Dakota</a>
-                    <a href="/tennessee/"><span class="swatch"></span> Tennessee</a>
-                    <a href="/texas/"><span class="swatch"></span> Texas</a>
-                    <a href="/utah/"><span class="swatch"></span> Utah</a>
-                    <a href="/vermont/"><span class="swatch"></span> Vermont</a>
-                    <a href="/virginia/"><span class="swatch"></span> Virginia</a>
-                    <a href="/washington/"><span class="swatch"></span> Washington</a>
-                    <a href="/west_virginia/"><span class="swatch"></span> West Virginia</a>
-                    <a href="/wisconsin/"><span class="swatch"></span> Wisconsin</a>
-                    <a href="/wyoming/"><span class="swatch"></span> Wyoming</a>
-                </div>
-            </div>
-        </div>
-
-        <h2>What is Partisan Gerrymandering?</h2>
-
-        <p>Partisan gerrymandering means drawing district lines to benefit one party and disadvantage the opposing party. Through gerrymandering, a party is able to translate its votes into seats more efficiently than its opponent. With more seats comes more legislative power and, ultimately, more control over the policies the government enacts.</p>
-
-        <h3>How Do We Measure It?</h3>
-
-        <p>We use three distinct measures of partisan gerrymandering: the efficiency gap, partisan bias, and the mean-median difference. All of these metrics are reliable when a state is competitive, but only the efficiency gap should be trusted when one party predominates in a state.</p>
-
-        <ul class="nav nav-tabs" id="tabs-metrics">
-            <li class="active"><a href="#tab-efficiencygap" data-toggle="tab">Efficiency Gap</a></li>
-            <li><a href="#tab-partisanbias" data-toggle="tab">Partisan Bias</a></li>
-            <li><a href="#tab-meanmedian" data-toggle="tab">Mean-<span class="mobilespace"> </span>Median</a></li>
-        </ul>
-        <div class="tab-content">
-            <div class="tab-pane fade in active" id="tab-efficiencygap">
-                <p>Partisan gerrymandering is always carried out by cracking a party&rsquo;s supporters among many districts, in which their preferred candidates lose by relatively narrow margins; and/or by packing a party&rsquo;s backers in a few districts, in which their preferred candidates win by enormous margins. Both cracking and packing produce votes that are wasted in the sense that they do not contribute to a candidate&rsquo;s election. In the case of cracking, all votes cast for the losing candidate are wasted. In the case of packing, all votes cast for the winning candidate, above the 50% (plus one) threshold needed for victory, are wasted. The efficiency gap is calculated by taking one party&rsquo;s total wasted votes in an election, subtracting the other party&rsquo;s total wasted votes, and dividing by the total number of votes cast. It captures in a single number the extent to which district lines crack and pack one party&rsquo;s voters more than the other party&rsquo;s voters.</p>
-                <p><a href="/metrics/efficiencygap/">Learn more about the efficiency gap <i class="glyphicon glyphicon-chevron-right" style="font-size:0.8em;"></i></a></p>
-            </div>
-            <div class="tab-pane fade" id="tab-partisanbias">
-                <p>Partisan bias is the difference between each party&rsquo;s seat share and 50% in a hypothetical, perfectly tied election. For example, if a party would win 55% of a plan&rsquo;s districts if it received 50% of the statewide vote, then the plan would have a bias of 5% in this party&rsquo;s favor. To calculate partisan bias, the observed vote share in each district is shifted by the amount necessary to simulate a tied statewide election. Each party&rsquo;s seat share in this hypothetical election is then determined. The difference between each party&rsquo;s seat share and 50% is partisan bias.</p>
-                <p><a href="/metrics/partisanbias/">Learn more about partisan bias <i class="glyphicon glyphicon-chevron-right" style="font-size:0.8em;"></i></a></p>
-            </div>
-            <div class="tab-pane fade" id="tab-meanmedian">
-                <p>The mean-median difference is a party&rsquo;s median vote share minus its mean vote share, across all of a plan&rsquo;s districts. For example, if a party has a median vote share of 45% and a mean vote share of 50%, then the plan has a mean-median difference of 5% against this party. When the mean and the median diverge significantly, the district distribution is skewed in favor of one party and against its opponent. Conversely, when the mean and the median are close, the district distribution is more symmetric.</p>
-                <p><a href="/metrics/meanmedian/">Learn more about the mean-median difference <i class="glyphicon glyphicon-chevron-right" style="font-size:0.8em;"></i></a></p>
-            </div>
-        </div>
-    </div><!--/container-mainbody-->
-
-
-    <!-- this popup will be displayed by selectState() -->
-    <div id="stateinfo-popup">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title"><span data-field="statename"></span></h4>
-        <span data-field="analysis"></span>
-        <br>
-        <a href="javascript:void(0);" class="learnmore"><span>Learn More <i class="glyphicon glyphicon-chevron-right" style="font-size:0.8em;"></i></span></a>
+  <div class="container container-mainbody">
+    <h1 class="title">Score Electoral District Maps</h1>
+    <h2 class="subtitle">Evaluate their fairness.</h2>
+    <div class="intro">
+        <p>Most of our federal and state legislators are elected from districts. Every ten years, state governments redraw district boundaries in a process known as redistricting. PlanScore promotes fairness in the redistricting process. We make it easy for policymakers and advocates to <a href="/upload">score new district maps</a> and assess whether they’re fair or gerrymandered. We also provide access to the most comprehensive <a href="/about/historical-data/">historical dataset</a> of partisan gerrymandering ever assembled. As the 2021 redistricting cycle unfolds, PlanScore will collect and analyze new district plans as they are proposed in your state.</p>
+        <p>PlanScore is a project of <a href="https://campaignlegal.org/" target="_blank">Campaign Legal Center</a>, a nonpartisan organization working to advance democracy though law. For media inquiries, please <a href="mailto:media@campaignlegal.org?subject=Reporter%20question%20about%20PlanScore">email us</a>.</p>
     </div>
 
+    <div class="row" id="boundarypicker">
+      <div class="center" data-boundary="ushouse" title="Show partisan skew analysis for US House district plans">
+        <a href="javascript:void(0);">U.S. House</a>
+      </div>
+      <div class="center" data-boundary="statesenate" title="Show partisan skew analysis for State Senate district plans">
+        <a href="javascript:void(0);">State Senates</a>
+      </div>
+      <div class="center" data-boundary="statehouse" title="Show partisan skew analysis for State House district plans">
+        <a href="javascript:void(0);">State Houses</a>
+      </div>
+    </div>
+    <br/>
 
-    <!--[include_footer]-->
+  <div id="maplegend">
+    <div class="slice d3"></div>
+    <div class="slice d2"></div>
+    <div class="slice d1"></div>
+    <div class="slice balanced"></div>
+    <div class="slice r1"></div>
+    <div class="slice r2"></div>
+    <div class="slice r3"></div>
+    <div class="slice nodata"></div>
+    <div class="demtext">Skews Democrat</div>
+    <div class="reptext">Skews Republican</div>
+    <div class="nodatatext">No Data</div>
+  </div>
+
+  <div id="map"></div>
+
+    <!-- the mobile + desktop year picker UIs; see initYearPickers() and of course selectYear() -->
+
+  <div class="row hidden-xs" id="yearpicker-big-wrapper">
+    <div class="col-xs-1" id="yearpicker-big-playbutton">
+      <a data-status="paused" href="javascript:void(0);" title="Play an animation showing change in plan skew over time"><i class="glyphicon glyphicon-play"></i></a>
+      <a data-status="playing" class="hidden" href="javascript:void(0);" title="Pause the animation"><i class="glyphicon glyphicon-pause"></i></a>
+    </div>
+    <div class="col-xs-11" id="yearpicker-big"></div>
+  </div>
+  <div class="container visible-xs-block">
+    <div id="yearpicker-small" class="row">
+      <!-- two giant hit boxes for next/prev; year readout is positioned over top -->
+      <div class="col-xs-6 left nextprev" title="Previous year"><i class="glyphicon glyphicon-chevron-left"></i></div>
+      <div class="col-xs-6 right nextprev" title="Next year"><i class="glyphicon glyphicon-chevron-right"></i></div>
+      <div class="readout center"></div>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- be careful of changing the structure: updateStateListingSwatches() expects A with span + statename in order to key to a state -->
+    <!-- note that there are multiple of these for varying screen widths -->
+    <!-- note too that updateStateListingHashes() will update the lirnks below to include #! components, to link to the state with year+district selected -->
+    <div class="row states-listing visible-lg-block">
+      <div class="col-lg-3">
+        <a href="/alabama/"><span class="swatch"></span> Alabama</a>
+        <a href="/alaska/"><span class="swatch"></span> Alaska</a>
+        <a href="/arizona/"><span class="swatch"></span> Arizona</a>
+        <a href="/arkansas/"><span class="swatch"></span> Arkansas</a>
+        <a href="/california/"><span class="swatch"></span> California</a>
+        <a href="/colorado/"><span class="swatch"></span> Colorado</a>
+        <a href="/connecticut/"><span class="swatch"></span> Connecticut</a>
+        <a href="/delaware/"><span class="swatch"></span> Delaware</a>
+        <a href="/florida/"><span class="swatch"></span> Florida</a>
+        <a href="/georgia/"><span class="swatch"></span> Georgia</a>
+        <a href="/hawaii/"><span class="swatch"></span> Hawaii</a>
+        <a href="/idaho/"><span class="swatch"></span> Idaho</a>
+        <a href="/illinois/"><span class="swatch"></span> Illinois</a>
+      </div>
+      <div class="col-lg-3">
+        <a href="/indiana/"><span class="swatch"></span> Indiana</a>
+        <a href="/iowa/"><span class="swatch"></span> Iowa</a>
+        <a href="/kansas/"><span class="swatch"></span> Kansas</a>
+        <a href="/kentucky/"><span class="swatch"></span> Kentucky</a>
+        <a href="/louisiana/"><span class="swatch"></span> Louisiana</a>
+        <a href="/maine/"><span class="swatch"></span> Maine</a>
+        <a href="/maryland/"><span class="swatch"></span> Maryland</a>
+        <a href="/massachusetts/"><span class="swatch"></span> Massachusetts</a>
+        <a href="/michigan/"><span class="swatch"></span> Michigan</a>
+        <a href="/minnesota/"><span class="swatch"></span> Minnesota</a>
+        <a href="/mississippi/"><span class="swatch"></span> Mississippi</a>
+        <a href="/missouri/"><span class="swatch"></span> Missouri</a>
+        <a href="/montana/"><span class="swatch"></span> Montana</a>
+      </div>
+      <div class="col-lg-3">
+        <a href="/nebraska/"><span class="swatch"></span> Nebraska</a>
+        <a href="/nevada/"><span class="swatch"></span> Nevada</a>
+        <a href="/new_hampshire/"><span class="swatch"></span> New Hampshire</a>
+        <a href="/new_jersey/"><span class="swatch"></span> New Jersey</a>
+        <a href="/new_mexico/"><span class="swatch"></span> New Mexico</a>
+        <a href="/new_york/"><span class="swatch"></span> New York</a>
+        <a href="/north_carolina/"><span class="swatch"></span> North Carolina</a>
+        <a href="/north_dakota/"><span class="swatch"></span> North Dakota</a>
+        <a href="/ohio/"><span class="swatch"></span> Ohio</a>
+        <a href="/oklahoma/"><span class="swatch"></span> Oklahoma</a>
+        <a href="/oregon/"><span class="swatch"></span> Oregon</a>
+        <a href="/pennsylvania/"><span class="swatch"></span> Pennsylvania</a>
+      </div>
+      <div class="col-lg-3">
+        <a href="/rhode_island/"><span class="swatch"></span> Rhode Island</a>
+        <a href="/south_carolina/"><span class="swatch"></span> South Carolina</a>
+        <a href="/south_dakota/"><span class="swatch"></span> South Dakota</a>
+        <a href="/tennessee/"><span class="swatch"></span> Tennessee</a>
+        <a href="/texas/"><span class="swatch"></span> Texas</a>
+        <a href="/utah/"><span class="swatch"></span> Utah</a>
+        <a href="/vermont/"><span class="swatch"></span> Vermont</a>
+        <a href="/virginia/"><span class="swatch"></span> Virginia</a>
+        <a href="/washington/"><span class="swatch"></span> Washington</a>
+        <a href="/west_virginia/"><span class="swatch"></span> West Virginia</a>
+        <a href="/wisconsin/"><span class="swatch"></span> Wisconsin</a>
+        <a href="/wyoming/"><span class="swatch"></span> Wyoming</a>
+      </div>
+    </div>
+    <div class="row states-listing visible-sm-block visible-md-block">
+      <div class="col-sm-4">
+        <a href="/alabama/"><span class="swatch"></span> Alabama</a>
+        <a href="/alaska/"><span class="swatch"></span> Alaska</a>
+        <a href="/arizona/"><span class="swatch"></span> Arizona</a>
+        <a href="/arkansas/"><span class="swatch"></span> Arkansas</a>
+        <a href="/california/"><span class="swatch"></span> California</a>
+        <a href="/colorado/"><span class="swatch"></span> Colorado</a>
+        <a href="/connecticut/"><span class="swatch"></span> Connecticut</a>
+        <a href="/delaware/"><span class="swatch"></span> Delaware</a>
+        <a href="/florida/"><span class="swatch"></span> Florida</a>
+        <a href="/georgia/"><span class="swatch"></span> Georgia</a>
+        <a href="/hawaii/"><span class="swatch"></span> Hawaii</a>
+        <a href="/idaho/"><span class="swatch"></span> Idaho</a>
+        <a href="/illinois/"><span class="swatch"></span> Illinois</a>
+        <a href="/indiana/"><span class="swatch"></span> Indiana</a>
+        <a href="/iowa/"><span class="swatch"></span> Iowa</a>
+        <a href="/kansas/"><span class="swatch"></span> Kansas</a>
+        <a href="/kentucky/"><span class="swatch"></span> Kentucky</a>
+      </div>
+      <div class="col-sm-4">
+        <a href="/louisiana/"><span class="swatch"></span> Louisiana</a>
+        <a href="/maine/"><span class="swatch"></span> Maine</a>
+        <a href="/maryland/"><span class="swatch"></span> Maryland</a>
+        <a href="/massachusetts/"><span class="swatch"></span> Massachusetts</a>
+        <a href="/michigan/"><span class="swatch"></span> Michigan</a>
+        <a href="/minnesota/"><span class="swatch"></span> Minnesota</a>
+        <a href="/mississippi/"><span class="swatch"></span> Mississippi</a>
+        <a href="/missouri/"><span class="swatch"></span> Missouri</a>
+        <a href="/montana/"><span class="swatch"></span> Montana</a>
+        <a href="/nebraska/"><span class="swatch"></span> Nebraska</a>
+        <a href="/nevada/"><span class="swatch"></span> Nevada</a>
+        <a href="/new_hampshire/"><span class="swatch"></span> New Hampshire</a>
+        <a href="/new_jersey/"><span class="swatch"></span> New Jersey</a>
+        <a href="/new_mexico/"><span class="swatch"></span> New Mexico</a>
+        <a href="/new_york/"><span class="swatch"></span> New York</a>
+        <a href="/north_carolina/"><span class="swatch"></span> North Carolina</a>
+        <a href="/north_dakota/"><span class="swatch"></span> North Dakota</a>
+      </div>
+      <div class="col-sm-4">
+        <a href="/ohio/"><span class="swatch"></span> Ohio</a>
+        <a href="/oklahoma/"><span class="swatch"></span> Oklahoma</a>
+        <a href="/oregon/"><span class="swatch"></span> Oregon</a>
+        <a href="/pennsylvania/"><span class="swatch"></span> Pennsylvania</a>
+        <a href="/rhode_island/"><span class="swatch"></span> Rhode Island</a>
+        <a href="/south_carolina/"><span class="swatch"></span> South Carolina</a>
+        <a href="/south_dakota/"><span class="swatch"></span> South Dakota</a>
+        <a href="/tennessee/"><span class="swatch"></span> Tennessee</a>
+        <a href="/texas/"><span class="swatch"></span> Texas</a>
+        <a href="/utah/"><span class="swatch"></span> Utah</a>
+        <a href="/vermont/"><span class="swatch"></span> Vermont</a>
+        <a href="/virginia/"><span class="swatch"></span> Virginia</a>
+        <a href="/washington/"><span class="swatch"></span> Washington</a>
+        <a href="/west_virginia/"><span class="swatch"></span> West Virginia</a>
+        <a href="/wisconsin/"><span class="swatch"></span> Wisconsin</a>
+        <a href="/wyoming/"><span class="swatch"></span> Wyoming</a>
+      </div>
+    </div>
+    <div class="row states-listing visible-xs-block">
+      <div class="col-xs-6">
+        <a href="/alabama/"><span class="swatch"></span> Alabama</a>
+        <a href="/alaska/"><span class="swatch"></span> Alaska</a>
+        <a href="/arizona/"><span class="swatch"></span> Arizona</a>
+        <a href="/arkansas/"><span class="swatch"></span> Arkansas</a>
+        <a href="/california/"><span class="swatch"></span> California</a>
+        <a href="/colorado/"><span class="swatch"></span> Colorado</a>
+        <a href="/connecticut/"><span class="swatch"></span> Connecticut</a>
+        <a href="/delaware/"><span class="swatch"></span> Delaware</a>
+        <a href="/florida/"><span class="swatch"></span> Florida</a>
+        <a href="/georgia/"><span class="swatch"></span> Georgia</a>
+        <a href="/hawaii/"><span class="swatch"></span> Hawaii</a>
+        <a href="/idaho/"><span class="swatch"></span> Idaho</a>
+        <a href="/illinois/"><span class="swatch"></span> Illinois</a>
+        <a href="/indiana/"><span class="swatch"></span> Indiana</a>
+        <a href="/iowa/"><span class="swatch"></span> Iowa</a>
+        <a href="/kansas/"><span class="swatch"></span> Kansas</a>
+        <a href="/kentucky/"><span class="swatch"></span> Kentucky</a>
+        <a href="/louisiana/"><span class="swatch"></span> Louisiana</a>
+        <a href="/maine/"><span class="swatch"></span> Maine</a>
+        <a href="/maryland/"><span class="swatch"></span> Maryland</a>
+        <a href="/massachusetts/"><span class="swatch"></span> Massachusetts</a>
+        <a href="/michigan/"><span class="swatch"></span> Michigan</a>
+        <a href="/minnesota/"><span class="swatch"></span> Minnesota</a>
+        <a href="/mississippi/"><span class="swatch"></span> Mississippi</a>
+        <a href="/missouri/"><span class="swatch"></span> Missouri</a>
+        <a href="/montana/"><span class="swatch"></span> Montana</a>
+      </div>
+      <div class="col-xs-6">
+        <a href="/nebraska/"><span class="swatch"></span> Nebraska</a>
+        <a href="/nevada/"><span class="swatch"></span> Nevada</a>
+        <a href="/new_hampshire/"><span class="swatch"></span> New Hampshire</a>
+        <a href="/new_jersey/"><span class="swatch"></span> New Jersey</a>
+        <a href="/new_mexico/"><span class="swatch"></span> New Mexico</a>
+        <a href="/new_york/"><span class="swatch"></span> New York</a>
+        <a href="/north_carolina/"><span class="swatch"></span> North Carolina</a>
+        <a href="/north_dakota/"><span class="swatch"></span> North Dakota</a>
+        <a href="/ohio/"><span class="swatch"></span> Ohio</a>
+        <a href="/oklahoma/"><span class="swatch"></span> Oklahoma</a>
+        <a href="/oregon/"><span class="swatch"></span> Oregon</a>
+        <a href="/pennsylvania/"><span class="swatch"></span> Pennsylvania</a>
+        <a href="/rhode_island/"><span class="swatch"></span> Rhode Island</a>
+        <a href="/south_carolina/"><span class="swatch"></span> South Carolina</a>
+        <a href="/south_dakota/"><span class="swatch"></span> South Dakota</a>
+        <a href="/tennessee/"><span class="swatch"></span> Tennessee</a>
+        <a href="/texas/"><span class="swatch"></span> Texas</a>
+        <a href="/utah/"><span class="swatch"></span> Utah</a>
+        <a href="/vermont/"><span class="swatch"></span> Vermont</a>
+        <a href="/virginia/"><span class="swatch"></span> Virginia</a>
+        <a href="/washington/"><span class="swatch"></span> Washington</a>
+        <a href="/west_virginia/"><span class="swatch"></span> West Virginia</a>
+        <a href="/wisconsin/"><span class="swatch"></span> Wisconsin</a>
+        <a href="/wyoming/"><span class="swatch"></span> Wyoming</a>
+      </div>
+    </div>
+  </div>
+
+  <h2>What is Partisan Gerrymandering?</h2>
+
+  <p>Gerrymandering is the process by which politicians draw voting maps to make it easier to get reelected. Through gerrymandering, a party is able to translate its votes into seats more efficiently than its opponent. Seats translate to legislative power and more control over the policies the government enacts.</p>
+  <p>Gerrymandering has been a practice in American elections nearly since the founding of the country. But in recent redistricting cycles, the accuracy of voter databases and mapping software has skyrocketed, leading to a trend of increasingly skewed maps in the states where politicians control district line drawing. One way to combat gerrymandering is through the creation of independent redistricting commissions, bodies separate from state legislatures that are responsible for drawing the districts. You can <a href="https://campaignlegal.org/democracyu/accountability/independent-redistricting-commissions" target="_blank">learn more about independent redistricting commissions</a> in Campaign Legal Center's DemocracyU toolkit, and <a href="https://campaignlegal.org/story/how-michigan-voters-came-together-flip-gerrymandering-its-head" target="_blank">read the story of Nancy Wang, executive director of Voters Not Politicians</a>, the group that spurred the creation of the Michigan Independent Redistricting Commission in 2018. </p>
+  <p>But first, in order to understand the impact of gerrymandering on our voting maps, we need to be able to measure it.</p>
+
+  <h3>How Do We Measure It?</h3>
+
+  <p>We use three distinct measures of partisan gerrymandering: the efficiency gap, partisan bias, and the mean-median difference. All of these metrics are reliable when a state is competitive, but only the efficiency gap should be used when one party controls the redistricting process.</p>
+
+    <ul class="nav nav-tabs" id="tabs-metrics">
+      <li class="active"><a href="#tab-efficiencygap" data-toggle="tab">Efficiency Gap</a></li>
+      <li><a href="#tab-partisanbias" data-toggle="tab">Partisan Bias</a></li>
+      <li><a href="#tab-meanmedian" data-toggle="tab">Mean-<span class="mobilespace"> </span>Median</a></li>
+    </ul>
+    <div class="tab-content">
+      <div class="tab-pane fade in active" id="tab-efficiencygap">
+        <p>Partisan gerrymandering is always carried out by cracking a party&rsquo;s supporters among many districts, in which their preferred candidates lose by relatively narrow margins; and/or by packing a party&rsquo;s backers in a few districts, in which their preferred candidates win by enormous margins. Both cracking and packing produce votes that are inefficient in the sense that they do not contribute to a candidate&rsquo;s election. In the case of cracking, all votes cast for the losing candidate are inefficient. In the case of packing, all votes cast for the winning candidate, above the 50% (plus one) threshold needed for victory, are inefficient. The efficiency gap is calculated by taking one party&rsquo;s total inefficient votes in an election, subtracting the other party&rsquo;s total inefficient votes, and dividing by the total number of votes cast. It captures in a single number the extent to which district lines crack and pack one party&rsquo;s voters more than the other party&rsquo;s voters.</p>
+        <p><a href="/metrics/efficiencygap/">Learn more about the efficiency gap <i class="glyphicon glyphicon-chevron-right" style="font-size:0.8em;"></i></a></p>
+      </div>
+      <div class="tab-pane fade" id="tab-partisanbias">
+        <p>Partisan bias is the difference between each party&rsquo;s seat share and 50% in a hypothetical, perfectly tied election. For example, if a party would win 55% of a plan&rsquo;s districts if it received 50% of the statewide vote, then the plan would have a bias of 5% in this party&rsquo;s favor. To calculate partisan bias, the observed vote share in each district is shifted by the amount necessary to simulate a tied statewide election. Each party&rsquo;s seat share in this hypothetical election is then determined. The difference between each party&rsquo;s seat share and 50% is partisan bias.</p>
+        <p><a href="/metrics/partisanbias/">Learn more about partisan bias <i class="glyphicon glyphicon-chevron-right" style="font-size:0.8em;"></i></a></p>
+      </div>
+      <div class="tab-pane fade" id="tab-meanmedian">
+        <p>The mean-median difference is a party&rsquo;s median vote share minus its mean vote share, across all of a plan&rsquo;s districts. For example, if a party has a median vote share of 45% and a mean vote share of 50%, then the plan has a mean-median difference of 5% against this party. When the mean and the median diverge significantly, the district distribution is skewed in favor of one party and against its opponent. Conversely, when the mean and the median are close, the district distribution is more symmetric.</p>
+        <p><a href="/metrics/meanmedian/">Learn more about the mean-median difference <i class="glyphicon glyphicon-chevron-right" style="font-size:0.8em;"></i></a></p>
+      </div>
+    </div>
+  </div><!--/container-mainbody-->
+
+
+  <!-- this popup will be displayed by selectState() -->
+  <div id="stateinfo-popup">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title"><span data-field="statename"></span></h4>
+    <span data-field="analysis"></span>
+    <br>
+    <a href="javascript:void(0);" class="learnmore"><span>Learn More <i class="glyphicon glyphicon-chevron-right" style="font-size:0.8em;"></i></span></a>
+  </div>
+
+
+  <!--[include_footer]-->
 
 </body>
 </html>
+
+<!-- 😱 -->

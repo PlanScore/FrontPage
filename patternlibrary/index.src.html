@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <title>PlanScore :: Pattern Library</title>
 
     <!--[include_head]-->
 
-    <!-- PlanScore Website Framework -->    
-    <link href="/sitewide.css" rel="stylesheet" />
-    <script src="/sitewide.js"></script>
+    <!-- this page's own JS + CSS -->
+    <link href="index.css?[hash]" rel="stylesheet" />
+    <script src="index.js?[hash]"></script>
 
     <!-- OG tags -->
     <meta property="og:title" content="PlanScore" />
@@ -81,21 +81,15 @@
             <h2>Boundary Picker</h2>
             <p>Just set <code>class="active"</code> on whichever geography is live. The static site uses <code>ushouse</code>, <code>statehouse</code>, and when we get data we'll also use <code>statesenate</code> in our code to note which geometry is active.
             <div class="row" id="boundarypicker">
-                <div class="col-xs-4">
-                    <div class="col-xs-12 center active" data-boundary="ushouse" title="Show partisan bias analysis for US House district plans">
-                        <a href="#">US House</a>
-                    </div>
-                </div>
-                <div class="col-xs-4">
-                    <div class="col-xs-12 center" data-boundary="statesenate" title="Show partisan bias analysis for State Senate district plans">
-                        <a href="#">State Senate</a>
-                    </div>
-                </div>
-                <div class="col-xs-4">
-                    <div class="col-xs-12 center" data-boundary="statehouse" title="Show partisan bias analysis for State House district plans">
-                        <a href="#">State House</a>
-                    </div>
-                </div>
+                  <div class="center active" data-boundary="ushouse" title="Show partisan bias analysis for US House district plans">
+                      <a href="#">US House</a>
+                  </div>
+                  <div class="center" data-boundary="statesenate" title="Show partisan bias analysis for State Senate district plans">
+                      <a href="#">State Senate</a>
+                  </div>
+                  <div class="center" data-boundary="statehouse" title="Show partisan bias analysis for State House district plans">
+                      <a href="#">State House</a>
+                  </div>
             </div>
 
             <h2>Tab Block</h2>
@@ -150,7 +144,7 @@
                         <p class="big">This plan is more or less balanced. Let's check the math.</p>
                     </div>
                     <div class="col-xs-12 col-md-6">
-                        <p>Efficiency Gap (EG) shows relative wasted votes between parties, comparing the total statewide number of superfluous and losing votes for each party. <a href="/metrics/efficiencygap/">Learn more: What is the efficiency gap and how do we calculate it?</a></p>
+                        <p>Efficiency Gap (EG) shows relative inefficient votes between parties, comparing the total statewide number of superfluous and losing votes for each party. <a href="/metrics/efficiencygap/">Learn more: What is the efficiency gap and how do we calculate it?</a></p>
 
                         <div id="chart-egvoteswasted"></div>
                     </div>
@@ -159,13 +153,17 @@
 
 
             <h2>Button Styles</h2>
-
+            <h3>Default</h3>
             <a class="btn btn-default" href="#" role="button">Link</a>
             <button class="btn btn-default" type="submit">Button</button>
             <input class="btn btn-default" type="button" value="Input">
             <input class="btn btn-default" type="submit" value="Submit">
-            <br><br>
 
+            <h3>Primary</h3>
+            <a class="btn btn-primary" href="#" role="button">Link</a>
+            <button class="btn btn-primary" type="submit">Button</button>
+            <input class="btn btn-primary" type="button" value="Input">
+            <input class="btn btn-primary" type="submit" value="Submit">
 
             <h2>Bias Scoring Histograms</h2>
             <p>Create the DIVs with the code below, then use <code>drawBiasBellChart()</code> to fill in their curves and markers. View Source to see actual code.</p>
@@ -195,25 +193,25 @@
                 </div>
             </div>
 
-     
+
             <h2>Tables</h2>
 
             <h3>Three-column table where all columns are equal</h3>
                 <div class="table-responsive ">
-                    <table class="table table-hover"> 
+                    <table class="table table-hover">
                         <thead>
                             <tr>
                                 <th>Column 1</th>
                                 <th>Column 2</th>
                                 <th>Column 3</th>
-                            </tr> 
-                        </thead> 
-                        <tbody> 
+                            </tr>
+                        </thead>
+                        <tbody>
                             <tr>
                                 <td>Item 1</td>
                                 <td>Item 2</td>
                                 <td>Item 3</td>
-                            </tr> 
+                            </tr>
                             <tr>
                                 <td>Item 1</td>
                                 <td>Item 2</td>
@@ -231,7 +229,7 @@
             <h3>Seven Column matrix where first column is more important</h3>
 
                 <div class="table-responsive col-xs-12 col-sm-12">
-                    <table class="table table-hover"> 
+                    <table class="table table-hover">
                         <thead>
                             <tr>
                                 <th>District</th>
@@ -241,9 +239,9 @@
                                 <th>Metric 4</th>
                                 <th>Metric 5</th>
                                 <th>Metric 6</th>
-                            </tr> 
-                        </thead> 
-                        <tbody> 
+                            </tr>
+                        </thead>
+                        <tbody>
                             <tr>
                                 <th scope="row">##</th>
                                 <td>Item 1</td>
@@ -252,7 +250,7 @@
                                 <td>Item 4</td>
                                 <td>Item 5</td>
                                 <td>Item 6</td>
-                            </tr> 
+                            </tr>
                             <tr>
                                 <th scope="row">##</th>
                                 <td>Item 1</td>

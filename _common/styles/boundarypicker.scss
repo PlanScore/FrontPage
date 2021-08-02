@@ -2,82 +2,60 @@
  * BOUNDARY PICKER
  * the selector for statehouse/ushouse/senate
  */
+
 #boundarypicker {
-    /* small-enough screens, force these to 100% as they will linewrap before Bootstrap will "xs" them to stack */
-    
-    @media screen and (max-width: $screen-sm) {
-        > div {
-            padding-right: 10px;
-            padding-left: 10px;
-        }
-        > div:first-child {
-            padding-left: 15px;
-        }
-        > div:last-child {
-            padding-right: 15px;
-        }
-    }
-    
-    @media screen and (max-width: $screen-xs) {
-        > div {
-            padding-right: 5px;
-            padding-left: 5px;
-        }
-        > div:first-child {
-            padding-left: 15px;
-        }
-        > div:last-child {
-            padding-right: 15px;
-        }
-    }
-    
-    @media screen and (max-width: $screen-xxs) {
-        > div {
-            padding-right: 2px;
-            padding-left: 2px;
-        }
-        > div:first-child {
-            padding-left: 15px;
-        }
-        > div:last-child {
-            padding-right: 15px;
-        }
-    }
-    
-    @media screen and (max-width: 480px) {
-        > div {
-            word-spacing: 10em;
-        }
+  background-color: $gray-light;
+  border: 1px solid $gray-med;
+  border-radius: 5px;
+  display: flex;
+  font-size: 16px;
+  grid-template-columns: auto auto auto;
+  margin: auto;
+  max-width: 488px;
+
+  div[data-boundary] {
+    cursor: pointer;
+    flex-grow: 1;
+    border-right: 1px solid $gray-med;
+    border-left: 1px solid $gray-med;
+    border-collapse: collapse;
+    padding-bottom: 9px;
+    padding-top: 9px;
+    transition: 0.25s ease;
+
+    a {
+      text-decoration: none;
+      color: $navy;
+      transition: 0.25s ease;
     }
 
-    div[data-boundary] {
-        cursor: pointer;
+    &.active {
+      background-color: white;
+      cursor: default;
 
-        a {
-            text-decoration: none !important;
-            color: #95989A;
-        }
-
-        background-color: #F2F2F2;
-
-        padding-bottom: 15px;
-        padding-top: 15px;
-
-        font-size: 18px;
-        border-radius: 2px;
-        box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, .16);
+      a {
+        font-family: "AvenirLTPro-Heavy", sans-serif;
+      }
     }
-    div[data-boundary].active {
-        background-color: #4D599E;
+
+    &:hover:not(.active) {
+      background-color: $gray-dark;
+
+      a {
         color: white;
-        a {
-            color: white;
-        }
+      }
     }
-    div[data-boundary="ushouse"] {
+
+    &:first-child{
+      border-left: none;
+      border-top-left-radius: 5px;
+      border-bottom-left-radius: 5px;
     }
-    div[data-boundary="statesenate"] {
+
+    &:last-child{
+      border-right: none;
+      border-top-right-radius: 5px;
+      border-bottom-right-radius: 5px;
     }
-    div[data-boundary="statehouse"] {
-    }
+  }
 }

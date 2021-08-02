@@ -8,3 +8,4 @@ npm-debug.log
 WEBSITE_OUTPUT/
 !WEBSITE_OUTPUT/data/
 !WEBSITE_OUTPUT/images/
+!WEBSITE_OUTPUT/fonts/

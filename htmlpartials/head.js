@@ -3,6 +3,9 @@ const htmlblock = `
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
     <meta charset='utf-8' />
 
+    <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
+
+
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" />
 

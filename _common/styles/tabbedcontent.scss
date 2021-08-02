@@ -1,0 +1,98 @@
+/*
+* TABBED CONTENT
+* Usually to capture multiple pieces of information in a single area.
+* For example, "Efficiency Gap" "Partisan Bias" and "Mean-Median" tabs.
+*/
+
+ul.nav.nav-tabs {
+  border: none;
+  display: flex;
+  font-size: 16px;
+  justify-content: stretch;
+  padding-top: 15px;
+  text-align: left;
+
+  li {
+    background-color: $gray-light;
+    border: 1px solid $gray-med;
+    border-collapse: collapse;
+    border-radius: 0;
+    flex-grow: 1;
+    float: none;
+    margin: 0;
+    padding-top: 8px;
+    transition: 0.25s ease;
+
+
+    a {
+      border: none !important; //bootstrap override
+      color: $navy;
+      margin-right: 0;
+      text-decoration: none;
+      transition: 0.25s ease;
+
+      &:hover{
+        background-color: transparent;
+      }
+    }
+
+    &:hover:not(.active),
+    &:focus {
+    background-color: $gray-dark;
+
+      a {
+        color: white;
+      }
+    }
+
+    &.active {
+      background-color:white;
+      border-bottom-color: transparent;
+
+      &:after {
+        content: "";
+        background-color: $navy;
+        position: absolute;
+        left: -1px;
+        top: 0;
+        height: 8px;
+        width: calc(100% + 2px);
+      }
+    }
+
+    &:first-child,
+    &:first-child:after {
+      border-top-left-radius: 5px;
+    }
+
+    &:last-child,
+    &:last-child:after {
+      border-top-right-radius: 5px;
+    }
+ }
+
+  @media screen and (max-width: $screen-sm) {
+    a {
+      font-size: 14px;
+    }
+
+    li a {
+      padding: 10px;
+    }
+  }
+}
+
+.tab-content {
+  .tab-pane {
+    padding: 1em 1em 1em 1em;
+    border: 1px solid $gray-med;
+    border-top-color: transparent;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+
+    p {
+      font-size: 16px;
+      color: $navy;
+    }
+  }
+}

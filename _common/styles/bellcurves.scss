@@ -1,7 +1,7 @@
 /*
  * BELLCHART DIAGRAMS
  * bellcharts indicating the plan's percentile rating
- * a bit of a visual trick: a single-bar column chart, and a stretching background of a bell curve for visual reference
+ * a bit of a visual trick: a single-bar column chart, and a stretching bell curve image for visual reference
  */
 div.metric-bellchart {
     width: 300px;
@@ -23,12 +23,14 @@ div.metric-bellchart {
         width: 100%; /* of the width defined above */
         height: 150px;
         margin: 15px auto 0;
-        background-image: none;  /* overridden in subclasses */
-        background-repeat: no-repeat;
-        background-size: 100% 100%;  /* stretch the graphic to fill the area 100% */
-        background-position: 0 0;
 
         position: relative; /* for positioning the markline */
+
+        .curveimg {
+            width: 100%;
+            height: 100%;
+        }
+
         div.markline {
             position: absolute;
             left: 50%; /* override this to position the markerline at the appropriate % with 0% being far left and 100% being far right */
@@ -103,59 +105,3 @@ li.col-md-4 div.metric-bellchart {
         }
     }
 }
-
-div.metric-bellchart.ushouse.plan.eg div.curve {
-    background-image: url(/images/ushouse_eg_plan_curve.svg);
-}
-div.metric-bellchart.ushouse.plan.mm div.curve {
-    background-image: url(/images/ushouse_mmd_plan_curve.svg);
-}
-div.metric-bellchart.ushouse.plan.pb div.curve {
-    background-image: url(/images/ushouse_bias_plan_curve.svg);
-}
-div.metric-bellchart.statehouse.plan.eg div.curve {
-    background-image: url(/images/statehouse_eg_plan_curve.svg);
-}
-div.metric-bellchart.statehouse.plan.mm div.curve {
-    background-image: url(/images/statehouse_mmd_plan_curve.svg);
-}
-div.metric-bellchart.statehouse.plan.pb div.curve {
-    background-image: url(/images/statehouse_bias_plan_curve.svg);
-}
-div.metric-bellchart.statesenate.plan.eg div.curve {
-    background-image: url(/images/statesenate_eg_plan_curve.svg);
-}
-div.metric-bellchart.statesenate.plan.mm div.curve {
-    background-image: url(/images/statesenate_mmd_plan_curve.svg);
-}
-div.metric-bellchart.statesenate.plan.pb div.curve {
-    background-image: url(/images/statesenate_bias_plan_curve.svg);
-}
-div.metric-bellchart.ushouse.election.eg div.curve {
-    background-image: url(/images/ushouse_eg_election_curve.svg);
-}
-div.metric-bellchart.ushouse.election.mm div.curve {
-    background-image: url(/images/ushouse_mmd_election_curve.svg);
-}
-div.metric-bellchart.ushouse.election.pb div.curve {
-    background-image: url(/images/ushouse_bias_election_curve.svg);
-}
-div.metric-bellchart.statehouse.election.eg div.curve {
-    background-image: url(/images/statehouse_eg_election_curve.svg);
-}
-div.metric-bellchart.statehouse.election.mm div.curve {
-    background-image: url(/images/statehouse_mmd_election_curve.svg);
-}
-div.metric-bellchart.statehouse.election.pb div.curve {
-    background-image: url(/images/statehouse_bias_election_curve.svg);
-}
-div.metric-bellchart.statesenate.election.eg div.curve {
-    background-image: url(/images/statesenate_eg_election_curve.svg);
-}
-div.metric-bellchart.statesenate.election.mm div.curve {
-    background-image: url(/images/statesenate_mmd_election_curve.svg);
-}
-div.metric-bellchart.statesenate.election.pb div.curve {
-    background-image: url(/images/statesenate_bias_election_curve.svg);
-}
-
