@@ -52,6 +52,10 @@ div.metric-bellchart {
             @media screen and (max-width: $screen-xxs) {
                 top: 30px;
             }
+            /* Override bootstrap print styles. https://github.com/PlanScore/FrontPage/issues/4v */
+            @media print {
+                background-color: black !important;
+            }
         }
 
         div.marklabel {
@@ -77,6 +81,11 @@ div.metric-bellchart {
             }  
             @media screen and (max-width: $screen-xxs) {
                 top: 15px;
+            }
+            /* Override bootstrap print styles. https://github.com/PlanScore/FrontPage/issues/4v */
+            @media print {
+                background-color: black !important;
+                color: white !important;
             }
         }
         div.marklabel.right {
