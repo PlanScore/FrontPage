@@ -1029,7 +1029,11 @@ window.updateDeclinationChart = (yeardata) => {
                 title: {
                     text: 'District Vote Shares'
                 },
+                credits: {
+                    enabled: false,
+                },
                 legend: {
+
                     enabled: false
                 },
                 yAxis: {
