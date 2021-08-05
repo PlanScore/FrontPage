@@ -31,8 +31,8 @@
 
     <div class="col-sm-6">
         <h1>Declination</h1>
-        <p>The tktktktk is a party&rsquo;s median vote share minus its mean vote share, across all of a plan&rsquo;s districts. For example, if a party has a median vote share of 45% and a mean vote share of 50%, then the plan has a mean-median difference of 5% against this party. When the mean and the median diverge significantly, the district distribution is skewed in favor of one party and against its opponent. Conversely, when the mean and the median are close, the district distribution is more symmetric.</p>
-        <p>For more about the mean-median difference, see Michael McDonald and Robin Best’s 2015 Election Law Journal article, <a href="https://www.brennancenter.org/sites/default/files/legal-work/McDonald_Best_Unfair_Gerrymanders_2015.pdf"><i>Unfair Partisan Gerrymanders in Politics and Law: A Diagnostic Applied to Six Cases</i></a>.</p>
+        <p>The declination metric treats asymmetry in the distribution of votes across districts as indicative of partisan bias in a districting plan. To calculate declination, we take the angles of the lines between the mean across all districts and the point on the 50% line between the mass of points representing each party. We then take the difference between those two angles and divide by π/2 to convert the result from radians to fractions of 90 degrees. We then do a further adjustment to account for differences in the number of seats across legislative chambers.</p>
+        <p>For more about declination, see Gregory Warrington's Election Law Journal article, <a href="https://www.liebertpub.com/doi/full/10.1089/elj.2017.0447"><i>Quantifying Gerrymandering Using the Vote Distribution</i></a> and paper <a href="https://arxiv.org/abs/1803.04799"><i>Introduction to the Declination Function for Gerrymanders</i></a>.</p>
         <p>Compare declination to three other metrics, <a href="/metrics/partisanbias/">partisan bias</a>, <a href="/metrics/meanmedian/">mean-median difference</a>, and the <a href="/metrics/efficiencygap/">efficiency gap</a>.</p>
     </div>
     
