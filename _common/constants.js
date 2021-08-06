@@ -197,6 +197,7 @@ export const BELLCURVE_SPREAD = {
         eg: 0.175,
         mm: 0.09,
         pb: 0.18,
+        d2: 1.50,
     },
     ushouse: {
         eg: 0.25,
