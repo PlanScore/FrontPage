@@ -31,7 +31,9 @@
 
     <div class="col-sm-6">
         <h1>Declination</h1>
-        <p>The declination metric treats asymmetry in the distribution of votes across districts as indicative of partisan bias in a districting plan. To calculate declination, we take the angles of the lines between the mean across all districts and the point on the 50% line between the mass of points representing each party. We then take the difference between those two angles and divide by π/2 to convert the result from radians to fractions of 90 degrees. We then do a further adjustment to account for differences in the number of seats across legislative chambers.</p>
+        <p>A gerrymander purposefully designs districts around the win/loss threshold to ensure that more districts of the favored party end up on the winning side. A neutral map, by contrast, designs the districts for other reasons and does not treat the win/loss threshold as particularly special. Declination uses this fact by capturing asymmetry around the threshold, as in the plot below.</p>
+        <p><img src="/images/declination-unfair-example.png" width="100%" alt="Declination graph showing unfair example"></p>
+        <p>The declination metric treats asymmetry in the distribution of votes across districts as indicative of partisan bias in a districting plan. To calculate declination, we take the angles of the lines between each party’s mean vote share in the districts they won and the point on the 50% line between the mass of points representing each party. We then take the difference between those two angles and divide by π/2 to convert the result from radians to fractions of 90 degrees. We then do a further adjustment to account for differences in the number of seats across legislative chambers.</p>
         <p>For more about declination, see Gregory Warrington's Election Law Journal article, <a href="https://www.liebertpub.com/doi/full/10.1089/elj.2017.0447"><i>Quantifying Gerrymandering Using the Vote Distribution</i></a> and paper <a href="https://arxiv.org/abs/1803.04799"><i>Introduction to the Declination Function for Gerrymanders</i></a>.</p>
         <p>Compare declination to three other metrics, <a href="/metrics/partisanbias/">partisan bias</a>, <a href="/metrics/meanmedian/">mean-median difference</a>, and the <a href="/metrics/efficiencygap/">efficiency gap</a>.</p>
     </div>
@@ -40,7 +42,8 @@
         <h3><a href="/north_carolina/#!2016-plan-ushouse-d2">North Carolina 2016</a></h3>
         <p>
             Under <a href="/north_carolina/#!2016-plan-ushouse-d2">North Carolina’s 2016-2018 congressional plan</a>,
-            the tktktktk Republican vote share was 11% higher than the mean Republican vote share.
+            the Democratic mean vote share in districts they won was 12%
+            higher than the Republican mean vote share in districts they won.
         </p>
         <div class="metric-bellchart" id="north-carolina-d2">
             <div class="curve"><div class="marklabel">NC</div><div class="markline"></div></div>
@@ -57,7 +60,8 @@
         <h3><a href="/texas/#!1980-plan-ushouse-d2">Texas 1974</a></h3>
         <p>
             Under <a href="/texas/#!1980-plan-ushouse-d2">Texas’s 1974-1980 congressional plan</a>,
-            the tktktk Democratic vote share was 10% higher than the mean Democratic vote share.
+            the Republican mean vote share in districts they won was 0.6%
+            higher than the Democratic mean vote share in districts they won.
         </p>
         <div class="metric-bellchart" id="texas-d2">
             <div class="curve"><div class="marklabel">TX</div><div class="markline"></div></div>
