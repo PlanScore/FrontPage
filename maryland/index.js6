@@ -706,7 +706,7 @@ window.updateMetricsTabs = (yeardata) => {
     const loser_code_d2  = biaseval_d2.otherparty;
     const cssclass_d2    = biaseval_d2.cssclass;
     const isbiased_d2    = biaseval_d2.isbiased;
-    const statement_d2   = `${! isbiased_d2 ? 'This metric indicates a balanced plan.' : ''} The ${loser_code_d2} mean vote share in districts they won was tktktk% higher than the ${favor_party_d2} mean vote share in districts they won.`;
+    const statement_d2   = `${! isbiased_d2 ? 'This metric indicates a balanced plan.' : ''} The ${loser_code_d2} mean vote share in districts they won was higher than the ${favor_party_d2} mean vote share in districts they won.`;
     const biastext_d2    = `${! isbiased_d2 ? 'No consistent skew was found in favor of either party.' : ''} This plan is more skewed than ${Math.round(100 * dec2_rank)}% of the enacted plans we have analyzed nationwide.`;
     const roundscore_d2  = Math.round(100 * Math.abs(d2_score)) / 100;
 
@@ -767,7 +767,7 @@ window.updateMetricsTabs = (yeardata) => {
         }
 
         if (isNaN(d2_score)) {
-            const nodatatext = `We did not calculate tktktk Declination for ${SELECTED_STATE}’s ${CURRENT_VIEW.year} Redistricting Plan`;
+            const nodatatext = `We did not calculate Declination for ${SELECTED_STATE}’s ${CURRENT_VIEW.year} Redistricting Plan`;
             $('#tab-declination2 span[data-have-metric="true"]').hide();
             $('#tab-declination2 span[data-have-metric="false"]').show().find('h2').text(nodatatext);
         }
