@@ -1,17 +1,24 @@
-<svg width="536" height="237" viewBox="0 0 536 237" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0)">
-<rect width="536" height="237" fill="white"/>
-<path d="M143.2 238.352H529.9L530 223.052C530 223.052 512.8 226.352 504.2 223.052C495.6 219.752 487 203.352 478.4 203.352C469.8 203.352 461.2 227.352 452.6 223.052C444 218.652 435.4 184.852 426.8 177.152C418.2 169.552 409.6 185.852 401 177.152C392.4 168.452 383.8 138.952 375.2 124.652C366.6 110.352 358 104.952 349.4 91.8524C340.8 78.7524 332.2 54.6524 323.6 45.9524C315 37.2524 306.4 47.0524 297.8 39.3524C289.2 31.6524 280.6 1.15238 272 0.0523778C263.4 -1.04762 254.8 15.3524 246.2 32.8524C237.6 50.3524 229 79.8524 220.4 104.952C211.8 130.052 203.2 163.952 194.6 183.652C186 203.352 177.4 216.452 168.8 222.952C160.2 229.552 143 222.952 143 222.952L143.2 238.352Z" fill="url(#paint0_linear)"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M0 0V235V237H2H268H270H534H536V235V0H534V235H270V0H268V235H2V0H0Z" fill="#C6C6C6"/>
-</g>
-<defs>
-<linearGradient id="paint0_linear" x1="526.076" y1="132.778" x2="136.869" y2="132.778" gradientUnits="userSpaceOnUse">
-<stop stop-color="#CD3952"/>
-<stop offset="0.666667" stop-color="#DFDFDF"/>
-<stop offset="1" stop-color="#0A4FAB"/>
-</linearGradient>
-<clipPath id="clip0">
-<rect width="536" height="237" fill="white"/>
-</clipPath>
-</defs>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="536px" height="237px" viewBox="0 0 536 237" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51.3 (57544) - http://www.bohemiancoding.com/sketch -->
+    <title>statesenate_mmd_plan_curve</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <polygon id="path-1" points="0.55 0.416668 536.45 0.416668 536.45 236.45 0.55 236.45"></polygon>
+        <linearGradient x1="14.1945177%" y1="76.8800139%" x2="100%" y2="76.8800139%" id="linearGradient-3">
+            <stop stop-color="#CD3952" offset="0%"></stop>
+            <stop stop-color="#DFDFDF" offset="63.1370374%"></stop>
+            <stop stop-color="#0A4FAB" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="statesenate_mmd_plan_curve" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Clipped" transform="translate(268.500000, 118.500000) scale(-1, 1) translate(-268.500000, -118.500000) ">
+            <mask id="mask-2" fill="white">
+                <use xlink:href="#path-1"></use>
+            </mask>
+            <g id="Shape"></g>
+            <path d="M5.365894,229.89352 C5.365894,229.89352 22.55517,233.17175 31.1498,229.89352 C39.74444,226.61526 48.33907,210.22406 56.93371,210.22406 C65.52834,210.22406 74.12298,234.2645 82.71761,229.89352 C91.31226,225.52252 99.90689,191.64737 108.50153,183.99815 C117.09616,176.34892 125.6908,192.74013 134.28543,183.99815 C142.88007,175.25618 151.4747,145.752 160.06934,131.5463 C168.66397,117.34059 177.2586,111.87685 185.85324,98.76389 C194.44788,85.65092 203.04251,61.6105 211.63715,52.868515 C220.23178,44.12654 228.82642,53.961266 237.42105,46.312035 C246.0157,38.66281 254.61032,8.065895 263.20496,6.973145 C271.7996,5.8804 280.39423,22.27161 288.98886,39.755554 C297.5835,57.23951 306.17813,86.74367 314.77277,111.87685 C323.3674,137.01003 331.96204,170.88518 340.55667,190.55463 C349.1513,210.22406 357.74594,223.33704 366.34058,229.89352 C374.9352,236.45 392.12448,229.89352 392.12448,229.89352 L392.12448,237 L5.365894,237 L5.365894,229.89352 Z" id="Shape" fill="url(#linearGradient-3)" mask="url(#mask-2)"></path>
+        </g>
+        <polygon id="Shape" fill="#C6C6C6" points="0 0 0 235 0 237 2 237 268 237 270 237 534 237 536 237 536 235 536 0 534 0 534 235 270 235 270 0 268 0 268 235 2 235 2 0"></polygon>
+    </g>
 </svg>
