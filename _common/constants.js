@@ -209,6 +209,7 @@ export const BELLCURVE_SPREAD = {
         eg: 0.22,
         mm: 0.13,
         pb: 0.19,
+        d2: 1.00,
     },
 };
 
