@@ -1015,7 +1015,7 @@ window.updateDeclinationChart = (yeardata) => {
                 y: parseFloat(row.dem_share),
             }))
             .filter(datum => (!isNaN(datum.y)))
-            .sort((d1, d2) => (d1.y > d2.y));
+            .sort((d1, d2) => (d1.y - d2.y));
             
             console.log([ 'window.updateDeclinationChart() series:', series ]);
 
