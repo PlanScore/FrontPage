@@ -144,6 +144,10 @@ td:nth-child(1){
       transition: all 0.1s;
     }
 
+    li {
+        width: 25%;
+    }
+
     &:not(.collapsed) {
       z-index: 10;
       position: fixed;

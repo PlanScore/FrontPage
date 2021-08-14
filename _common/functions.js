@@ -79,6 +79,10 @@ export const drawBiasBellChart = (metricid, datavalue, htmldivid, boundtype, pla
 
     // fill in the spread values into the +D% ad +R% legends
     const $legend = $div.find('div.metric-bellchart-legend');
-    const spreadtext = Math.round(100 * spread);
+    if(metricid == 'd2') {
+        var spreadtext = Math.round(100 * spread) / 100;
+    } else {
+        var spreadtext = Math.round(100 * spread);
+    }
     $legend.find('span[data-field="metric-bellchart-spread"]').text(spreadtext);
 };

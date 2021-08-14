@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="536px" height="237px" viewBox="0 0 536 237" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51.3 (57544) - http://www.bohemiancoding.com/sketch -->
+    <title>statesenate_dec2_plan_curve</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <polygon id="path-1" points="0.55 0.416668 536.45 0.416668 536.45 236.45 0.55 236.45"></polygon>
+        <linearGradient x1="6.07180713%" y1="81.0843729%" x2="88.2512909%" y2="81.0843729%" id="linearGradient-3">
+            <stop stop-color="#CD3952" offset="0%"></stop>
+            <stop stop-color="#DFDFDF" offset="50.9403088%"></stop>
+            <stop stop-color="#0A4FAB" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="statesenate_dec2_plan_curve" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Clipped" transform="translate(268.500000, 118.500000) scale(-1, 1) translate(-268.500000, -118.500000) ">
+            <mask id="mask-2" fill="white">
+                <use xlink:href="#path-1"></use>
+            </mask>
+            <g id="Shape"></g>
+            <path d="M10.391052,222.288 C10.391052,222.288 34.23736,237.2368 46.160515,231.72934 C58.08367,226.2219 70.00683,194.75076 81.929985,189.24333 C93.85313,183.73589 105.77629,207.33923 117.69945,198.68466 C129.6226,190.0301 141.54576,154.6251 153.46892,137.316 C165.39207,120.00688 177.31522,105.0581 189.23837,94.83 C201.16153,84.60188 213.0847,87.749 225.00784,75.94733 C236.931,64.14567 248.85416,10.644775 260.7773,24.02 C272.70047,37.395226 284.62363,130.235 296.54678,156.19867 C308.46994,182.16234 320.3931,175.86812 332.31625,179.802 C344.23938,183.73589 356.16254,175.86812 368.0857,179.802 C380.00885,183.73589 391.932,198.68466 403.85516,203.40533 C415.77832,208.126 427.70148,203.40533 439.62463,208.126 C451.5478,212.84668 463.47095,227.79544 475.3941,231.72934 C487.31726,235.6632 499.2404,231.72934 511.1636,231.72934 C523.08673,231.72934 546.93304,231.72934 546.93304,231.72934 L546.93304,237 L10.391052,237 L10.391052,222.288 Z" id="Shape" fill="url(#linearGradient-3)" mask="url(#mask-2)"></path>
+        </g>
+        <polygon id="Shape" fill="#C6C6C6" points="0 0 0 235 0 237 2 237 268 237 270 237 534 237 536 237 536 235 536 0 534 0 534 235 270 235 270 0 268 0 268 235 2 235 2 0"></polygon>
+    </g>
+</svg>

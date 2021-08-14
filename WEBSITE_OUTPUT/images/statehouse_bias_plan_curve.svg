@@ -1,12 +1,24 @@
-<svg width="536" height="237" viewBox="0 0 536 237" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="536" height="237" fill="white"/>
-<path d="M71.7 235.536L521 236.036V230.336C521 230.336 501 229.036 491 222.436C481 215.836 471 202.736 461 190.936C451 179.136 441 167.336 431 151.636C421 135.936 411 96.5362 401 96.5362C391 96.5362 381 162.136 371 151.636C361 141.136 351 37.5362 341 33.6362C331 29.7362 321 129.336 311 128.036C301 126.736 291 40.1362 281 25.7362C271 11.3362 261 33.6362 251 41.4362C241 49.3362 231 61.1362 221 72.9362C211 84.7362 201 97.8362 191 112.236C181 126.636 171 146.336 161 159.436C151 172.536 141 184.336 131 190.936C121 197.536 111 192.236 101 198.836C91 205.436 71 230.336 71 230.336L71.7 235.536Z" fill="url(#paint0_linear)"/>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M0 0V235V237H2H268H270H534H536V235V0H534V235H270V0H268V235H2V0H0Z" fill="#C6C6C6"/>
-<defs>
-<linearGradient id="paint0_linear" x1="516.437" y1="140.79" x2="63.8707" y2="140.79" gradientUnits="userSpaceOnUse">
-<stop stop-color="#CD3952"/>
-<stop offset="0.548952" stop-color="#DFDFDF"/>
-<stop offset="1" stop-color="#0A4FAB"/>
-</linearGradient>
-</defs>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="536px" height="237px" viewBox="0 0 536 237" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51.3 (57544) - http://www.bohemiancoding.com/sketch -->
+    <title>statehouse_bias_plan_curve</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <polygon id="path-1" points="0.55 0.416668 536.45 0.416668 536.45 236.45 0.55 236.45"></polygon>
+        <linearGradient x1="0%" y1="85.1444856%" x2="100%" y2="85.1444856%" id="linearGradient-3">
+            <stop stop-color="#CD3952" offset="0%"></stop>
+            <stop stop-color="#DFDFDF" offset="56.4360193%"></stop>
+            <stop stop-color="#0A4FAB" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="statehouse_bias_plan_curve" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Clipped" transform="translate(268.500000, 118.500000) scale(-1, 1) translate(-268.500000, -118.500000) ">
+            <mask id="mask-2" fill="white">
+                <use xlink:href="#path-1"></use>
+            </mask>
+            <g id="Shape"></g>
+            <path d="M14.93034,228.5822 C14.93034,228.5822 34.91536,227.27094 44.907875,220.71445 C54.90038,214.15796 64.89289,201.045 74.88541,189.24333 C84.87791,177.44167 94.87042,165.64 104.86295,149.90445 C114.85545,134.16888 124.84796,96.1413 134.84047,94.83 C144.83298,93.5187 154.8255,153.83833 164.81801,142.03667 C174.81052,130.235 184.80302,27.95389 194.79553,24.02 C204.78806,20.08611 214.78055,119.74463 224.77307,118.43333 C234.7656,117.12204 244.7581,29.26518 254.7506,16.15222 C264.7431,3.03926 274.73563,30.576485 284.72815,39.755554 C294.72064,48.93463 304.71317,59.425 314.70566,71.22667 C324.69818,83.02834 334.6907,96.1413 344.6832,110.56555 C354.67572,124.98982 364.6682,144.65926 374.66074,157.77222 C384.65326,170.88518 394.64575,182.68686 404.63828,189.24333 C414.63077,195.7998 424.6233,190.55463 434.6158,197.1111 C444.6083,203.6676 464.59332,228.5822 464.59332,228.5822 L464.59332,237 L14.93034,237 L14.93034,228.5822 Z" id="Shape" fill="url(#linearGradient-3)" mask="url(#mask-2)"></path>
+        </g>
+        <polygon id="Shape" fill="#C6C6C6" points="0 0 0 235 0 237 2 237 268 237 270 237 534 237 536 237 536 235 536 0 534 0 534 235 270 235 270 0 268 0 268 235 2 235 2 0"></polygon>
+    </g>
 </svg>

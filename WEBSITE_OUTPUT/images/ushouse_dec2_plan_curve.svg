@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="536px" height="237px" viewBox="0 0 536 237" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51.3 (57544) - http://www.bohemiancoding.com/sketch -->
+    <title>ushouse_dec2_plan_curve</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <polygon id="path-1" points="0.55 0.416668 536.45 0.416668 536.45 236.45 0.55 236.45"></polygon>
+        <linearGradient x1="0%" y1="55.7068982%" x2="100%" y2="56.2010287%" id="linearGradient-3">
+            <stop stop-color="#CD3952" offset="0%"></stop>
+            <stop stop-color="#DFDFDF" offset="44.894586%"></stop>
+            <stop stop-color="#0A4FAB" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="ushouse_dec2_plan_curve" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="USH-Declination" transform="translate(268.500000, 118.500000) scale(-1, 1) translate(-268.500000, -118.500000) ">
+            <mask id="mask-2" fill="white">
+                <use xlink:href="#path-1"></use>
+            </mask>
+            <g id="Shape"></g>
+            <path d="M43.661224,201.4821 C43.661224,201.4821 65.45267,200.02512 76.34838,201.4821 C87.2441,202.9391 98.13982,223.33704 109.03554,210.22406 C119.93126,197.1111 130.82698,133.0033 141.7227,122.80432 C152.61841,112.60535 163.51413,154.85823 174.40985,149.03024 C185.30557,143.20227 196.2013,105.32037 207.097,87.83643 C217.99274,70.35246 228.88846,54.325516 239.78415,44.12654 C250.67987,33.927574 261.5756,22.27161 272.4713,26.64259 C283.36703,31.01358 294.26276,48.49753 305.15848,70.35246 C316.0542,92.20741 326.94992,133.0033 337.84564,157.77222 C348.74136,182.54115 359.63705,208.7671 370.53278,218.96606 C381.4285,229.165 392.32422,221.88004 403.21994,218.96606 C414.11566,216.05206 425.01138,201.4821 435.9071,201.4821 C446.80283,201.4821 457.69855,213.13806 468.59424,218.96606 C479.49,224.79404 490.3857,234.993 501.28143,236.45 C512.1771,237.90698 533.96857,227.70804 533.96857,227.70804 L533.96857,236.45 L43.661224,236.45 L43.661224,201.4821 Z" id="Shape" fill="url(#linearGradient-3)" mask="url(#mask-2)"></path>
+        </g>
+        <polygon id="Shape" fill="#C6C6C6" points="0 0 0 235 0 237 2 237 268 237 270 237 534 237 536 237 536 235 536 0 534 0 534 235 270 235 270 0 268 0 268 235 2 235 2 0"></polygon>
+    </g>
+</svg>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PlanScore :: Declination</title>
+
+
+    <!--[include_head]-->
+
+    <!-- this page's own JS + CSS -->
+    <link href="index.css?[hash]" rel="stylesheet" />
+    <script src="index.js?[hash]"></script>
+
+    <!-- OG tags -->
+    <meta property="og:title" content="PlanScore" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://planscore.org" />
+    <meta property="og:image" content="https://planscore.org/images/OG-default-01.jpg" />
+    <meta property="og:description" content="PlanScore is a first-of-its-kind gerrymandering scoring service for new district plans, allowing users to upload maps and instantly receive projected data about their partisan consequences. You can also use historical data to discover how partisan advantage has influenced redistricting in your state." />
+
+    <!-- Twitter tags note that per https://developer.twitter.com/en/docs/tweets/optimize-with-cards/guides/getting-started, we need only use the card metas that differ from OG -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@PlanScore" />
+
+</head>
+<body>
+
+    <!--[include_navbar]-->
+
+    <div class="container container-mainbody">
+
+    <div class="col-sm-6">
+        <h1>Declination</h1>
+        <p>A gerrymander designs districts with the win/loss threshold in mind, to ensure that more districts of the favored party end up on the winning side of the threshold. A neutral map designs districts for other reasons, and does not treat the win/loss threshold as special. Declination uses this fact to identify partisan differences around the threshold, as in the plot below.</p>
+        <p>
+            <img src="/images/declination-unfair-example.png" width="100%" alt="Declination graph showing unfair example">
+            <caption>
+                <small><i>F: center of mass for Republican seats, G: win/loss threshold, H: center of mass for Democratic seats.</i></small>
+            </caption>
+        </p>
+        <p>The declination metric treats threshold-related asymmetry in the distribution of votes across districts as indicative of partisan gerrymandering. To calculate declination, we take the angles of the lines between each party’s mean vote share in the districts they won and the point on the 50% line between the mass of points representing each party. We then take the difference between those two angles and divide by π/2 to convert the result from radians to fractions of 90 degrees. We then do a further adjustment to account for differences in the number of seats across legislative chambers.</p>
+        <p>For more about declination, see Gregory Warrington's Election Law Journal article, <a href="https://www.liebertpub.com/doi/full/10.1089/elj.2017.0447"><i>Quantifying Gerrymandering Using the Vote Distribution</i></a>, paper <a href="https://arxiv.org/abs/1803.04799"><i>Introduction to the Declination Function for Gerrymanders</i></a>, and Eric McGhee’s report <a href="https://www.ppic.org/publication/assessing-californias-redistricting-commission-effects-on-partisan-fairness-and-competitiveness/"><i>Assessing California’s Redistricting Commission: Effects on Partisan Fairness and Competitiveness</i></a>.</p>
+        <p>Compare declination to three other metrics, <a href="/metrics/partisanbias/">partisan bias</a>, <a href="/metrics/meanmedian/">mean-median difference</a>, and the <a href="/metrics/efficiencygap/">efficiency gap</a>.</p>
+    </div>
+    
+    <div class="col-sm-6">
+        <h3><a href="/north_carolina/#!2016-plan-ushouse-d2">North Carolina 2016</a></h3>
+        <p>
+            Under <a href="/north_carolina/#!2016-plan-ushouse-d2">North Carolina’s 2016-2018 congressional plan</a>,
+            the Democratic mean vote share in districts they won was 12%
+            higher than the Republican mean vote share in districts they won.
+        </p>
+        <div class="metric-bellchart" id="north-carolina-d2">
+            <div class="curve"><div class="marklabel">NC</div><div class="markline"></div></div>
+            <div class="row metric-bellchart-legend">
+                <div class="col-xs-4 left">+<span data-field="metric-bellchart-spread"></span> D</div>
+                <div class="col-xs-4 center">Balanced</div>
+                <div class="col-xs-4 right">+<span data-field="metric-bellchart-spread"></span> R</div>
+            </div>
+        </div>
+        <script>
+            drawBiasBellChart('d2', -0.69, 'north-carolina-d2', 'ushouse', 'plan');
+        </script>
+
+        <h3><a href="/georgia/#!1972-plan-ushouse-d2">Georgia 1972</a></h3>
+        <p>
+            Under <a href="/georgia/#!1972-plan-ushouse-d2">Georgia’s 1972-1980 congressional plan</a>,
+            the Republican mean vote share in districts they won was 4.9%
+            higher than the Democratic mean vote share in districts they won.
+        </p>
+        <div class="metric-bellchart" id="georgia-d2">
+            <div class="curve"><div class="marklabel">GA</div><div class="markline"></div></div>
+            <div class="row metric-bellchart-legend">
+                <div class="col-xs-4 left">+<span data-field="metric-bellchart-spread"></span> D</div>
+                <div class="col-xs-4 center">Balanced</div>
+                <div class="col-xs-4 right">+<span data-field="metric-bellchart-spread"></span> R</div>
+            </div>
+        </div>
+        <script>
+            drawBiasBellChart('d2', 0.51, 'georgia-d2', 'ushouse', 'plan');
+        </script>
+        
+    </div>
+
+    </div><!--/container-mainbody-->
+
+    <!--[include_footer]-->
+
+</body>
+</html>

@@ -56,6 +56,8 @@ const ELECTION_PLAN_RECORD_FIELDS = {
         'biasrank': 'bias_percentrank',
         'mm': 'mmd',
         'mmrank': 'mmd_percentrank',
+        'd2': 'dec2',
+        'd2rank': 'dec2_percentrank',
         'wasted_dem': 'wasted_dem',
         'wasted_rep': 'wasted_rep',
         'votes_dem': 'votes_dem',
@@ -72,6 +74,8 @@ const ELECTION_PLAN_RECORD_FIELDS = {
         'biasrank': 'bias_avg_percentrank',
         'mm': 'mmd_avg',
         'mmrank': 'mmd_avg_percentrank',
+        'd2': 'dec2_avg',
+        'd2rank': 'dec2_avg_percentrank',
         'wasted_rep': 'wasted_rep_plan',
         'wasted_dem': 'wasted_dem_plan',
         'votes_dem': 'votes_dem_plan',
@@ -308,11 +312,12 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
 
             // data fixes
             results.data.forEach((row) => {
-                // cast fields to integer
+                // cast fields to float
                 [
                     'eg_adj', 'eg_adj_avg', 'eg_avg_percentrank', 'eg_percentrank',
                     'bias', 'bias_avg','bias_avg_percentrank', 'bias_percentrank',
                     'mmd', 'mmd_avg', 'mmd_avg_percentrank', 'mmd_percentrank',
+                    'dec2', 'dec2_avg', 'dec2_avg_percentrank', 'dec2_percentrank',
                 ].forEach((fieldname) => { row[fieldname] = parseFloat(row[fieldname]); });
 
                 // cast fields to integer
@@ -507,6 +512,7 @@ window.updateStatsFromCsvContent = (allcsvdata, options={}) => {
     // refresh some charts: Efficiency Gap Wasted Votes, Partisan Bias Seat Share
     updateWastedVotesChart(thisyeardata);
     updateSeatShareChart(thisyeardata);
+    updateDeclinationChart(thisyeardata);
 
     // the bell charts indicating this plan's relative bias rating for each metric
     drawBiasBellCharts(thisyeardata);
@@ -589,26 +595,37 @@ window.updateMetricsSummary = (yeardata) => {
     const eg_score  = yeardata[ ELECTION_PLAN_RECORD_FIELDS[CURRENT_VIEW.planorelection].eg ];
     const pb_score  = yeardata[ ELECTION_PLAN_RECORD_FIELDS[CURRENT_VIEW.planorelection].bias ];
     const mm_score  = yeardata[ ELECTION_PLAN_RECORD_FIELDS[CURRENT_VIEW.planorelection].mm ];
+    const d2_score  = yeardata[ ELECTION_PLAN_RECORD_FIELDS[CURRENT_VIEW.planorelection].d2 ];
 
     // how many metrics favor D or R beyond threshold?
     const favor_party_eg = lookupBias('eg', eg_score, CURRENT_VIEW.boundtype);
     const favor_party_pb = lookupBias('pb', pb_score, CURRENT_VIEW.boundtype);
     const favor_party_mm = lookupBias('mm', mm_score, CURRENT_VIEW.boundtype);
-    const metrics_favor_d = [ favor_party_eg, favor_party_pb, favor_party_mm ].filter((biasinfo) => { return biasinfo.isbiased && biasinfo.partycode == 'd'; }).length;
-    const metrics_favor_r = [ favor_party_eg, favor_party_pb, favor_party_mm ].filter((biasinfo) => { return biasinfo.isbiased && biasinfo.partycode == 'r'; }).length;
+    const favor_party_d2 = lookupBias('d2', d2_score, CURRENT_VIEW.boundtype);
+    const metrics_favor_d = [ favor_party_eg, favor_party_pb, favor_party_mm, favor_party_d2 ].filter((biasinfo) => { return biasinfo.isbiased && biasinfo.partycode == 'd'; }).length;
+    const metrics_favor_r = [ favor_party_eg, favor_party_pb, favor_party_mm, favor_party_d2 ].filter((biasinfo) => { return biasinfo.isbiased && biasinfo.partycode == 'r'; }).length;
 
     // compose a sentence on how biased this plan is according to how many metrics favor each party
     // with 2 out of 3 biases being worth calling out (and only if we have data for all 3)
-    const howmanymetrics = [eg_score, pb_score, mm_score ].filter((score) => ! isNaN(score) ).length;
+    const howmanymetrics = [eg_score, pb_score, mm_score, d2_score ].filter((score) => ! isNaN(score) ).length;
     const metriccountwords = {
         1: 'one metric',
         2: 'two metrics',
         3: 'three metrics',
+        4: 'four metrics',
     }[howmanymetrics];
     const biascountstatement  = `We used ${metriccountwords} to analyze this plan.`;
 
     let biasstatement = "The metrics do not consistently indicate a skew in either party’s favor.";
     switch (howmanymetrics) {
+        case 4:
+            if      (metrics_favor_d == 4) biasstatement = "All four metrics indicate a pro-Democrat skew.";
+            else if (metrics_favor_r == 4) biasstatement = "All four metrics indicate a pro-Republican skew.";
+            else if (metrics_favor_d == 3 && metrics_favor_r == 0) biasstatement = "Three of the four metrics indicate a pro-Democrat skew.";
+            else if (metrics_favor_r == 3 && metrics_favor_d == 0) biasstatement = "Three of the four metrics indicate a pro-Republican skew.";
+            else if (metrics_favor_d == 2 && metrics_favor_r == 0) biasstatement = "Two of the four metrics indicate a pro-Democrat skew.";
+            else if (metrics_favor_r == 2 && metrics_favor_d == 0) biasstatement = "Two of the four metrics indicate a pro-Republican skew.";
+            break;
         case 3:
             if      (metrics_favor_d == 3) biasstatement = "All three metrics indicate a pro-Democrat skew.";
             else if (metrics_favor_r == 3) biasstatement = "All three metrics indicate a pro-Republican skew.";
@@ -636,9 +653,11 @@ window.updateMetricsTabs = (yeardata) => {
     const eg_score    = yeardata[ ELECTION_PLAN_RECORD_FIELDS[CURRENT_VIEW.planorelection].eg ];
     const pb_score    = yeardata[ ELECTION_PLAN_RECORD_FIELDS[CURRENT_VIEW.planorelection].bias ];
     const mm_score    = yeardata[ ELECTION_PLAN_RECORD_FIELDS[CURRENT_VIEW.planorelection].mm ];
+    const d2_score    = yeardata[ ELECTION_PLAN_RECORD_FIELDS[CURRENT_VIEW.planorelection].d2 ];
     const eg_rank     = yeardata[ ELECTION_PLAN_RECORD_FIELDS[CURRENT_VIEW.planorelection].egrank ];
     const bias_rank   = yeardata[ ELECTION_PLAN_RECORD_FIELDS[CURRENT_VIEW.planorelection].biasrank ];
     const mmd_rank    = yeardata[ ELECTION_PLAN_RECORD_FIELDS[CURRENT_VIEW.planorelection].mmrank ];
+    const dec2_rank   = yeardata[ ELECTION_PLAN_RECORD_FIELDS[CURRENT_VIEW.planorelection].d2rank ];
     const seats_rep   = yeardata[ ELECTION_PLAN_RECORD_FIELDS[CURRENT_VIEW.planorelection].seats_rep ];
     const seats_dem   = yeardata[ ELECTION_PLAN_RECORD_FIELDS[CURRENT_VIEW.planorelection].seats_dem ];
     const totalseats  = yeardata[ ELECTION_PLAN_RECORD_FIELDS[CURRENT_VIEW.planorelection].seats ];
@@ -679,6 +698,17 @@ window.updateMetricsTabs = (yeardata) => {
     const statement_mm   = `${! isbiased_mm ? 'This metric indicates a balanced plan.' : ''} The median ${favor_party_mm} vote share was ${(100 * Math.abs(mm_score)).toFixed(1)}% higher than the mean ${favor_party_mm} vote share.`;
     const biastext_mm    = `${! isbiased_mm ? 'No consistent skew was found in favor of either party.' : ''} This plan is more skewed than ${Math.round(100 * mmd_rank)}% of the enacted plans we have analyzed nationwide.`;
     const roundscore_mm  = Math.round(100 * Math.abs(mm_score));  // per https://github.com/PlanScore/PlanScore/issues/170 these ignore the usual balanced-threshold; we want to show even 1% but keep a balanced color
+ 
+    const biaseval_d2    = lookupBias('d2', d2_score, CURRENT_VIEW.boundtype);
+    const favor_party_d2 = biaseval_d2.party;
+    const favor_color_d2 = biaseval_d2.color;
+    const favor_code_d2  = biaseval_d2.partycode;
+    const loser_code_d2  = biaseval_d2.otherparty;
+    const cssclass_d2    = biaseval_d2.cssclass;
+    const isbiased_d2    = biaseval_d2.isbiased;
+    const statement_d2   = `${! isbiased_d2 ? 'This metric indicates a balanced plan.' : ''} The ${loser_code_d2} mean vote share in districts they won was higher than the ${favor_party_d2} mean vote share in districts they won.`;
+    const biastext_d2    = `${! isbiased_d2 ? 'No consistent skew was found in favor of either party.' : ''} This plan is more skewed than ${Math.round(100 * dec2_rank)}% of the enacted plans we have analyzed nationwide.`;
+    const roundscore_d2  = Math.round(100 * Math.abs(d2_score)) / 100;
 
     // color the tab-swatches for the three metrics
     {
@@ -695,6 +725,11 @@ window.updateMetricsTabs = (yeardata) => {
         let $swatch = $('#maincontent ul.nav-tabs a[href="#tab-meanmedian"] span.biasicon');
         $swatch.removeClass('republican').removeClass('democratic').text(' ');
         if (isbiased_mm) $swatch.addClass(cssclass_mm).text(favor_code_mm);
+    }
+    {
+        let $swatch = $('#maincontent ul.nav-tabs a[href="#tab-declination2"] span.biasicon');
+        $swatch.removeClass('republican').removeClass('democratic').text(' ');
+        if (isbiased_d2) $swatch.addClass(cssclass_d2).text(favor_code_d2);
     }
 
     // show/hide the data-have-metric content, depending on whether we have each of the 3 metrics
@@ -730,6 +765,16 @@ window.updateMetricsTabs = (yeardata) => {
             $('#tab-meanmedian span[data-have-metric="true"]').show();
             $('#tab-meanmedian span[data-have-metric="false"]').hide();
         }
+
+        if (isNaN(d2_score)) {
+            const nodatatext = `We did not calculate Declination for ${SELECTED_STATE}’s ${CURRENT_VIEW.year} Redistricting Plan`;
+            $('#tab-declination2 span[data-have-metric="true"]').hide();
+            $('#tab-declination2 span[data-have-metric="false"]').show().find('h2').text(nodatatext);
+        }
+        else {
+            $('#tab-declination2 span[data-have-metric="true"]').show();
+            $('#tab-declination2 span[data-have-metric="false"]').hide();
+        }
     }
 
     // fill in those +DR% numbers and the summary texts, at the top of the metric tabs
@@ -760,6 +805,15 @@ window.updateMetricsTabs = (yeardata) => {
         $('#tab-meanmedian span[data-field="plancompare"]').text('This plan is more skewed toward X than 100% all of the enacted plans we have analyzed nationwide.');
         $('#tab-meanmedian span[data-field="biasstatement"]').text(biastext_mm);
     }
+    {
+        let metricdrsum_d2   = '0.0 Balanced';
+        if (roundscore_d2) metricdrsum_d2 = `+${roundscore_d2} ${favor_party_d2}`;
+
+        $('#tab-declination2 span[data-field="metricdrsum"]').text(metricdrsum_d2);
+        $('#tab-declination2 span[data-field="metricstatement"]').text(statement_d2);
+        $('#tab-declination2 span[data-field="plancompare"]').text('This plan is more skewed toward X than 100% all of the enacted plans we have analyzed nationwide.');
+        $('#tab-declination2 span[data-field="biasstatement"]').text(biastext_d2);
+    }
 
     // color those +DR% boxes
     {
@@ -770,6 +824,9 @@ window.updateMetricsTabs = (yeardata) => {
     }
     {
         const $sumbox = $('#tab-meanmedian div.metricdrsum').removeClass('republican').removeClass('democratic').removeClass('balanced').addClass(cssclass_mm);
+    }
+    {
+        const $sumbox = $('#tab-declination2 div.metricdrsum').removeClass('republican').removeClass('democratic').removeClass('balanced').addClass(cssclass_d2);
     }
 };
 
@@ -922,6 +979,106 @@ window.updateWastedVotesChart = (yeardata) => {
             }
         },
         series: votechartdata,
+    });
+};
+
+window.updateDeclinationChart = (yeardata) => {
+    console.log('window.updateDeclinationChart', yeardata);
+    const whichplan = yeardata.plan;
+    const whichlevel = CURRENT_VIEW.boundtype;
+    const whichyear = CURRENT_VIEW.year;
+    const planorelection = CURRENT_VIEW.planorelection;
+    const csvurl = `/data/electionoutcomes_${whichlevel}.csv`;
+
+    // 
+    Papa.parse(csvurl, {
+        download: true,
+        header: true,
+        complete: function (results) {
+            // filter to year + state, or year + plan
+            // filtering down the data in a separate step, makes it a lot easier to isolate the relevant results, separately from the polygon-style code later
+            if (planorelection == 'election') {
+                // election year; filter by "year" and the "plan" field starting with this state code
+                results = results.data.filter((row) => {
+                    return row.year == whichyear && row.plan.substr(0, 2) == statecode;
+                });
+            }
+            else {
+                // must be a plan; filter by the "plan" field
+                results = results.data.filter((row) => {
+                    return row.plan == whichplan;
+                });
+            }
+            console.log([ 'window.updateDeclinationChart() parse:', results ]);
+            
+            var series = results.map(row => ({
+                y: parseFloat(row.dem_share),
+            }))
+            .filter(datum => (!isNaN(datum.y)))
+            .sort((d1, d2) => (d1.y - d2.y));
+            
+            console.log([ 'window.updateDeclinationChart() series:', series ]);
+
+            // now chart it
+            // and show the chart, in case it was previously hidden
+            $('#chart-d2districts').show();
+            Highcharts.chart('chart-d2districts', {
+                chart: {
+                    type: 'line'
+                },
+                title: {
+                    text: 'District Vote Shares'
+                },
+                credits: {
+                    enabled: false,
+                },
+                legend: {
+
+                    enabled: false
+                },
+                yAxis: {
+                    min: 0,
+                    max: 1,
+                    tickAmount: 3,
+                    title: {
+                        enabled: false
+                    }
+                },
+                xAxis: {
+                    labels: {
+                        enabled: false
+                    }
+                },
+                plotOptions: {
+                    line: {
+                        dataLabels: {
+                            enabled: false
+                        },
+                        enableMouseTracking: false
+                    }
+                },
+                series: [{
+                    name: 'Districts',
+                    data: series,
+                    lineWidth: 0,
+                    zones: [
+                        {
+                            value: 0.5,
+                            color: WASTEDVOTE_CHART_WASTED_R
+                        },
+                        {
+                            color: WASTEDVOTE_CHART_WASTED_D
+                        }
+                    ],
+                    marker: {
+                        enabled: true
+                    }
+                }],
+            });
+        }, // end of CSV download
+        error: function () {
+            // an error, meaning bad network or missing CSV
+        },
     });
 };
 
@@ -1111,10 +1268,12 @@ window.drawBiasBellCharts = (yeardata) => {
     const egscore = yeardata[ ELECTION_PLAN_RECORD_FIELDS[CURRENT_VIEW.planorelection].eg ];
     const mmscore = yeardata[ ELECTION_PLAN_RECORD_FIELDS[CURRENT_VIEW.planorelection].mm ];
     const pbscore = yeardata[ ELECTION_PLAN_RECORD_FIELDS[CURRENT_VIEW.planorelection].bias ];
+    const d2score = yeardata[ ELECTION_PLAN_RECORD_FIELDS[CURRENT_VIEW.planorelection].d2 ];
 
     drawBiasBellChart('eg', egscore, 'metric-bellchart-eg', CURRENT_VIEW.boundtype, CURRENT_VIEW.planorelection);
     drawBiasBellChart('mm', mmscore, 'metric-bellchart-mm', CURRENT_VIEW.boundtype, CURRENT_VIEW.planorelection);
     drawBiasBellChart('pb', pbscore, 'metric-bellchart-pb', CURRENT_VIEW.boundtype, CURRENT_VIEW.planorelection);
+    drawBiasBellChart('d2', d2score, 'metric-bellchart-d2', CURRENT_VIEW.boundtype, CURRENT_VIEW.planorelection);
 };
 
 window.updateMapForCurrentSelection = (yeardata) => {
