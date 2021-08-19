@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>PlanScore :: Library</title>
+
+    <!--[include_head]-->
+
+    <!-- this page's own JS + CSS -->
+    <link href="index.css?[hash]" rel="stylesheet" />
+    <script src="index.js?[hash]"></script>
+
+    <!-- OG tags -->
+    <meta property="og:title" content="PlanScore" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://planscore.org" />
+    <meta property="og:image" content="https://planscore.org/images/OG-default-01.jpg" />
+    <meta property="og:description" content="PlanScore is a first-of-its-kind gerrymandering scoring service for new district plans, allowing users to upload maps and instantly receive projected data about their partisan consequences. You can also use historical data to discover how partisan advantage has influenced redistricting in your state." />
+
+    <!-- Twitter tags note that per https://developer.twitter.com/en/docs/tweets/optimize-with-cards/guides/getting-started, we need only use the card metas that differ from OG -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@PlanScore" />
+
+</head>
+<body>
+
+  <!--[include_navbar]-->
+
+  <div class="container container-mainbody">
+    <h1 class="title">Library of Redistricting Plans</h1>
+    <hr>
+    <div class="intro">
+      <p>Something about clarifying what this tool is. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Semper elementum sit mollis non gravida consectetur interdum elit libero.</p>
+    </div>
+
+    <h2>Explore all redistricting plans by state.</h2>
+    <hr>
+    <ul class="states desktop-only">
+      <li><a href="#">Alabama</a></li>
+      <li><a href="#">Alaska</a></li>
+      <li><a href="#">Arizona</a></li>
+      <li><a href="#">Arkansas</a></li>
+      <li><a href="#">California</a></li>
+      <li><a href="#">Colorado</a></li>
+      <li><a href="#">Connecticut</a></li>
+      <li><a href="#">Delaware</a></li>
+      <li><a href="#">Florida</a></li>
+      <li><a href="#">Georgia</a></li>
+      <li>Hawaii</li>
+      <li><a href="#">Idaho</a></li>
+      <li><a href="#">Illinois</a></li>
+      <li><a href="#">Indiana</a></li>
+      <li><a href="#">Iowa</a></li>
+      <li><a href="#">Kansas</a></li>
+      <li><a href="#">Kentucky</a></li>
+      <li><a href="#">Louisiana</a></li>
+      <li><a href="#">Maine</a></li>
+      <li><a href="#">Maryland</a></li>
+      <li><a href="#">Massachusetts</a></li>
+      <li><a href="#">Michigan</a></li>
+      <li><a href="#">Minnesota</a></li>
+      <li><a href="#">Mississippi</a></li>
+      <li><a href="#">Missouri</a></li>
+      <li><a href="#">Montana</a></li>
+      <li><a href="#">Nebraska</a></li>
+      <li>Nevada</li>
+      <li><a href="#">New Hampshire</a></li>
+      <li><a href="#">New Jersey</a></li>
+      <li><a href="#">New Mexico</a></li>
+      <li><a href="#">New York</a></li>
+      <li><a href="#">North Carolina</a></li>
+      <li><a href="#">North Dakota</a></li>
+      <li><a href="#">Ohio</a></li>
+      <li><a href="#">Oklahoma</a></li>
+      <li><a href="#">Oregon</a></li>
+      <li><a href="#">Pennsylvania</a></li>
+      <li><a href="#">Rhode Island</a></li>
+      <li><a href="#">South Carolina</a></li>
+      <li>South Dakota</li>
+      <li><a href="#">Tennessee</a></li>
+      <li><a href="#">Texas</a></li>
+      <li><a href="#">Utah</a></li>
+      <li><a href="#">Vermont</a></li>
+      <li><a href="#">Virginia</a></li>
+      <li><a href="#">Washington</a></li>
+      <li><a href="#">West Virginia</a></li>
+      <li><a href="#">Wisconsin</a></li>
+      <li><a href="#">Wyoming</a></li>
+    </ul>
+
+    <input type="text" list="states" class="mobile-only" placeholder="Select a state" onfocus="">
+      <datalist id="states">
+        <option value="Alabama">
+        <option value="Alaska">
+        <option value="Arizona">
+        <option value="Arkansas">
+        <option value="California">
+        <option value="Colorado">
+        <option value="Connecticut">
+        <option value="Delaware">
+        <option value="District Of Columbia">
+        <option value="Florida">
+        <option value="Georgia">
+        <option value="Hawaii">
+        <option value="Idaho">
+        <option value="Illinois">
+        <option value="Indiana">
+        <option value="Iowa">
+        <option value="Kansas">
+        <option value="Kentucky">
+        <option value="Louisiana">
+        <option value="Maine">
+        <option value="Maryland">
+        <option value="Massachusetts">
+        <option value="Michigan">
+        <option value="Minnesota">
+        <option value="Mississippi">
+        <option value="Missouri">
+        <option value="Montana">
+        <option value="Nebraska">
+        <option value="Nevada">
+        <option value="New Hampshire">
+        <option value="New Jersey">
+        <option value="New Mexico">
+        <option value="New York">
+        <option value="North Carolina">
+        <option value="North Dakota">
+        <option value="Ohio">
+        <option value="Oklahoma">
+        <option value="Oregon">
+        <option value="Pennsylvania">
+        <option value="Rhode Island">
+        <option value="South Carolina">
+        <option value="South Dakota">
+        <option value="Tennessee">
+        <option value="Texas">
+        <option value="Utah">
+        <option value="Vermont">
+        <option value="Virginia">
+        <option value="Washington">
+        <option value="West Virginia">
+        <option value="Wisconsin">
+        <option value="Wyoming">
+      </datalist>
+    </input>
+    <button class="btn btn-red mobile-only" type="submit" value="Submit Your Selection">Submit Your Selection</button>
+
+    <h2>Explore recently added plans.</h2>
+    <hr class="no-margin-bottom">
+    <div class="card-deck">
+      <ul>
+        <!--PASTE NEW CARDS BELOW THIS LINE-->
+
+        <!--CO Jun 29th 2021 Card-->
+        <li class="card">
+          <div class="state">
+            <h3>Colorado</h3>
+            <span class="enacted">Enacted</span>
+          </div>
+          <div class="summary">
+            <a href="#">View this CO State Senate Plan</a>
+            <div class="byline">Authored by: Colorado Independent Redistricting Commission.</div>
+            <div>
+              The 83rd Legislature, 1st Called Session, enacted S.B. 3 (PLAN H358),
+              the plan used to elect members to the Texas House from 2014-2018.
+              The U.S. District Court for the Western District of Texas ordered
+              changes to districts 90, 97 and 99 in Tarrant County for the 2020
+              elections. The resulting statewide plan (PLAN H414) is effective
+              January 2021.
+            </div>
+          </div>
+          <div class="status">
+              Added to PlanScore:
+              <time datetime="2021-06-29">Jun 29th, 2021</time>
+          </div>
+        </li>
+        <!--END CO June 29th 2021 Card-->
+
+        <!--OK Aug 8th 2021 Card-->
+        <li class="card">
+          <div class="state">
+          <h3>Oklahoma</h3>
+          </div>
+          <div class="summary">
+            <a href="#">View this OK State Senate Plan</a>
+            <div class="byline">
+              Authored by: Oklahoma Independent Redistricting Commission
+            </div>
+            <div>
+              Just an idea I had for Oklahoma, might delete later.
+            </div>
+          </div>
+          <div class="status">
+            Added to PlanScore:
+            <time datetime="2021-08-08">Aug 8th, 2021</time>
+          </div>
+        </li>
+        <!--END CO June 29th Card-->
+
+      <!--REMOVE the oldest cards above this point -->
+      </ul>
+    </div><!--/card-deck-->
+</div><!--/container-mainbody-->
+
+  <!--[include_footer]-->
+
+</body>
+</html>

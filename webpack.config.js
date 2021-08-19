@@ -14,6 +14,7 @@ const GLOBAL_JS6_FILES = [
     './about/index.js6',
     './about/historical-data/index.js6',
     './about/friends-resources/index.js6',
+    './library/index.js6',
     './metrics/index.js6',
     './metrics/efficiencygap/index.js6',
     './metrics/meanmedian/index.js6',

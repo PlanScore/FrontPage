@@ -3,7 +3,7 @@
 */
 
 html, body {
-  font-family: 'AvenirLTPro-Medium', sans-serif;
+  font-family: $medium;
   font-size: 18px;
   line-height: 30px;
   color: $navy;
@@ -18,7 +18,7 @@ html {
 
 
 h1, h2, h3 {
-  font-family:'AvenirLTPro-Black';
+  font-family: $heavy;
 }
 
 h1 {
@@ -54,7 +54,7 @@ h3 {
 }
 
 h4, h5 {
-  font-family: 'AvenirLTPro-Heavy', sans-serif;
+  font-family: $heavy;
 }
 
 h4 {
@@ -65,6 +65,16 @@ h4 {
 h5 {
   font-size: 18px;
   line-height: 26px;
+}
+
+hr {
+  background: linear-gradient(90deg, $blue-clc 3%, $gray-light 50%, $red-bright 97%);
+  border-top: none; // bootstrap override
+  height: 3px;
+
+  &.no-margin-bottom {
+    margin-bottom: 0;
+  }
 }
 
 p {
@@ -113,6 +123,23 @@ th {
 
 td:nth-child(1){
   font-weight: 700;
+}
+
+.mobile-only,
+nav .mobile-only,
+input[type=text].mobile-only {
+
+  @media (min-width: $screen-sm) {
+    display: none;
+  }
+}
+
+.desktop-only,
+.states.desktop-only {
+  
+  @media (max-width: $screen-sm) {
+    display: none;
+  }
 }
 
 .navbar-default {
@@ -171,12 +198,6 @@ td:nth-child(1){
       .icon-bar:nth-child(4){
         transform: rotate(-45deg) translate(5px, -10px);
       }
-    }
-  }
-
-  .mobile-only {
-    @media (min-width: $screen-sm){
-      display: none;
     }
   }
 
@@ -354,6 +375,18 @@ div.footer {
   &:active {
     color: white;
     background-color: $blue-clc;
+  }
+}
+
+.btn-red {
+  color: white;
+  background-color: $red-clc;
+  transition: 0.25s ease;
+
+  &:hover,
+  &:focus,
+  &:active {
+    background-color:$gray-dark;
   }
 
 }
