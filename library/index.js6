@@ -15,3 +15,24 @@ require('./index.src.html');
 // begin page-specific JavasScript
 // anything goes: jQuery, ES2015, whatever you need
 //
+
+$(document).ready(function () {
+  const submitState = document.querySelector('#submitState')
+  const states = document.querySelectorAll('input[list]')
+  const input = document.querySelector('#chooseState')
+
+  if (states[0] == input){
+    console.log('same same');
+  }
+  submitState.addEventListener('click', window.goToStateLibraryPage)
+
+})
+
+window.goToStateLibraryPage = () => {
+  const chosenState = document.querySelector('#chooseState').value.toLowerCase();
+
+  window.console.log(chosenState);
+  const selectedState = chooseState.value.toLowerCase();
+  // var allStates = states.
+  location.href = "/library/" + selectedState;
+}

@@ -87,8 +87,7 @@
       <li><a href="#">Wisconsin</a></li>
       <li><a href="#">Wyoming</a></li>
     </ul>
-
-    <input type="text" list="states" class="mobile-only" placeholder="Select a state" onfocus="">
+    <input id="chooseState" type="text" list="states" class="mobile-only" placeholder="Select a state" onfocus="">
       <datalist id="states">
         <option value="Alabama">
         <option value="Alaska">
@@ -143,9 +142,8 @@
         <option value="Wyoming">
       </datalist>
     </input>
-    <button class="btn btn-red mobile-only" type="submit" value="Submit Your Selection">Submit Your Selection</button>
-
-    <h2>Explore recently added plans.</h2>
+    <button id="submitState" class="btn btn-red mobile-only" value="">Submit Your Selection</button>
+      <h2>Explore recently added plans.</h2>
     <hr class="no-margin-bottom">
     <div class="card-deck">
       <ul>
