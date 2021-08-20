@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>PlanScore :: Colorado Plan Library</title>
+
+  <!--[include_head]-->
+
+  <!-- this page's own JS + CSS -->
+  <link href="index.css?[hash]" rel="stylesheet" />
+  <script src="index.js?[hash]"></script>
+
+  <!-- OG tags -->
+  <meta property="og:title" content="PlanScore" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://planscore.org" />
+  <meta property="og:image" content="https://planscore.org/images/OG-default-01.jpg" />
+  <meta property="og:description" content="PlanScore is a first-of-its-kind gerrymandering scoring service for new district plans, allowing users to upload maps and instantly receive projected data about their partisan consequences. You can also use historical data to discover how partisan advantage has influenced redistricting in your state." />
+
+  <!-- Twitter tags note that per https://developer.twitter.com/en/docs/tweets/optimize-with-cards/guides/getting-started, we need only use the card metas that differ from OG -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@PlanScore" />
+
+</head>
+<body>
+
+  <!--[include_navbar]-->
+
+  <div class="container container-mainbody">
+    <h1>Redistrict Plans: Colorado</h1>
+    <hr>
+    <div class="intro">
+      <p>
+        Something about clarifying what this tool is. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Semper elementum sit mollis non gravida consectetur interdum elit libero. Semper elementum sit mollis non gravida consectetur interdum elit libero.
+      </p>
+      <iframe class="map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3176147.6592798787!2d-107.79843646573964!3d38.97636475564502!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x874014749b1856b7%3A0xc75483314990a7ff!2sColorado!5e0!3m2!1sen!2sus!4v1629478767018!5m2!1sen!2sus" width="344" height="197" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+    </div>
+    <h2>Explore all Colorado Plans</h2>
+    <hr>
+    <h3>US House Plans</h3>
+    <div class="card-deck">
+      <ul>
+        <!--PASTE NEW CARDS BELOW THIS LINE-->
+
+        <!--CO Jun 29th 2021 Card-->
+        <li class="card">
+          <div class="state">
+            <h3 class="state-name enacted">Colorado</h3>
+          </div>
+          <div class="summary">
+            <a href="#">View this CO State Senate Plan</a>
+            <div class="byline">Authored by: Colorado Independent Redistricting Commission.</div>
+            <p>
+              The 83rd Legislature, 1st Called Session, enacted S.B. 3 (PLAN H358),
+              the plan used to elect members to the Texas House from 2014-2018.
+              The U.S. District Court for the Western District of Texas ordered
+              changes to districts 90, 97 and 99 in Tarrant County for the 2020
+              elections. The resulting statewide plan (PLAN H414) is effective
+              January 2021.
+            </p>
+          </div> <!--/summary-->
+          <div class="status">
+              Added to PlanScore:
+              <time datetime="2021-06-29">Jun 29th, 2021</time>
+          </div>
+        </li>
+        <!--END CO June 29th 2021 Card-->
+      <!--REMOVE the oldest cards above this point -->
+      </ul>
+    </div><!--/card-deck-->
+    <h3>State Senate Plans</h3>
+    <h3>State House Plans</h3>
+    <a href="/library" class="btn btn-primary">
+      Back to Plan Library
+    </a>
+  </div><!--/container-mainbody-->
+
+    <!--[include_footer]-->
+
+</body>
+</html>

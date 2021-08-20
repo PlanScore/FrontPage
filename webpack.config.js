@@ -14,7 +14,6 @@ const GLOBAL_JS6_FILES = [
     './about/index.js6',
     './about/historical-data/index.js6',
     './about/friends-resources/index.js6',
-    './library/index.js6',
     './metrics/index.js6',
     './metrics/efficiencygap/index.js6',
     './metrics/meanmedian/index.js6',
@@ -76,9 +75,15 @@ const STATE_JS6_FILES = [
     './wyoming/index.js6',
 ];
 
+const LIBRARY_JS6_FILES = [
+  './library/index.js6',
+  './library/colorado/index.js6'
+]
+
 const JS6_FILES = [
     ...GLOBAL_JS6_FILES,
     ...STATE_JS6_FILES,
+    ...LIBRARY_JS6_FILES
 ]
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
