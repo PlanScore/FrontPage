@@ -113,12 +113,12 @@ label input[type="checkbox"] {
 
 td {
   font-size: 14px;
-  color: $gray-med;
+  color: $gray-dark;
 }
 
 th {
   font-size: 14px;
-  color: $gray-dark;
+  color: $navy;
 }
 
 td:nth-child(1){
@@ -136,7 +136,7 @@ input[type=text].mobile-only {
 
 .desktop-only,
 .states.desktop-only {
-  
+
   @media (max-width: $screen-sm) {
     display: none;
   }
@@ -151,8 +151,8 @@ input[type=text].mobile-only {
   min-height: 80px;
 
   #brand-logo {
-      height: 52px;
-      width: auto;
+    height: 52px;
+    width: auto;
   }
 
   .navbar-collapse,
@@ -172,7 +172,7 @@ input[type=text].mobile-only {
     }
 
     li {
-        width: 25%;
+      width: 25%;
     }
 
     &:not(.collapsed) {
