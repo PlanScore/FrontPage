@@ -9,30 +9,45 @@ require('./index.src.html');
 //require('./js/leaflet-control-basemapbar.js');
 //require('./js/leaflet-control-basemapbar.css');
 
-
-
 //
 // begin page-specific JavasScript
 // anything goes: jQuery, ES2015, whatever you need
 //
 
 $(document).ready(function () {
-  const submitState = document.querySelector('#submitState')
-  const states = document.querySelectorAll('input[list]')
-  const input = document.querySelector('#chooseState')
+  initStatePicker();
 
-  if (states[0] == input){
-    console.log('same same');
-  }
-  submitState.addEventListener('click', window.goToStateLibraryPage)
-
+  $('#submitState').click(goToStateLibraryPage);
+  $('#statePicker').submit(goToStateLibraryPage);
 })
 
-window.goToStateLibraryPage = () => {
-  const chosenState = document.querySelector('#chooseState').value.toLowerCase();
+window.initStatePicker = () => {
+  $('input[list="states"]').change(function (event) {
+    const currentInput = event.target.value.toLowerCase();
+    const stateList = $('#states option');
 
-  window.console.log(chosenState);
-  const selectedState = chooseState.value.toLowerCase();
-  // var allStates = states.
-  location.href = "/library/" + selectedState;
+    let choiceFound = false;
+
+    for (let i = 0; i < stateList.length; i++) {
+      const currentState = stateList[i].value.toLowerCase();
+
+      if (currentInput == currentState) {
+        choiceFound = true;
+        break;
+      }
+    }
+
+    if (choiceFound) {
+      this.setCustomValidity('');
+    } else {
+      this.setCustomValidity('Invalid State');
+    }
+    this.reportValidity();
+  });
+};
+
+window.goToStateLibraryPage = () => {
+  // disables default form behavior, would reload page with '?query'
+  event.preventDefault();
+  location.href = "/library/" + $('#stateText').val().toLowerCase();;
 }
