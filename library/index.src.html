@@ -35,7 +35,7 @@
 
     <h2>Explore all redistricting plans by state.</h2>
     <hr>
-    <ul class="states desktop-only">
+    <ul class="states desktop-only" id="desktop-states">
       <li><a href="#">Alabama</a></li>
       <li><a href="#">Alaska</a></li>
       <li><a href="#">Arizona</a></li>
@@ -87,8 +87,8 @@
       <li><a href="#">Wisconsin</a></li>
       <li><a href="#">Wyoming</a></li>
     </ul>
-    <form id="statePicker">
-      <input id="stateText"
+    <form id="mobile-states">
+      <input id="state-text"
         type="text"
         list="states"
         class="mobile-only"
@@ -150,9 +150,9 @@
       </input>
       <input
         type="submit"
-        id="submitState"
+        id="submit-state"
         class="btn btn-red mobile-only"
-        value="Submit Your Selection">
+        value="Submit Your Selection" />
     </form>
 
     <h2>Explore recently added plans.</h2>

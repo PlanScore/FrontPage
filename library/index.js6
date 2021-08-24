@@ -17,11 +17,13 @@ require('./index.src.html');
 $(document).ready(function () {
   initStatePicker();
 
-  $('#submitState').click(goToStateLibraryPage);
-  $('#statePicker').submit(goToStateLibraryPage);
+  $('#submit-state').click(goToStateLibraryPage);
+  $('#mobile-states').submit(goToStateLibraryPage);
 })
 
 window.initStatePicker = () => {
+
+
   $('input[list="states"]').change(function (event) {
     const currentInput = event.target.value.toLowerCase();
     const stateList = $('#states option');
@@ -49,5 +51,5 @@ window.initStatePicker = () => {
 window.goToStateLibraryPage = () => {
   // disables default form behavior, would reload page with '?query'
   event.preventDefault();
-  location.href = "/library/" + $('#stateText').val().toLowerCase();;
+  location.href = "/library/" + $('#state-text').val().toLowerCase();;
 }
