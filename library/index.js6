@@ -2,6 +2,8 @@
 require('./index.scss');
 require('./index.src.html');
 
+import { STATE_CODE_TO_NAME } from "/_common/constants";
+
 // polyfills for this page's JavaScript needs
 //require('core-js/fn/array/includes');
 
@@ -22,24 +24,44 @@ $(document).ready(function () {
 })
 
 window.initStatePicker = () => {
+  for (const [stateabbr, statename] of Object.entries(STATE_CODE_TO_NAME)) {
+    const link_name = statename.toLowerCase().replace(/ /g,"_");
 
+    $('#desktop-states').append(
+      $("<li>").append($("<a>")
+        .text(statename)
+        .attr('href','/library/' + link_name)
+      )
+    );
 
-  $('input[list="states"]').change(function (event) {
-    const currentInput = event.target.value.toLowerCase();
-    const stateList = $('#states option');
+    $('#mobile-states #states-list').append(
+      $("<option>")
+        .attr('value', stateabbr)
+        .text(statename)
+    );
+  }
 
-    let choiceFound = false;
+  $('#state-text').change( function (event) {
+    const current_input = event.target.value;
 
-    for (let i = 0; i < stateList.length; i++) {
-      const currentState = stateList[i].value.toLowerCase();
+    let state_found = false;
 
-      if (currentInput == currentState) {
-        choiceFound = true;
-        break;
+    // Try to match all 2 letter inputs to a state abbreviation
+    if (current_input.length == 2 && current_input.toUpperCase() in STATE_CODE_TO_NAME){
+      this.value = STATE_CODE_TO_NAME[current_input.toUpperCase()];
+      state_found = true;
+    } else {
+      //iterate through statenames to try and find a possible match
+      for (const [stateabbr, statename] of Object.entries(STATE_CODE_TO_NAME)) {
+        if (statename.toLowerCase().startsWith(current_input.toLowerCase())) {
+          this.value = statename;
+          state_found = true;
+          break;
+        }
       }
     }
 
-    if (choiceFound) {
+    if (state_found) {
       this.setCustomValidity('');
     } else {
       this.setCustomValidity('Invalid State');
@@ -48,8 +70,16 @@ window.initStatePicker = () => {
   });
 };
 
-window.goToStateLibraryPage = () => {
+window.goToStateLibraryPage = function() {
+
   // disables default form behavior, would reload page with '?query'
   event.preventDefault();
-  location.href = "/library/" + $('#state-text').val().toLowerCase();;
+
+  let $state_input = $('#state-text');
+  let state_input_node = $state_input[0];
+  
+  if (state_input_node.checkValidity()){
+    const link_name = state_input_node.value.toLowerCase().replace(/ /g,"_");
+    location.href = "/library/" + link_name;
+  }
 }
