@@ -34,9 +34,8 @@ window.initStatePicker = () => {
       )
     );
 
-    $('#mobile-states #states-list').append(
+    $('#states-list').append(
       $("<option>")
-        .attr('value', stateabbr)
         .text(statename)
     );
   }
@@ -51,8 +50,9 @@ window.initStatePicker = () => {
       this.value = STATE_CODE_TO_NAME[current_input.toUpperCase()];
       state_found = true;
     } else {
-      //iterate through statenames to try and find a possible match
-      for (const [stateabbr, statename] of Object.entries(STATE_CODE_TO_NAME)) {
+
+      //iterate through state names to try and find a possible match
+      for (const [_, statename] of Object.entries(STATE_CODE_TO_NAME)) {
         if (statename.toLowerCase().startsWith(current_input.toLowerCase())) {
           this.value = statename;
           state_found = true;
@@ -77,7 +77,7 @@ window.goToStateLibraryPage = function() {
 
   let $state_input = $('#state-text');
   let state_input_node = $state_input[0];
-  
+
   if (state_input_node.checkValidity()){
     const link_name = state_input_node.value.toLowerCase().replace(/ /g,"_");
     location.href = "/library/" + link_name;
