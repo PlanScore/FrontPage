@@ -13,7 +13,7 @@
 	grid-template-columns: repeat(3, 1fr);
 	grid-template-rows: repeat(17, 1fr );
 	list-style-type: none;
-  
+
 	li {
 		padding: 20px 8px;
 		border-bottom: 1px solid $gray-lighter;
@@ -29,20 +29,37 @@
 	}
 }
 
-input[type="text"]{
-	background-color: $blue-clc;
-	color: white;
-	display: block;
-	width: 100%;
-	border: none;
-	border-radius: 4px;
-	padding: 12px;
 
-	&::placeholder{
-		color: white;
-	}
+
+
+#mobile-states {
+  position: relative;
+
+  .caron {
+    color: white;
+    font-size: 64px;
+    font-style: normal;
+    position: absolute;
+    display:block;
+    top: 36px;
+    right: 32px;
+  }
+
+  #state-text {
+  	background-color: $blue-clc;
+  	color: white;
+  	display: block;
+  	width: 100%;
+  	border: none;
+  	border-radius: 4px;
+  	padding: 12px;
+
+  	&::placeholder {
+  		color: white;
+  	}
+  }
 }
 
-datalist {
-	width: 100%;
-}
+// datalist {
+// 	width: 100%;
+// }
