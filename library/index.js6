@@ -20,7 +20,7 @@ $(document).ready(function () {
   initStatePicker();
 
   $('#submit-state').click(goToStateLibraryPage);
-  // $('#mobile-states').submit(goToStateLibraryPage);
+  $('#mobile-states').submit(goToStateLibraryPage);
 })
 
 
