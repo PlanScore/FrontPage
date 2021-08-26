@@ -20,8 +20,9 @@ $(document).ready(function () {
   initStatePicker();
 
   $('#submit-state').click(goToStateLibraryPage);
-  $('#mobile-states').submit(goToStateLibraryPage);
+  // $('#mobile-states').submit(goToStateLibraryPage);
 })
+
 
 window.initStatePicker = () => {
   for (const [stateabbr, statename] of Object.entries(STATE_CODE_TO_NAME)) {
