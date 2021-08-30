@@ -90,6 +90,7 @@ p {
 a {
   color: $navy;
   transition: 0.25s ease;
+  text-decoration: underline;
 
   &:hover {
     color: $blue-clc;
@@ -204,6 +205,7 @@ nav .mobile-only {
     color: $navy;
     padding-bottom: 4px;
     text-shadow: none;
+    text-decoration: none;
 
     &:before {
       content: "";
@@ -269,6 +271,76 @@ nav .mobile-only {
   max-width: $screen-md;
 }
 
+.info {
+  display: flex;
+  background-color: $gray-lighter;
+
+  .box {
+    display: flex;
+    flex-direction: column;
+    padding: 20px 40px;
+    margin: 0 auto;
+    border-right: 1px solid $gray-light;
+
+    font-size: 16px;
+    line-height: 23px;
+
+    strong {
+      font-family: 'AvenirLTPro-Heavy', sans-serif;
+      font-size: 14px;
+    }
+
+    &:last-child {
+      border: none;
+    }
+
+    @media (max-width: $screen-sm) {
+      width: 100%;
+      border-right: none;
+      border-bottom: 1px solid $gray-light;
+    }
+  }
+
+  @media (max-width: $screen-sm) {
+    flex-direction: column;
+    text-align: left;
+  }
+}
+
+.link-grid {
+  display: grid;
+  grid-template: 1fr 1fr / 1fr 1fr;
+  column-gap: 40px;
+
+  a {
+    display: flex;
+    justify-content: space-between;
+
+    width: 100%;
+    padding: 26px 0;
+    border-bottom: 1px solid $gray-light;
+
+    &:nth-child(2) {
+      //moves top right link to bottom left, just on desktop
+      grid-row-start: 2 ;
+    }
+  }
+
+  @media (max-width: $screen-sm) {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+
+.content-footer .btn {
+  font-size: 16px;
+
+  @media (max-width: $screen-sm) {
+    width: 100%;
+  }
+}
+
 div.footer {
   background-color: $gray-lighter;
   text-align: center;
@@ -324,12 +396,6 @@ div.footer {
 
 .container-mainbody {
   padding-bottom: 50px;
-
-  p, h3, li {
-    a {
-      text-decoration: underline;
-    }
-  }
 
   #map {
     a {
