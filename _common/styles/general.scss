@@ -329,8 +329,12 @@ nav .mobile-only {
 }
 
 
-.content-footer .btn {
-  font-size: 16px;
+.content-footer {
+  margin-top: 94px;
+
+  .btn {
+    font-size: 16px;
+  }
 
   @media (max-width: $screen-sm) {
     width: 100%;
@@ -401,10 +405,14 @@ div.footer {
 }
 
 .btn {
-  color: $navy;
-  background-color: $gray-light;
   margin: 16px 14px 16px 0;
   padding: 12px 20px;
+
+  color: $navy;
+  background-color: $gray-light;
+
+  text-decoration: none;
+
   transition: 0.25s ease;
 
   // bootstrap overrides
