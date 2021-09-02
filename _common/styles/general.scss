@@ -138,6 +138,70 @@ nav .mobile-only {
   }
 }
 
+.announcement-visible {
+  padding-top: 60px;
+
+  @media (max-width: $screen-sm) {
+    padding-top: 88px;
+  }
+}
+
+.announcement {
+  position: fixed;
+  z-index: 1;
+  top: 0;
+
+  width: 100%;
+  padding: 16px;
+
+  color: white;
+  background-color: $blue-bright;
+
+  font-family: $black;
+  font-size: 16px;
+  line-height: 28px;
+  text-align: center;
+
+  .cta {
+    margin-left: 16px;
+
+    color: white;
+    transition: 0.25s ease;
+
+    font-family: $medium;
+
+    &:hover {
+      color: $gray-med;
+    }
+
+    @media (max-width: $screen-sm) {
+      display: block;
+      margin-left: 0;
+    }
+  }
+
+  .close-link {
+    position: absolute;
+    right: 20px;
+    top: calc(50% - 12px);
+
+    cursor: pointer;
+
+    svg path {
+      transition: 0.25s ease;
+    }
+
+    &:hover svg path {
+      fill: $gray-med;
+    }
+  }
+
+  @media (max-width: $screen-sm) {
+    font-size: 14px;
+    text-align: left;
+  }
+}
+
 .navbar-default {
   background-image: none;
   background-color: white;
