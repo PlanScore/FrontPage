@@ -9,6 +9,7 @@ const GLOBAL_JS6_FILES = [
     './index.js6',
     './error.js6',
     './sitewide.js6',
+    './global.js6',
     './patternlibrary/index.js6',
     './patternlibrary_htmltemplate/index.js6',
     './about/index.js6',
