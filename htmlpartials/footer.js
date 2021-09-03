@@ -88,6 +88,11 @@ const htmlblock = `
 
   <script type="text/JavaScript">
     window.loadAnnouncementIfNeverClosed();
+    window.onresize = () => {
+      if (window.innerWidth > 768) {
+        $('#navbar').collapse('hide');
+      }
+    }
   </script>
 
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-65629552-4"></script>
