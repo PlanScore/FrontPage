@@ -15,16 +15,20 @@
 	list-style-type: none;
 
 	li {
-		padding: 20px 8px;
 		border-bottom: 1px solid $gray-lighter;
-	  transition: 0.25s ease;
 
-		&:hover{
-			background-color: $gray-light;
-			cursor: pointer;
-		}
 		a {
+      display: block;
+      padding: 20px 8px;
+
 			color: $blue-clc;
+      transition: 0.25s ease;
+
+      &:hover,
+      &:focus {
+        background-color: $gray-light;
+        cursor: pointer;
+      }
 		}
 	}
 }

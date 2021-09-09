@@ -2,7 +2,7 @@ const htmlblock = `
   <div class="footer">
     <div class="callout">
       <a href="https://campaignlegal.org" title="Visit Campaign Legal Center">
-        <img src="/images/CLC-logo.svg" alt="Campaign Legal Center Logo" />
+        <img src="/images/CLC-logo.svg" class="logo" alt="Campaign Legal Center Logo" />
       </a>
       <p>
         PlanScore is a project of Campaign Legal Center.

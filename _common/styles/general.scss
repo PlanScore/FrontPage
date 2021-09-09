@@ -16,7 +16,6 @@ html {
   }
 }
 
-
 h1, h2, h3 {
   font-family: $heavy;
 }
@@ -148,7 +147,7 @@ nav .mobile-only {
 
 .announcement {
   position: fixed;
-  z-index: 1;
+  z-index: 1001;
   top: 0;
 
   width: 100%;
@@ -334,6 +333,7 @@ nav .mobile-only {
 .info {
   display: flex;
   background-color: $gray-lighter;
+  margin-bottom: 20px;
 
   .box {
     display: flex;
@@ -404,12 +404,12 @@ nav .mobile-only {
   }
 }
 
-div.footer {
+.footer {
   background-color: $gray-lighter;
   text-align: center;
   padding: 36px 0 0;
 
-  img {
+  .logo {
     max-width: 120px !important; /* bootstrap v3 print styles neccessitate the !important */
     margin-bottom: 24px;
   }
@@ -419,22 +419,24 @@ div.footer {
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
-    padding: 20px 62px 24px;
+    max-width: 256px;
+    margin: 0 auto 40px;
+
+    a {
+      padding: 16px;
+
+      &:hover svg,
+      &:focus svg {
+        fill: $blue-clc;
+      }
+    }
+
 
     svg {
       height: auto;
       width: 32px;
-      margin: 0 20px 24px;
       fill: $navy;
       transition: 0.25s ease;
-
-      &:hover {
-        fill: $blue-clc;
-      }
-
-      @media (min-width: $screen-sm) {
-        margin-bottom: 0;
-      }
     }
 
     .legal {
@@ -453,6 +455,7 @@ div.footer {
     @media (min-width: $screen-sm) {
       background-color: $gray-light;
       flex-wrap: nowrap;
+      max-width: unset;
     }
   }
 }
@@ -474,6 +477,7 @@ div.footer {
   color: $navy;
   background-color: $gray-light;
 
+  line-height: 24px;
   text-decoration: none;
 
   transition: 0.25s ease;
