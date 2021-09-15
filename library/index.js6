@@ -18,11 +18,10 @@ import { STATE_CODE_TO_NAME } from "/_common/constants";
 
 $(document).ready(function () {
   initStatePicker();
-
+  $('.state-link').click(goToStateIfExists);
   $('#submit-state').click(goToStateLibraryPage);
   $('#mobile-states').submit(goToStateLibraryPage);
 })
-
 
 window.initStatePicker = () => {
   for (const [stateabbr, statename] of Object.entries(STATE_CODE_TO_NAME)) {
@@ -32,6 +31,7 @@ window.initStatePicker = () => {
       $("<li>").append($("<a>")
         .text(statename)
         .attr('href','/library/' + link_name)
+        .attr('class', 'state-link')
       )
     );
 
@@ -83,4 +83,19 @@ window.goToStateLibraryPage = function() {
     const link_name = state_input_node.value.toLowerCase().replace(/ /g,"_");
     location.href = "/library/" + link_name;
   }
+}
+
+window.goToStateIfExists = function (event) {
+  event.preventDefault();
+
+  const element = event.target;
+  const state_library_page = element.href;
+
+  $.get(state_library_page)
+    .done( () => {
+      location.href = state_library_page;
+    })
+    .fail( () => {
+      location.href = '/library/no_plans';
+    });
 }
