@@ -49,3 +49,18 @@ const closeAnnouncement = () => {
   document.cookie = "closeAnnouncement=true; max-age=604800";
   document.body.classList.remove('announcement-visible');
 };
+
+window.goToStateLibraryIfExists =  (event) => {
+  event.preventDefault();
+
+  const element = event.target;
+  const state_library_page = element.href;
+
+  $.get(state_library_page)
+    .done( () => {
+      location.href = state_library_page;
+    })
+    .fail( () => {
+      location.href = '/library/no_plans';
+    });
+}

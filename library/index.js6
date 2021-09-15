@@ -18,9 +18,6 @@ import { STATE_CODE_TO_NAME } from "/_common/constants";
 
 $(document).ready(function () {
   initStatePicker();
-  $('.state-link').click(goToStateIfExists);
-  $('#submit-state').click(goToStateLibraryPage);
-  $('#mobile-states').submit(goToStateLibraryPage);
 })
 
 window.initStatePicker = () => {
@@ -32,6 +29,7 @@ window.initStatePicker = () => {
         .text(statename)
         .attr('href','/library/' + link_name)
         .attr('class', 'state-link')
+        .click(goToStateLibraryIfExists)
       )
     );
 
@@ -41,61 +39,4 @@ window.initStatePicker = () => {
     );
   }
 
-  $('#state-text').change( function (event) {
-    const current_input = event.target.value;
-
-    let state_found = false;
-
-    // Try to match all 2 letter inputs to a state abbreviation
-    if (current_input.length == 2 && current_input.toUpperCase() in STATE_CODE_TO_NAME){
-      this.value = STATE_CODE_TO_NAME[current_input.toUpperCase()];
-      state_found = true;
-    } else {
-
-      //iterate through state names to try and find a possible match
-      for (const [_, statename] of Object.entries(STATE_CODE_TO_NAME)) {
-        if (statename.toLowerCase().startsWith(current_input.toLowerCase())) {
-          this.value = statename;
-          state_found = true;
-          break;
-        }
-      }
-    }
-
-    if (state_found) {
-      this.setCustomValidity('');
-    } else {
-      this.setCustomValidity('Invalid State');
-    }
-    this.reportValidity();
-  });
 };
-
-window.goToStateLibraryPage = function() {
-
-  // disables default form behavior, would reload page with '?query'
-  event.preventDefault();
-
-  let $state_input = $('#state-text');
-  let state_input_node = $state_input[0];
-
-  if (state_input_node.checkValidity()){
-    const link_name = state_input_node.value.toLowerCase().replace(/ /g,"_");
-    location.href = "/library/" + link_name;
-  }
-}
-
-window.goToStateIfExists = function (event) {
-  event.preventDefault();
-
-  const element = event.target;
-  const state_library_page = element.href;
-
-  $.get(state_library_page)
-    .done( () => {
-      location.href = state_library_page;
-    })
-    .fail( () => {
-      location.href = '/library/no_plans';
-    });
-}
