@@ -24,7 +24,7 @@ window.initStatePicker = () => {
   for (const [stateabbr, statename] of Object.entries(STATE_CODE_TO_NAME)) {
     const link_name = statename.toLowerCase().replace(/ /g,"_");
 
-    $('#desktop-states').append(
+    $('#state-library-list').append(
       $("<li>").append($("<a>")
         .text(statename)
         .attr('href','/library/' + link_name)

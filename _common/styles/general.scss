@@ -123,16 +123,7 @@ td:nth-child(1){
 
 .mobile-only,
 nav .mobile-only {
-
   @media (min-width: $screen-sm) {
-    display: none;
-  }
-}
-
-.desktop-only,
-.states.desktop-only {
-
-  @media (max-width: $screen-sm) {
     display: none;
   }
 }

@@ -14,6 +14,8 @@
 	grid-template-rows: repeat(17, 1fr );
 	list-style-type: none;
 
+  padding-inline-start: 0;
+
 	li {
 		border-bottom: 1px solid $gray-lighter;
 
@@ -33,8 +35,8 @@
 	}
 
   @media (max-width: $screen-sm) {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr 1fr;
     grid-template-rows: repeat(26, 1fr );
-
+    column-gap: 4%;
   }
 }
