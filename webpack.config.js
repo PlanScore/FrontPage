@@ -78,7 +78,7 @@ const STATE_JS6_FILES = [
 
 const LIBRARY_JS6_FILES = [
   './library/index.js6',
-  './library/colorado/index.js6'
+  './library/colorado/index.js6',
 ]
 
 const JS6_FILES = [

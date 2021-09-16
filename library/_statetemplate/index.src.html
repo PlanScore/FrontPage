@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>PlanScore :: STATE_NAME Plan Library</title>
+
+  <!--[include_head]-->
+
+  <!-- this page's own JS + CSS -->
+  <link href="index.css?[hash]" rel="stylesheet" />
+  <script src="index.js?[hash]"></script>
+
+  <!-- OG tags -->
+  <meta property="og:title" content="PlanScore" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://planscore.org" />
+  <meta property="og:image" content="https://planscore.org/images/OG-default-01.jpg" />
+  <meta property="og:description" content="PlanScore is a first-of-its-kind gerrymandering scoring service for new district plans, allowing users to upload maps and instantly receive projected data about their partisan consequences. You can also use historical data to discover how partisan advantage has influenced redistricting in your state." />
+
+  <!-- Twitter tags note that per https://developer.twitter.com/en/docs/tweets/optimize-with-cards/guides/getting-started, we need only use the card metas that differ from OG -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@PlanScore" />
+
+</head>
+<body>
+
+  <!--[include_navbar]-->
+
+  <div class="container container-mainbody">
+    <h1>Redistrict Plans: STATE_NAME</h1>
+    <hr>
+    <div class="intro">
+      <p>
+        <!-- Blurb about the state goes here.-->
+      </p>
+        <!-- INSERT MAP EMBED CODE HERE, WITH class="map" -->
+    </div>
+    <h2>Explore all STATE_NAME Plans</h2>
+    <hr>
+    <h3>US House Plans</h3>
+    <div class="card-deck">
+      <ul>
+        <!--PASTE NEW US HOUSE PLAN CARDS BELOW THIS LINE-->
+
+        <!--THIS CARD REPRESENTS A SPECIFIC PLAN COPY FROM HERE DOWN -->
+        <li class="card">
+          <div class="state">
+            <h3 class="state-name">STATE_NAME</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
+          </div>
+          <div class="summary">
+            <a href="PLAN_URL">View this STATE_NAME US House Plan</a>
+            <div class="byline">Authored by: AUTHOR</div>
+            <p>
+              <!--PLAN_NOTES GO HERE -->
+            </p>
+          </div>
+          <div class="status">
+              Added to PlanScore:
+              <time datetime="2001-01-31">Jan 31st, 2001</time> <!-- BOTH DATETIME and rendered time should be updated -->
+          </div>
+        </li>
+        <!--PASTE NEW US HOUSE PLAN CARDS ABOVE THIS LINE-->
+      </ul>
+    </div>
+
+    <h3>State Senate Plans</h3>
+    <div class="card-deck">
+      <ul>
+        <!--PASTE NEW STATE SENATE PLAN CARDS BELOW THIS LINE-->
+        <!--PASTE NEW STATE SENATE CARDS ABOVE THIS LINE-->
+      </ul>
+    </div>
+
+    <h3>State House Plans</h3>
+    <div class="card-deck">
+      <ul>
+        <!--PASTE NEW STATE HOUSE PLAN CARDS BELOW THIS LINE-->
+        <!--PASTE NEW STATE HOUSE CARDS ABOVE THIS LINE-->
+      </ul>
+      </div><!--/card-deck-->
+    <a href="/library" class="btn btn-primary">
+      Back to Plan Library
+    </a>
+    <a href="/STATE_NAME" class="btn btn-primary"> <!-- The href should be lowercase -->
+      View STATE_NAME Historical Plans
+    </a>
+  </div><!--/container-mainbody-->
+
+    <!--[include_footer]-->
+
+</body>
+</html>
