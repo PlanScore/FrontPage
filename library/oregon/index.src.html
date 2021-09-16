@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>PlanScore :: Oregon Plan Library</title>
+
+  <!--[include_head]-->
+
+  <!-- this page's own JS + CSS -->
+  <link href="index.css?[hash]" rel="stylesheet" />
+  <script src="index.js?[hash]"></script>
+
+  <!-- OG tags -->
+  <meta property="og:title" content="PlanScore" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://planscore.org" />
+  <meta property="og:image" content="https://planscore.org/images/OG-default-01.jpg" />
+  <meta property="og:description" content="PlanScore is a first-of-its-kind gerrymandering scoring service for new district plans, allowing users to upload maps and instantly receive projected data about their partisan consequences. You can also use historical data to discover how partisan advantage has influenced redistricting in your state." />
+
+  <!-- Twitter tags note that per https://developer.twitter.com/en/docs/tweets/optimize-with-cards/guides/getting-started, we need only use the card metas that differ from OG -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@PlanScore" />
+
+</head>
+<body>
+
+  <!--[include_navbar]-->
+
+  <div class="container container-mainbody">
+    <h1>Redistrict Plans: Oregon</h1>
+    <hr>
+    <div class="intro">
+      <p>
+      Oregon is the 33rd State and the capital is Salem.
+      </p>
+      <iframe class="map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2932796.228578474!2d-122.8309901047423!3d44.123408957847374!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x54936e7c9b9f6a55%3A0x7d4c65db7a0bb876!2sOregon!5e0!3m2!1sen!2sus!4v1631832137258!5m2!1sen!2sus" width="344" height="197" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+    </div>
+    <h2>Explore all Oregon Plans</h2>
+    <hr>
+    <h3>US House Plans</h3>
+    <div class="card-deck">
+      <ul>
+        <!--PASTE NEW US HOUSE PLAN CARDS BELOW THIS LINE-->
+
+        <!--THIS CARD REPRESENTS A SPECIFIC PLAN COPY FROM HERE DOWN -->
+        <li class="card">
+          <div class="state">
+            <h3 class="state-name">Oregon</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
+          </div>
+          <div class="summary">
+            <a href="https://dev.planscore.org/plan.html?20210916T225121.773013304Z">View this Oregon US House Plan</a>
+            <div class="byline">Authored by: House Interim Committee On Redistricting</div>
+            <p>
+              This is House Interim Committee On Redistricting - Congress - Plan A.
+            </p>
+          </div>
+          <div class="status">
+              Added to PlanScore:
+              <time datetime="2021-09-03">Sep 3, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
+          </div>
+        </li>
+        <!-- COPY FROM HERE UP -->
+        <!--PASTE NEW US HOUSE PLAN CARDS ABOVE THIS LINE-->
+      </ul>
+    </div>
+
+    <h3>State Senate Plans</h3>
+    <div class="card-deck">
+      <ul>
+        <!--PASTE NEW STATE SENATE PLAN CARDS BELOW THIS LINE-->
+        <!--PASTE NEW STATE SENATE CARDS ABOVE THIS LINE-->
+      </ul>
+    </div>
+
+    <h3>State House Plans</h3>
+    <div class="card-deck">
+      <ul>
+        <!--PASTE NEW STATE HOUSE PLAN CARDS BELOW THIS LINE-->
+        <!--PASTE NEW STATE HOUSE CARDS ABOVE THIS LINE-->
+      </ul>
+      </div><!--/card-deck-->
+    <a href="/library" class="btn btn-primary">
+      Back to Plan Library
+    </a>
+    <a href="/oregon" class="btn btn-primary"> <!-- The href should be lowercase -->
+      View Oregon Historical Plans
+    </a>
+  </div><!--/container-mainbody-->
+
+    <!--[include_footer]-->
+
+</body>
+</html>
