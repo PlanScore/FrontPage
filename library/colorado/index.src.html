@@ -5,7 +5,15 @@
 
   <!--[include_head]-->
 
+  <!-- Leaflet for the map -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+
   <!-- this page's own JS + CSS -->
+  <script>
+  var SELECTED_STATE = 'Colorado';
+  </script>
   <link href="index.css?[hash]" rel="stylesheet" />
   <script src="index.js?[hash]"></script>
 
@@ -33,7 +41,7 @@
       <p>
         Something about clarifying what this tool is. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Semper elementum sit mollis non gravida consectetur interdum elit libero. Semper elementum sit mollis non gravida consectetur interdum elit libero.
       </p>
-      <iframe class="map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3176147.6592798787!2d-107.79843646573964!3d38.97636475564502!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x874014749b1856b7%3A0xc75483314990a7ff!2sColorado!5e0!3m2!1sen!2sus!4v1629478767018!5m2!1sen!2sus" width="344" height="197" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+      <div id="map"></div>
     </div>
     <h2>Explore all Colorado Plans</h2>
     <hr>
