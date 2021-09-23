@@ -5,7 +5,16 @@
 
   <!--[include_head]-->
 
+  <!-- Leaflet for the map -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+
+
   <!-- this page's own JS + CSS -->
+  <script>
+    var SELECTED_STATE = 'Alaska';
+  </script>
   <link href="index.css?[hash]" rel="stylesheet" />
   <script src="index.js?[hash]"></script>
 
@@ -33,7 +42,7 @@
       <p>
         <!-- Blurb about the state goes here.-->
       </p>
-        <!-- INSERT MAP EMBED CODE HERE, WITH class="map" -->
+      <div id="map"></div>
     </div>
     <h2>Explore all Alaska Plans</h2>
     <hr>
