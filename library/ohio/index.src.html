@@ -5,7 +5,15 @@
 
   <!--[include_head]-->
 
+  <!-- Leaflet for the map -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+
   <!-- this page's own JS + CSS -->
+  <script>
+  var SELECTED_STATE = 'Ohio';
+  </script>
   <link href="index.css?[hash]" rel="stylesheet" />
   <script src="index.js?[hash]"></script>
 
@@ -27,13 +35,13 @@
   <!--[include_navbar]-->
 
   <div class="container container-mainbody">
-    <h1>Redistrict Plans: Ohio</h1>
+    <h1>Redistricting Plans: Ohio</h1>
     <hr>
     <div class="intro">
       <p>
         <!-- Blurb about the state goes here.-->
       </p>
-        <iframe class="map" src="https://www.google.com/maps/embed/v1/place?q=place_id:ChIJwY5NtXrpNogRFtmfnDlkzeU&key=AIzaSyBcfZy-h5dAGwWugOrFJWGSSiokpxFoU90" width="344" height="197" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+      <div id="map"></div>
     </div>
     <h2>Explore all Ohio Plans</h2>
     <hr>
@@ -41,8 +49,6 @@
     <div class="card-deck">
       <ul>
         <!--PASTE NEW US HOUSE PLAN CARDS BELOW THIS LINE-->
-
-        <!--THIS CARD REPRESENTS A SPECIFIC PLAN COPY FROM HERE DOWN -->
 
         <!--PASTE NEW US HOUSE PLAN CARDS ABOVE THIS LINE-->
       </ul>
@@ -52,22 +58,41 @@
     <div class="card-deck">
       <ul>
         <!--PASTE NEW STATE SENATE PLAN CARDS BELOW THIS LINE-->
-        <li class="card">
-          <div class="state">
-            <h3 class="state-name">Ohio</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
-          </div>
-          <div class="summary">
-            <a href="https://planscore.campaignlegal.org/plan.html?20210916T040858.797334359Z">View this Ohio State Senate Plan</a>
-            <div class="byline">Authored by: Ohio Redistricting Commission</div>
-            <p>
-              Ohio State Senate - Adopted
-            </p>
-          </div>
-          <div class="status">
-              Added to PlanScore:
-              <time datetime="2021-09-16">Sep 16th, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
-          </div>
-        </li>
+                <!--OH adopted map -->
+                <li class="card">
+                  <div class="state">
+                    <h3 class="state-name enacted">Ohio</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
+                  </div>
+                  <div class="summary">
+                    <a href="https://planscore.campaignlegal.org/plan.html?20210923T090535.025401831Z">View this OH State Senate Plan</a>
+                    <div class="byline">Authored by: Ohio Redistricting Commission</div>
+                    <p>
+                      Commission Adopted General Assembly Map
+                    </p>
+                  </div>
+                  <div class="status">
+                      Added to PlanScore:
+                      <time datetime="2021-09-23">Sep 23rd, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
+                  </div>
+                </li>
+
+                <!--OH Senate Dem caucus -->
+                <li class="card">
+                  <div class="state">
+                    <h3 class="state-name">Ohio</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
+                  </div>
+                  <div class="summary">
+                    <a href="https://planscore.campaignlegal.org/plan.html?20210923T090235.741701742Z">View this OH State Senate Plan</a>
+                    <div class="byline">Authored by: Sykes, Vernon</div>
+                    <p>
+                      Ohio Democratic Caucus Proposed Map
+                    </p>
+                  </div>
+                  <div class="status">
+                      Added to PlanScore:
+                      <time datetime="2021-09-23">Sep 23rd, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
+                  </div>
+                </li>
         <!--PASTE NEW STATE SENATE CARDS ABOVE THIS LINE-->
       </ul>
     </div>
@@ -76,20 +101,38 @@
     <div class="card-deck">
       <ul>
         <!--PASTE NEW STATE HOUSE PLAN CARDS BELOW THIS LINE-->
+        <!--IO First Senate Draft -->
+        <li class="card">
+          <div class="state">
+            <h3 class="state-name enacted">Ohio</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
+          </div>
+          <div class="summary">
+            <a href="https://planscore.campaignlegal.org/plan.html?20210923T090851.754513991Z">View this OH State House Plan</a>
+            <div class="byline">Authored by: Ohio Redistricting Commission</div>
+            <p>
+              Commission Adopted General Assembly Map
+            </p>
+          </div>
+          <div class="status">
+              Added to PlanScore:
+              <time datetime="2021-09-23">Sep 23rd, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
+          </div>
+        </li>
+
         <li class="card">
           <div class="state">
             <h3 class="state-name">Ohio</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
           </div>
           <div class="summary">
-            <a href="https://planscore.campaignlegal.org/plan.html?20210916T040507.028941605Z">View this Ohio State House Plan</a>
-            <div class="byline">Authored by: Ohio Redistricting Commission</div>
+            <a href="https://planscore.campaignlegal.org/plan.html?20210923T090734.820239165Z">View this OH State House Plan</a>
+            <div class="byline">Authored by: Sykes, Vernon</div>
             <p>
-              Ohio State House - Adopted
+              Ohio Democratic Caucus Proposed Map
             </p>
           </div>
           <div class="status">
               Added to PlanScore:
-              <time datetime="2021-09-16">Sep 16th, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
+              <time datetime="2021-09-23">Sep 23rd, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
           </div>
         </li>
         <!--PASTE NEW STATE HOUSE CARDS ABOVE THIS LINE-->
