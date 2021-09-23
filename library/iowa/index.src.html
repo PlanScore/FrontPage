@@ -5,7 +5,15 @@
 
   <!--[include_head]-->
 
+  <!-- Leaflet for the map -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+
   <!-- this page's own JS + CSS -->
+  <script>
+  var SELECTED_STATE = 'Iowa';
+  </script>
   <link href="index.css?[hash]" rel="stylesheet" />
   <script src="index.js?[hash]"></script>
 
@@ -33,7 +41,7 @@
       <p>
         <!-- Blurb about the state goes here.-->
       </p>
-      <iframe class="map" src="https://www.google.com/maps/embed/v1/place?q=place_id:ChIJGWD48W9e7ocR2VnHV0pj78Y&key=AIzaSyBcfZy-h5dAGwWugOrFJWGSSiokpxFoU90" width="344" height="197" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+      <div id="map"></div>
     </div>
     <h2>Explore all Iowa Plans</h2>
     <hr>
