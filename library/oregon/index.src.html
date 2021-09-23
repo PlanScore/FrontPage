@@ -5,7 +5,15 @@
 
   <!--[include_head]-->
 
+  <!-- Leaflet for the map -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+
   <!-- this page's own JS + CSS -->
+  <script>
+  var SELECTED_STATE = 'Oregon';
+  </script>
   <link href="index.css?[hash]" rel="stylesheet" />
   <script src="index.js?[hash]"></script>
 
@@ -27,13 +35,13 @@
   <!--[include_navbar]-->
 
   <div class="container container-mainbody">
-    <h1>Redistrict Plans: Oregon</h1>
+    <h1>Redistricting Plans: Oregon</h1>
     <hr>
     <div class="intro">
       <p>
-      Oregon is the 33rd State and the capital is Salem.
+        <!-- Blurb about the state goes here.-->
       </p>
-      <iframe class="map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2932796.228578474!2d-122.8309901047423!3d44.123408957847374!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x54936e7c9b9f6a55%3A0x7d4c65db7a0bb876!2sOregon!5e0!3m2!1sen!2sus!4v1631832137258!5m2!1sen!2sus" width="344" height="197" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+      <div id="map"></div>
     </div>
     <h2>Explore all Oregon Plans</h2>
     <hr>
@@ -42,38 +50,39 @@
       <ul>
         <!--PASTE NEW US HOUSE PLAN CARDS BELOW THIS LINE-->
 
-        <!--THIS CARD REPRESENTS A SPECIFIC PLAN COPY FROM HERE DOWN -->
+        <!--US House Plan A -->
         <li class="card">
           <div class="state">
             <h3 class="state-name">Oregon</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
           </div>
           <div class="summary">
-            <a href="https://dev.planscore.org/plan.html?20210916T225121.773013304Z">View this Oregon US House Plan</a>
-            <div class="byline">Authored by: House Interim Committee On Redistricting</div>
+            <a href="https://planscore.campaignlegal.org/plan.html?20210923T095305.147657396Z">View this OR US House Plan</a>
+            <div class="byline">Authored by: Oregon House Interim Committee On Redistricting</div>
             <p>
-              This is House Interim Committee On Redistricting - Congress - Plan A.
+              Congressional Plan A
             </p>
           </div>
           <div class="status">
               Added to PlanScore:
-              <time datetime="2021-09-03">Sep 3, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
+              <time datetime="2021-09-23">Sep 23rd, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
           </div>
         </li>
-        <!-- COPY FROM HERE UP -->
+
+        <!--US House Plan B -->
         <li class="card">
           <div class="state">
             <h3 class="state-name">Oregon</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
           </div>
           <div class="summary">
-            <a href="https://dev.planscore.org/plan.html?20210903T163800.372838731Z">View this Oregon US House Plan</a>
-            <div class="byline">Authored by: House Interim Committee On Redistricting</div>
+            <a href="https://planscore.campaignlegal.org/plan.html?20210923T095504.411999130Z">View this OR US House Plan</a>
+            <div class="byline">Authored by: Oregon House Interim Committee On Redistricting</div>
             <p>
-              This is House Interim Committee On Redistricting - Congress - Plan B.
+              Congressional Plan B
             </p>
           </div>
           <div class="status">
               Added to PlanScore:
-              <time datetime="2021-09-03">Sep 3, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
+              <time datetime="2021-09-23">Sep 23rd, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
           </div>
         </li>
         <!--PASTE NEW US HOUSE PLAN CARDS ABOVE THIS LINE-->
@@ -84,6 +93,59 @@
     <div class="card-deck">
       <ul>
         <!--PASTE NEW STATE SENATE PLAN CARDS BELOW THIS LINE-->
+                <!--Plan A -->
+                <li class="card">
+                  <div class="state">
+                    <h3 class="state-name">Oregon</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
+                  </div>
+                  <div class="summary">
+                    <a href="https://planscore.campaignlegal.org/plan.html?20210923T095615.379713883Z">View this OR State Senate Plan</a>
+                    <div class="byline">Authored by: Oregon House Interim Committee On Redistricting</div>
+                    <p>
+                      State Senate Plan A
+                    </p>
+                  </div>
+                  <div class="status">
+                      Added to PlanScore:
+                      <time datetime="2021-09-23">Sep 23rd, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
+                  </div>
+                </li>
+
+                <!--Plan B -->
+                <li class="card">
+                  <div class="state">
+                    <h3 class="state-name">Oregon</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
+                  </div>
+                  <div class="summary">
+                    <a href="https://planscore.campaignlegal.org/plan.html?20210923T095803.762902464Z">View this OR State Senate Plan</a>
+                    <div class="byline">Authored by: Oregon House Interim Committee On Redistricting</div>
+                    <p>
+                      State Senate Plan B
+                    </p>
+                  </div>
+                  <div class="status">
+                      Added to PlanScore:
+                      <time datetime="2021-09-23">Sep 23rd, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
+                  </div>
+                </li>
+
+                <!--Plan C -->
+                <li class="card">
+                  <div class="state">
+                    <h3 class="state-name">Oregon</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
+                  </div>
+                  <div class="summary">
+                    <a href="https://planscore.campaignlegal.org/plan.html?20210923T095823.918881479Z">View this OR State Senate Plan</a>
+                    <div class="byline">Authored by: Oregon House Interim Committee On Redistricting</div>
+                    <p>
+                      State Senate Plan C
+                    </p>
+                  </div>
+                  <div class="status">
+                      Added to PlanScore:
+                      <time datetime="2021-09-23">Sep 23rd, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
+                  </div>
+                </li>
         <!--PASTE NEW STATE SENATE CARDS ABOVE THIS LINE-->
       </ul>
     </div>
@@ -92,6 +154,59 @@
     <div class="card-deck">
       <ul>
         <!--PASTE NEW STATE HOUSE PLAN CARDS BELOW THIS LINE-->
+        <!--Plan A -->
+        <li class="card">
+          <div class="state">
+            <h3 class="state-name">Oregon</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
+          </div>
+          <div class="summary">
+            <a href="https://planscore.campaignlegal.org/plan.html?20210923T100012.741917867Z">View this OR State House Plan</a>
+            <div class="byline">Authored by: Oregon House Interim Committee On Redistricting</div>
+            <p>
+              State House Plan A
+            </p>
+          </div>
+          <div class="status">
+              Added to PlanScore:
+              <time datetime="2021-09-23">Sep 23rd, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
+          </div>
+        </li>
+
+        <!--Plan B -->
+        <li class="card">
+          <div class="state">
+            <h3 class="state-name">Oregon</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
+          </div>
+          <div class="summary">
+            <a href="https://planscore.campaignlegal.org/plan.html?20210923T100143.607897091Z">View this OR State House Plan</a>
+            <div class="byline">Authored by: Oregon House Interim Committee On Redistricting</div>
+            <p>
+              State House Plan B
+            </p>
+          </div>
+          <div class="status">
+              Added to PlanScore:
+              <time datetime="2021-09-23">Sep 23rd, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
+          </div>
+        </li>
+
+        <!--Plan C -->
+        <li class="card">
+          <div class="state">
+            <h3 class="state-name">Oregon</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
+          </div>
+          <div class="summary">
+            <a href="https://planscore.campaignlegal.org/plan.html?20210923T100159.933144152Z">View this OR State House Plan</a>
+            <div class="byline">Authored by: Oregon House Interim Committee On Redistricting</div>
+            <p>
+              State House Plan C
+            </p>
+          </div>
+          <div class="status">
+              Added to PlanScore:
+              <time datetime="2021-09-23">Sep 23rd, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
+          </div>
+        </li>
         <!--PASTE NEW STATE HOUSE CARDS ABOVE THIS LINE-->
       </ul>
       </div><!--/card-deck-->

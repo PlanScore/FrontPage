@@ -80,9 +80,17 @@ const LIBRARY_JS6_FILES = [
   './library/index.js6',
   './library/alaska/index.js6',
   './library/colorado/index.js6',
-  './library/ohio/index.js6',
-  './library/oregon/index.js6',
   './library/iowa/index.js6',
+  './library/maine/index.js6',
+  './library/maryland/index.js6',
+  './library/minnesota/index.js6',
+  './library/ohio/index.js6',
+  './library/oklahoma/index.js6',
+  './library/oregon/index.js6',
+  './library/texas/index.js6',
+  './library/virginia/index.js6',
+  './library/wyoming/index.js6',
+
   './library/no_plans/index.js6'
   
 ]
