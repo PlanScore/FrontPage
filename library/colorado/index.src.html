@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>PlanScore :: Colorado Plan Library</title>
+
+  <!--[include_head]-->
+
+  <!-- Leaflet for the map -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+
+  <!-- this page's own JS + CSS -->
+  <script>
+  var SELECTED_STATE = 'Colorado';
+  </script>
+  <link href="index.css?[hash]" rel="stylesheet" />
+  <script src="index.js?[hash]"></script>
+
+  <!-- OG tags -->
+  <meta property="og:title" content="PlanScore" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://planscore.org" />
+  <meta property="og:image" content="https://planscore.org/images/OG-default-01.jpg" />
+  <meta property="og:description" content="PlanScore is a first-of-its-kind gerrymandering scoring service for new district plans, allowing users to upload maps and instantly receive projected data about their partisan consequences. You can also use historical data to discover how partisan advantage has influenced redistricting in your state." />
+
+  <!-- Twitter tags note that per https://developer.twitter.com/en/docs/tweets/optimize-with-cards/guides/getting-started, we need only use the card metas that differ from OG -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@PlanScore" />
+
+</head>
+<body>
+
+  <!--[include_navbar]-->
+
+  <div class="container container-mainbody">
+    <h1>Redistricting Plans: Colorado</h1>
+    <hr>
+    <div class="intro">
+      <p>
+        In Colorado, redistricting plans are adopted by a political commission and subject to approval by the state supreme court.
+      </p>
+      <div id="map"></div>
+    </div>
+    <h2>Explore all Colorado Plans</h2>
+    <hr>
+    <h3>US House Plans</h3>
+    <div class="card-deck">
+      <ul>
+        <!--PASTE NEW CARDS BELOW THIS LINE-->
+                
+        <!--CO Third Staff Final-->
+        <li class="card">
+          <div class="state">
+            <h3 class="state-name">Colorado</h3>
+          </div>
+          <div class="summary">
+            <a href="https://planscore.campaignlegal.org/plan.html?20210924T055012.100342037Z">View this CO US House Plan</a>
+            <div class="byline">Authored by: Colorado Independent Redistricting Commission.</div>
+            <p>
+              Third Staff Plan:
+
+              At its meeting on Monday, September 20, 2021, the Colorado Independent Congressional Redistricting Commission ("Commission") voted to direct the Colorado Independent Redistricting Commissions Staff ("Nonpartisan Staff") to use the Second Congressional Staff Plan ("Second Staff Plan") as the basis for the Third Congressional Staff Plan ("Third Staff Plan") and to take into consideration the issues raised by the Commissioners at that meeting.
+            </p>
+          </div> <!--/summary-->
+          <div class="status">
+              Added to PlanScore:
+              <time datetime="2021-09-24">Sep 24th, 2021</time>
+          </div>
+        </li>
+
+        <!--CO Second Staff Final-->
+        <li class="card">
+          <div class="state">
+            <h3 class="state-name">Colorado</h3>
+          </div>
+          <div class="summary">
+            <a href="https://planscore.campaignlegal.org/plan.html?20210927T152339.299500688Z">View this CO US House Plan</a>
+            <div class="byline">Authored by: Colorado Independent Redistricting Commission.</div>
+            <p>
+              Second Staff Plan:
+
+              At the September 15 meeting, Commissioner Coleman submitted a list of suggested population adjustments to create districts with the required population deviation. Nonpartisan staff then adjusted the districts, largely following Commissioner Coleman's suggestions, to arrive at districts with populations within the required deviations.
+            </p>
+          </div> <!--/summary-->
+          <div class="status">
+              Added to PlanScore:
+              <time datetime="2021-09-22">Sep 22nd, 2021</time>
+          </div>
+        </li>
+
+        <!--CO First Staff Final-->
+        <li class="card">
+          <div class="state">
+            <h3 class="state-name">Colorado</h3>
+          </div>
+          <div class="summary">
+            <a href="https://planscore.campaignlegal.org/plan.html?20210927T151956.288800122Z">View this CO US House Plan</a>
+            <div class="byline">Authored by: Colorado Independent Redistricting Commission.</div>
+            <p>
+              First Staff Plan:
+
+              In drafting the First Congressional Staff Plan, nonpartisan staff considered modifying the Preliminary Congressional Plan in response to the public comments by adding the tribal lands to the proposed Congressional District 4. These modifications would have shown how the subject area looked in a plan with Western Slope and Eastern Plains districts. However, if adding the tribal lands to an Eastern Plains district is the direction that the Congressional Commission decides to follow, this can be done as a simple amendment to the Preliminary Congressional Plan. Nonpartisan staff believes that it is instead more beneficial to the future work of the Congressional Commission for the First Congressional Staff Plan to place the subject area in a largely southern district. Further, the Congressional Commission now has two distinct plans created by nonpartisan staff that can be amended by the commission.
+            </p>
+          </div> <!--/summary-->
+          <div class="status">
+              Added to PlanScore:
+              <time datetime="2021-09-02">Sep 2nd, 2021</time>
+          </div>
+        </li>
+
+        <!--CO LULAC Card TO BE FIXED TO INCLUDE METADATA AT A LATER POINT-->
+        <li class="card">
+          <div class="state">
+            <h3 class="state-name">Colorado</h3>
+          </div>
+          <div class="summary">
+            <a href="https://planscore.campaignlegal.org/plan.html?20210916T175050.741654216Z">View this CO US House Plan</a>
+            <div class="byline">Authored by: CO LULAC.</div>
+            <p>
+              LULAC Proposed US House
+            </p>
+          </div> <!--/summary-->
+          <div class="status">
+              Added to PlanScore:
+              <time datetime="2021-09-01">Sep 1st, 2021</time>
+          </div>
+        </li>
+
+        <!--CO Jun 29th 2021 Card-->
+        <li class="card">
+          <div class="state">
+            <h3 class="state-name">Colorado</h3>
+          </div>
+          <div class="summary">
+            <a href="https://planscore.campaignlegal.org/plan.html?20210927T151556.900864559Z">View this CO US House Plan</a>
+            <div class="byline">Authored by: Colorado Independent Redistricting Commission.</div>
+            <p>
+              Preliminary Plan:
+
+              The commission approved a data set to allow staff to prepare the preliminary plan. Because the U.S. Census Bureau will not release the official redistricting data until August 2021, the commission decided that proceeding with preliminary data gives the commission the best chance of completing their work and receiving valuable feedback without delaying the 2022 election calendar.
+            </p>
+          </div> <!--/summary-->
+          <div class="status">
+              Added to PlanScore:
+              <time datetime="2021-06-29">Jun 29th, 2021</time>
+          </div>
+        </li>
+        <!--END CO June 29th 2021 Card-->
+      <!--REMOVE the oldest cards above this point -->
+      </ul>
+    </div><!--/card-deck-->
+
+
+    <h3>State Senate Plans</h3>
+    <div class="card-deck">
+      <ul>
+
+       <!--CO State Senate First Staff Final Plans-->
+       <li class="card">
+        <div class="state">
+          <h3 class="state-name">Colorado</h3>
+        </div>
+        <div class="summary">
+          <a href="https://planscore.campaignlegal.org/plan.html?20210927T153147.823194796Z">View this CO State Senate Plan</a>
+          <div class="byline">Authored by: Colorado Independent Redistricting Commission.</div>
+          <p>
+            First Staff Final Plans - Legislative Senate
+          </p>
+        </div> <!--/summary-->
+        <div class="status">
+            Added to PlanScore:
+            <time datetime="2021-09-13">Sep 13th, 2021</time>
+        </div>
+      </li>
+        
+       <!--CO State Senate Preliminary State Legislative Maps-->
+       <li class="card">
+        <div class="state">
+          <h3 class="state-name">Colorado</h3>
+        </div>
+        <div class="summary">
+          <a href="https://planscore.campaignlegal.org/plan.html?20210927T152730.995783254Z">View this CO State Senate Plan</a>
+          <div class="byline">Authored by: Colorado Independent Redistricting Commission.</div>
+          <p>
+            Preliminary State Legislative Senate Maps
+          </p>
+        </div> <!--/summary-->
+        <div class="status">
+            Added to PlanScore:
+            <time datetime="2021-06-29">Jun 29th, 2021</time>
+        </div>
+      </li>
+
+      </ul>
+    </div><!--/card-deck-->
+
+    <h3>State House Plans</h3>
+    <div class="card-deck">
+      <ul>
+        <!--CO State House First Staff-->
+        <li class="card">
+          <div class="state">
+            <h3 class="state-name">Colorado</h3>
+          </div>
+          <div class="summary">
+            <a href="https://planscore.campaignlegal.org/plan.html?20210927T153643.089400526Z">View this CO State House Plan</a>
+            <div class="byline">Authored by: Colorado Independent Redistricting Commission.</div>
+            <p>
+              First Staff Plans - Legislative House
+            </p>
+          </div> <!--/summary-->
+          <div class="status">
+              Added to PlanScore:
+              <time datetime="2021-09-13">Sep 13th, 2021</time>
+          </div>
+        </li>
+
+        <!--CO State House First Staff-->
+        <li class="card">
+          <div class="state">
+            <h3 class="state-name">Colorado</h3>
+          </div>
+          <div class="summary">
+            <a href="https://planscore.campaignlegal.org/plan.html?20210927T153405.872088962Z">View this CO State House Plan</a>
+            <div class="byline">Authored by: Colorado Independent Redistricting Commission.</div>
+            <p>
+              Preliminary State Legislative House Maps
+            </p>
+          </div> <!--/summary-->
+          <div class="status">
+              Added to PlanScore:
+              <time datetime="2021-06-29">Jun 29th, 2021</time>
+          </div>
+        </li>
+      </ul>
+
+      </div><!--/card-deck-->
+    <a href="/library" class="btn btn-primary">
+      Back to Plan Library
+    </a>
+    <a href="/colorado" class="btn btn-primary">
+      View Colorado Historical Plans
+    </a>
+  </div><!--/container-mainbody-->
+
+    <!--[include_footer]-->
+
+</body>
+</html>

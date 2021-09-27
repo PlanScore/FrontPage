@@ -1,0 +1,42 @@
+@import 'sitewide';
+@import '_common/styles/cards';
+/* @import '_common/styles/seatshare'; */
+/* @import '_common/styles/wastedvotes'; */
+
+/* use SASS here */
+
+.states {
+	display: grid;
+
+	column-gap: 72px;
+	grid-auto-flow: column;
+	grid-template-columns: repeat(3, 1fr);
+	grid-template-rows: repeat(17, 1fr );
+	list-style-type: none;
+
+  padding-inline-start: 0;
+
+	li {
+		border-bottom: 1px solid $gray-lighter;
+
+		a {
+      display: block;
+      padding: 20px 8px;
+
+			color: $blue-clc;
+      transition: 0.25s ease;
+
+      &:hover,
+      &:focus {
+        background-color: $gray-light;
+        cursor: pointer;
+      }
+		}
+	}
+
+  @media (max-width: $screen-sm) {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: repeat(26, 1fr );
+    column-gap: 4%;
+  }
+}

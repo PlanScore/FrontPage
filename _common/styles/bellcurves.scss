@@ -48,7 +48,7 @@ div.metric-bellchart {
             }
             @media screen and (max-width: $screen-md) and (min-width: $screen-xs) {
                 top: 48px;
-            }  
+            }
             @media screen and (max-width: $screen-xxs) {
                 top: 30px;
             }
@@ -78,7 +78,7 @@ div.metric-bellchart {
             }
             @media screen and (max-width: $screen-md) and (min-width: $screen-xs) {
                 top: 33px;
-            }  
+            }
             @media screen and (max-width: $screen-xxs) {
                 top: 15px;
             }
@@ -101,7 +101,7 @@ div.metric-bellchart {
     }
 
     div.metric-bellchart-legend {
-        color: $gray-med;
+        color: $gray-dark;
         font-size: 12px;
     }
 }

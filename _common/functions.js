@@ -4,7 +4,6 @@
 
 import { BIAS_BALANCED_THRESHOLD, COLOR_GRADIENT, BELLCURVE_SPREAD, BELLCURVE_METRIC_TO_FILENAME_SLUG, STATIC_CONTENT_ORIGIN } from './constants';
 
-
 /*
  * return a structure of information about the given EG bias score:
  * whether it's strong or weak, D or R, etc.

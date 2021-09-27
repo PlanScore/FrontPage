@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>PlanScore :: Maryland Plan Library</title>
+
+  <!--[include_head]-->
+
+  <!-- Leaflet for the map -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+
+  <!-- this page's own JS + CSS -->
+  <script>
+  var SELECTED_STATE = 'Maryland';
+  </script>
+  <link href="index.css?[hash]" rel="stylesheet" />
+  <script src="index.js?[hash]"></script>
+
+  <!-- OG tags -->
+  <meta property="og:title" content="PlanScore" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://planscore.org" />
+  <meta property="og:image" content="https://planscore.org/images/OG-default-01.jpg" />
+  <meta property="og:description" content="PlanScore is a first-of-its-kind gerrymandering scoring service for new district plans, allowing users to upload maps and instantly receive projected data about their partisan consequences. You can also use historical data to discover how partisan advantage has influenced redistricting in your state." />
+
+  <!-- Twitter tags note that per https://developer.twitter.com/en/docs/tweets/optimize-with-cards/guides/getting-started, we need only use the card metas that differ from OG -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@PlanScore" />
+
+</head>
+<body>
+
+  <!--[include_navbar]-->
+
+  <div class="container container-mainbody">
+    <h1>Redistricting Plans: Maryland</h1>
+    <hr>
+    <div class="intro">
+      <p>
+        In Maryland, redistricting plans are enacted by the legislature and are subject to gubernatorial veto. Democrats control the legislature and the Governor is Republican.
+      </p>
+      <div id="map"></div>
+    </div>
+    <h2>Explore all Maryland Plans</h2>
+    <hr>
+    <h3>US House Plans</h3>
+    <div class="card-deck">
+      <ul>
+        <!--PASTE NEW US HOUSE PLAN CARDS BELOW THIS LINE-->
+
+        <!--MD Sep 9th 2021 Card -->
+        <li class="card">
+          <div class="state">
+            <h3 class="state-name">Maryland</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
+          </div>
+          <div class="summary">
+            <a href="https://planscore.campaignlegal.org/plan.html?20210927T155701.694090762Z">View this MD US House Plan</a>
+            <div class="byline">Authored by: Maryland Citizens Redistricting Commission</div>
+            <p>
+              09-09-2021 Congressional Draft Plan
+            </p>
+          </div>
+          <div class="status">
+              Added to PlanScore:
+              <time datetime="2021-09-23">Sep 23rd, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
+          </div>
+        </li>
+        <!--PASTE NEW US HOUSE PLAN CARDS ABOVE THIS LINE-->
+      </ul>
+    </div>
+
+    <h3>State Senate Plans</h3>
+    <div class="card-deck">
+      <ul>
+        <!--PASTE NEW STATE SENATE PLAN CARDS BELOW THIS LINE-->
+                <!--MD Sep 20th 2021 Card -->
+                <li class="card">
+                  <div class="state">
+                    <h3 class="state-name">Maryland</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
+                  </div>
+                  <div class="summary">
+                    <a href="https://planscore.campaignlegal.org/plan.html?20210927T155828.590636036Z">View this MD State Senate Plan</a>
+                    <div class="byline">Authored by: Maryland Citizens Redistricting Commission</div>
+                    <p>
+                      Draft Senate Map with Low Deviation
+                    </p>
+                  </div>
+                  <div class="status">
+                      Added to PlanScore:
+                      <time datetime="2021-09-20">Sep 20th, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
+                  </div>
+                </li>
+        <!--PASTE NEW STATE SENATE CARDS ABOVE THIS LINE-->
+      </ul>
+    </div>
+ <!--
+    <h3>State House Plans</h3>
+    <div class="card-deck">
+      <ul>
+        <!- -PASTE NEW STATE HOUSE PLAN CARDS BELOW THIS LINE- ->
+        
+        <!- -PASTE NEW STATE HOUSE CARDS ABOVE THIS LINE- ->
+      </ul>
+      </div><!- -/card-deck-->
+    <a href="/library" class="btn btn-primary">
+      Back to Plan Library
+    </a>
+    <a href="/maryland" class="btn btn-primary"> <!-- The href should be lowercase -->
+      View Maryland Historical Plans
+    </a>
+  </div><!--/container-mainbody-->
+
+    <!--[include_footer]-->
+
+</body>
+</html>

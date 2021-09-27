@@ -1,0 +1,66 @@
+// JavaScript to handle global elements
+
+//
+// PAGE STARTUP / INIT FUNCTIONS
+//
+
+$(document).ready(function () {
+  loadAnnouncementIfNeverClosed();
+  $('#close-announcement').click(closeAnnouncement);
+  $(window).on('resize', handleResize);
+  handleResize();
+});
+
+const handleResize = () => {
+  if (window.handleResize && typeof window.handleResize === 'function'){
+    window.handleResize();
+  }
+  if (window.innerWidth > 768) {
+    $('#navbar').collapse('hide');
+  }
+}
+
+const loadAnnouncementIfNeverClosed = () => {
+  if (!document.cookie.split('; ').find(row => row.startsWith('closeAnnouncement'))) {
+    const announcementBanner = document.createElement('div');
+    announcementBanner.classList.add('announcement');
+    announcementBanner.id = 'announcement';
+    // edit the text lines, and the href property here to modify the banner
+    announcementBanner.innerHTML = `
+      The Plan Library is live! 
+      <a class="cta" href="/library">
+        See proposed plans from across the country
+      </a>
+        <a class="close-link" id="close-announcement" title="Close announcement">
+          <svg width="19" height="19" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M7.00007 5.60007L1.4 0L0 1.4L5.60007 7.00007L2.86885e-05 12.6001L1.40003 14.0001L7.00007 8.40007L12.6 14L14 12.6L8.40007 7.00007L14 1.4001L12.6 0.000103903L7.00007 5.60007Z" fill="white"/>
+          </svg>
+        </a>
+      `
+    document.body.insertBefore(announcementBanner, document.body.firstChild);
+    document.body.classList.add('announcement-visible');
+    window.scrollBy(0, -60);
+  }
+};
+
+const closeAnnouncement = () => {
+  const announcementBanner = document.getElementById('announcement');
+  announcementBanner.remove();
+  document.cookie = "closeAnnouncement=true; max-age=604800";
+  document.body.classList.remove('announcement-visible');
+};
+
+window.goToStateLibraryIfExists =  (event) => {
+  event.preventDefault();
+
+  const element = event.target;
+  const state_library_page = element.href;
+
+  $.get(state_library_page)
+    .done( () => {
+      location.href = state_library_page;
+    })
+    .fail( () => {
+      location.href = '/library/no_plans';
+    });
+}

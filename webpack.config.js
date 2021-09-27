@@ -9,6 +9,7 @@ const GLOBAL_JS6_FILES = [
     './index.js6',
     './error.js6',
     './sitewide.js6',
+    './global.js6',
     './patternlibrary/index.js6',
     './patternlibrary_htmltemplate/index.js6',
     './about/index.js6',
@@ -75,9 +76,30 @@ const STATE_JS6_FILES = [
     './wyoming/index.js6',
 ];
 
+const LIBRARY_JS6_FILES = [
+  './library/index.js6',
+  './library/alaska/index.js6',
+  './library/colorado/index.js6',
+  './library/illinois/index.js6',
+  './library/iowa/index.js6',
+  './library/maine/index.js6',
+  './library/maryland/index.js6',
+  './library/minnesota/index.js6',
+  './library/ohio/index.js6',
+  './library/oklahoma/index.js6',
+  './library/oregon/index.js6',
+  './library/texas/index.js6',
+  './library/virginia/index.js6',
+  './library/wyoming/index.js6',
+
+  './library/no_plans/index.js6'
+  
+]
+
 const JS6_FILES = [
     ...GLOBAL_JS6_FILES,
     ...STATE_JS6_FILES,
+    ...LIBRARY_JS6_FILES
 ]
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////

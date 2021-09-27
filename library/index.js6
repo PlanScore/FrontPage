@@ -1,0 +1,42 @@
+// this page's HTML template with the [hash] cache-buster and its stylesheet
+require('./index.scss');
+require('./index.src.html');
+
+import { STATE_CODE_TO_NAME } from "/_common/constants";
+
+// polyfills for this page's JavaScript needs
+//require('core-js/fn/array/includes');
+
+// bundle some local/vendor libraries for this page's JavaScript needs
+//require('./js/leaflet-control-basemapbar.js');
+//require('./js/leaflet-control-basemapbar.css');
+
+//
+// begin page-specific JavasScript
+// anything goes: jQuery, ES2015, whatever you need
+//
+
+$(document).ready(function () {
+  initStatePicker();
+})
+
+window.initStatePicker = () => {
+  for (const [stateabbr, statename] of Object.entries(STATE_CODE_TO_NAME)) {
+    const link_name = statename.toLowerCase().replace(/ /g,"_");
+
+    $('#state-library-list').append(
+      $("<li>").append($("<a>")
+        .text(statename)
+        .attr('href','/library/' + link_name)
+        .attr('class', 'state-link')
+        .click(goToStateLibraryIfExists)
+      )
+    );
+
+    $('#states-list').append(
+      $("<option>")
+        .text(statename)
+    );
+  }
+
+};

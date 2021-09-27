@@ -1,0 +1,35 @@
+@import 'sitewide';
+@import '/_common/styles/cards';
+/* @import '_common/styles/seatshare'; */
+/* @import '_common/styles/wastedvotes'; */
+
+/* use SASS here */
+
+.intro {
+  display: flex;
+  margin-bottom: 36px;
+
+  p {
+    align-self: center;
+    margin-right: 80px;
+    width: 100%;
+  }
+
+  @media (max-width: $screen-sm) {
+    flex-direction: column;
+
+    p {
+      margin-right: 0;
+    }
+
+    .map {
+      width: 100%;
+    }
+  }
+}
+
+div#map
+{
+   width: 344px;
+   height: 197px;
+}

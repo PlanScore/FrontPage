@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>PlanScore :: Library</title>
+
+    <!--[include_head]-->
+
+    <!-- this page's own JS + CSS -->
+    <link href="index.css?[hash]" rel="stylesheet" />
+    <script src="index.js?[hash]"></script>
+
+    <!-- OG tags -->
+    <meta property="og:title" content="PlanScore" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://planscore.org" />
+    <meta property="og:image" content="https://planscore.org/images/OG-default-01.jpg" />
+    <meta property="og:description" content="PlanScore is a first-of-its-kind gerrymandering scoring service for new district plans, allowing users to upload maps and instantly receive projected data about their partisan consequences. You can also use historical data to discover how partisan advantage has influenced redistricting in your state." />
+
+    <!-- Twitter tags note that per https://developer.twitter.com/en/docs/tweets/optimize-with-cards/guides/getting-started, we need only use the card metas that differ from OG -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@PlanScore" />
+
+</head>
+<body>
+
+  <!--[include_navbar]-->
+
+  <div class="container container-mainbody">
+    <h1 class="title">Library of Redistricting Plans</h1>
+    <hr>
+    <div class="intro">
+      <p>We will collect noteworthy redistricting proposals and post them here as they are proposed. Check back as the redistricting cycle unfolds and plans are posted.</p>
+    </div>
+
+    <h2>Explore all redistricting plans by state.</h2>
+    <hr>
+    <ul class="states" id="state-library-list">
+      <!--Populates in js6 initStatePicker();-->
+    </ul>
+
+    <h2>Explore recently added plans.</h2>
+    <hr class="no-margin-bottom">
+    <div class="card-deck">
+      <ul>
+        <!--PASTE NEW CARDS BELOW THIS LINE-->
+
+        <!-- Sen Huffman statewide plan Texas-->
+        <li class="card">
+          <div class="state">
+            <h3 class="state-name">Texas</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
+          </div>
+          <div class="summary">
+            <a href="https://planscore.campaignlegal.org/plan.html?20210927T165807.417478875Z">View this TX US House Plan</a>
+            <div class="byline">Authored by: Sen Huffman</div>
+            <p>
+              Sen. Huffman Statewide Proposal 87(3)
+            </p>
+          </div>
+          <div class="status">
+              Added to PlanScore:
+              <time datetime="2021-09-27">Sep 27th, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
+          </div>
+        </li>
+
+        <!--CO Third Staff Final-->
+        <li class="card">
+          <div class="state">
+            <h3 class="state-name">Colorado</h3>
+          </div>
+          <div class="summary">
+            <a href="https://planscore.campaignlegal.org/plan.html?20210924T055012.100342037Z">View this CO US House Plan</a>
+            <div class="byline">Authored by: Colorado Independent Redistricting Commission.</div>
+            <p>
+              Third Staff Plan: 
+
+              At its meeting on Monday, September 20, 2021, the Colorado Independent Congressional Redistricting Commission ("Commission") voted to direct the Colorado Independent Redistricting Commissions Staff ("Nonpartisan Staff") to use the Second Congressional Staff Plan ("Second Staff Plan") as the basis for the Third Congressional Staff Plan ("Third Staff Plan") and to take into consideration the issues raised by the Commissioners at that meeting.
+            </p>
+          </div> <!--/summary-->
+          <div class="status">
+              Added to PlanScore:
+              <time datetime="2021-09-24">Sep 24th, 2021</time>
+          </div>
+        </li>
+
+       <!--Virginia B3 Statewide -->
+       <li class="card">
+        <div class="state">
+          <h3 class="state-name">Virginia</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
+        </div>
+        <div class="summary">
+          <a href="https://planscore.campaignlegal.org/plan.html?20210923T101429.300222277Z">View this VA State Senate Plan</a>
+          <div class="byline">Authored by: Virginia Redistricting Commission</div>
+          <p>
+            Virginia B3 Statewide Senate Plan
+          </p>
+        </div>
+        <div class="status">
+            Added to PlanScore:
+            <time datetime="2021-09-23">Sep 23rd, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
+        </div>
+      </li>
+
+      <!--Virginia A3 Statewide -->
+      <li class="card">
+        <div class="state">
+          <h3 class="state-name">Virginia</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
+        </div>
+        <div class="summary">
+          <a href="https://planscore.campaignlegal.org/plan.html?20210923T101329.499818190Z">View this VA State Senate Plan</a>
+          <div class="byline">Authored by: Virginia Redistricting Commission</div>
+          <p>
+            Virginia A3 Statewide Senate Plan
+          </p>
+        </div>
+        <div class="status">
+            Added to PlanScore:
+            <time datetime="2021-09-23">Sep 23rd, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
+        </div>
+      </li>
+      
+      <!--REMOVE the oldest cards above this point -->
+      </ul>
+    </div><!--/card-deck-->
+</div><!--/container-mainbody-->
+
+  <!--[include_footer]-->
+
+</body>
+</html>

@@ -3,7 +3,7 @@
 */
 
 html, body {
-  font-family: 'AvenirLTPro-Medium', sans-serif;
+  font-family: $medium;
   font-size: 18px;
   line-height: 30px;
   color: $navy;
@@ -16,9 +16,8 @@ html {
   }
 }
 
-
 h1, h2, h3 {
-  font-family:'AvenirLTPro-Black';
+  font-family: $heavy;
 }
 
 h1 {
@@ -43,10 +42,6 @@ h2 {
   }
 }
 
-h2:first-child {
-  margin-top: 0;
-}
-
 h3 {
   font-size: 28px;
   line-height: 36px;
@@ -54,7 +49,7 @@ h3 {
 }
 
 h4, h5 {
-  font-family: 'AvenirLTPro-Heavy', sans-serif;
+  font-family: $heavy;
 }
 
 h4 {
@@ -65,6 +60,16 @@ h4 {
 h5 {
   font-size: 18px;
   line-height: 26px;
+}
+
+hr {
+  background: linear-gradient(90deg, $blue-clc 3%, $gray-light 50%, $red-bright 97%);
+  border-top: none; // bootstrap override
+  height: 3px;
+
+  &.no-margin-bottom {
+    margin-bottom: 0;
+  }
 }
 
 p {
@@ -80,6 +85,7 @@ p {
 a {
   color: $navy;
   transition: 0.25s ease;
+  text-decoration: underline;
 
   &:hover {
     color: $blue-clc;
@@ -103,16 +109,87 @@ label input[type="checkbox"] {
 
 td {
   font-size: 14px;
-  color: $gray-med;
+  color: $gray-dark;
 }
 
 th {
   font-size: 14px;
-  color: $gray-dark;
+  color: $navy;
 }
 
 td:nth-child(1){
   font-weight: 700;
+}
+
+.mobile-only,
+nav .mobile-only {
+  @media (min-width: $screen-sm) {
+    display: none;
+  }
+}
+
+.announcement-visible {
+  padding-top: 60px;
+
+  @media (max-width: $screen-sm) {
+    padding-top: 88px;
+  }
+}
+
+.announcement {
+  position: fixed;
+  z-index: 1001;
+  top: 0;
+
+  width: 100%;
+  padding: 16px;
+
+  color: white;
+  background-color: $blue-bright;
+
+  font-family: $black;
+  font-size: 16px;
+  line-height: 28px;
+  text-align: center;
+
+  .cta {
+    margin-left: 16px;
+
+    color: white;
+    transition: 0.25s ease;
+
+    font-family: $medium;
+
+    &:hover {
+      color: $gray-med;
+    }
+
+    @media (max-width: $screen-sm) {
+      display: block;
+      margin-left: 0;
+    }
+  }
+
+  .close-link {
+    position: absolute;
+    right: 20px;
+    top: calc(50% - 12px);
+
+    cursor: pointer;
+
+    svg path {
+      transition: 0.25s ease;
+    }
+
+    &:hover svg path {
+      fill: $gray-med;
+    }
+  }
+
+  @media (max-width: $screen-sm) {
+    font-size: 14px;
+    text-align: left;
+  }
 }
 
 .navbar-default {
@@ -124,8 +201,8 @@ td:nth-child(1){
   min-height: 80px;
 
   #brand-logo {
-      height: 52px;
-      width: auto;
+    height: 52px;
+    width: auto;
   }
 
   .navbar-collapse,
@@ -145,7 +222,7 @@ td:nth-child(1){
     }
 
     li {
-        width: 25%;
+      width: 25%;
     }
 
     &:not(.collapsed) {
@@ -174,16 +251,11 @@ td:nth-child(1){
     }
   }
 
-  .mobile-only {
-    @media (min-width: $screen-sm){
-      display: none;
-    }
-  }
-
   .navbar-nav > li > a {
     color: $navy;
     padding-bottom: 4px;
     text-shadow: none;
+    text-decoration: none;
 
     &:before {
       content: "";
@@ -249,12 +321,86 @@ td:nth-child(1){
   max-width: $screen-md;
 }
 
-div.footer {
+.info {
+  display: flex;
+  background-color: $gray-lighter;
+  margin-bottom: 20px;
+
+  .box {
+    display: flex;
+    flex-direction: column;
+    padding: 20px 36px;
+    border-right: 1px solid $gray-light;
+
+    font-size: 16px;
+    line-height: 23px;
+
+    strong {
+      font-family: 'AvenirLTPro-Heavy', sans-serif;
+      font-size: 14px;
+    }
+
+    &:last-child {
+      border: none;
+    }
+
+    @media (max-width: $screen-sm) {
+      width: 100%;
+      border-right: none;
+      border-bottom: 1px solid $gray-light;
+    }
+  }
+
+  @media (max-width: $screen-sm) {
+    flex-direction: column;
+    text-align: left;
+  }
+}
+
+.link-grid {
+  display: grid;
+  grid-template: 1fr 1fr / 1fr 1fr;
+  column-gap: 40px;
+
+  a {
+    display: flex;
+    justify-content: space-between;
+
+    width: 100%;
+    padding: 26px 0;
+    border-bottom: 1px solid $gray-light;
+
+    &:nth-child(2) {
+      //moves top right link to bottom left, just on desktop
+      grid-row-start: 2 ;
+    }
+  }
+
+  @media (max-width: $screen-sm) {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+
+.content-footer {
+  margin-top: 94px;
+
+  .btn {
+    font-size: 16px;
+  }
+
+  @media (max-width: $screen-sm) {
+    width: 100%;
+  }
+}
+
+.footer {
   background-color: $gray-lighter;
   text-align: center;
   padding: 36px 0 0;
 
-  img {
+  .logo {
     max-width: 120px !important; /* bootstrap v3 print styles neccessitate the !important */
     margin-bottom: 24px;
   }
@@ -264,22 +410,24 @@ div.footer {
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
-    padding: 20px 62px 24px;
+    max-width: 256px;
+    margin: 0 auto 40px;
+
+    a {
+      padding: 16px;
+
+      &:hover svg,
+      &:focus svg {
+        fill: $blue-clc;
+      }
+    }
+
 
     svg {
       height: auto;
       width: 32px;
-      margin: 0 20px 24px;
       fill: $navy;
       transition: 0.25s ease;
-
-      &:hover {
-        fill: $blue-clc;
-      }
-
-      @media (min-width: $screen-sm) {
-        margin-bottom: 0;
-      }
     }
 
     .legal {
@@ -298,18 +446,13 @@ div.footer {
     @media (min-width: $screen-sm) {
       background-color: $gray-light;
       flex-wrap: nowrap;
+      max-width: unset;
     }
   }
 }
 
 .container-mainbody {
   padding-bottom: 50px;
-
-  p, h3, li {
-    a {
-      text-decoration: underline;
-    }
-  }
 
   #map {
     a {
@@ -319,10 +462,15 @@ div.footer {
 }
 
 .btn {
-  color: $navy;
-  background-color: $gray-light;
   margin: 16px 14px 16px 0;
   padding: 12px 20px;
+
+  color: $navy;
+  background-color: $gray-light;
+
+  line-height: 24px;
+  text-decoration: none;
+
   transition: 0.25s ease;
 
   // bootstrap overrides
@@ -354,6 +502,18 @@ div.footer {
   &:active {
     color: white;
     background-color: $blue-clc;
+  }
+}
+
+.btn-red {
+  color: white;
+  background-color: $red-clc;
+  transition: 0.25s ease;
+
+  &:hover,
+  &:focus,
+  &:active {
+    background-color:$gray-dark;
   }
 
 }
