@@ -84,6 +84,7 @@ const LIBRARY_JS6_FILES = [
   './library/iowa/index.js6',
   './library/maine/index.js6',
   './library/maryland/index.js6',
+  './library/michigan/index.js6',
   './library/minnesota/index.js6',
   './library/ohio/index.js6',
   './library/oklahoma/index.js6',
