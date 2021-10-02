@@ -22,6 +22,7 @@ const MAP_NODATA_VALUE = 999999;
 const MAP_NODATA_FILLCOLOR = '#ffffff';
 const MAP_NODATA_LABELCOLOR = '#cccccc';
 const MAP_BORDER_COLOR = '#6E6E6E';
+const MAP_PLANS_FILLCOLOR = '#DFDFDF';
 
 // the color of the state labels on the map
 const MAP_LABELSIZE = '9px';
@@ -34,27 +35,78 @@ const MAP_MOUSEOVER_WIDTH = 2;
 // the Esc key
 const KEYCODE_ESC = 27;
 
+// Library pages
+const LIBRARY_STATES = [
+    {abbr: 'AL', name: 'Alabama', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
+    {abbr: 'AK', name: 'Alaska', plans: true, href: '/library/alaska', color: MAP_PLANS_FILLCOLOR},
+    {abbr: 'AZ', name: 'Arizona', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
+    {abbr: 'AR', name: 'Arkansas', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
+    {abbr: 'CA', name: 'California', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
+    {abbr: 'CO', name: 'Colorado', plans: true, href: '/library/colorado', color: MAP_PLANS_FILLCOLOR},
+    {abbr: 'CT', name: 'Connecticut', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
+    {abbr: 'DE', name: 'Delaware', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
+    {abbr: 'FL', name: 'Florida', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
+    {abbr: 'GA', name: 'Georgia', plans: true, href: '/library/georgia', color: MAP_PLANS_FILLCOLOR},
+    {abbr: 'HI', name: 'Hawaii', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
+    {abbr: 'ID', name: 'Idaho', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
+    {abbr: 'IL', name: 'Illinois', plans: true, href: '/library/illinois', color: MAP_PLANS_FILLCOLOR},
+    {abbr: 'IN', name: 'Indiana', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
+    {abbr: 'IA', name: 'Iowa', plans: true, href: '/library/iowa', color: MAP_PLANS_FILLCOLOR},
+    {abbr: 'KS', name: 'Kansas', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
+    {abbr: 'KY', name: 'Kentucky', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
+    {abbr: 'LA', name: 'Louisiana', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
+    {abbr: 'ME', name: 'Maine', plans: true, href: '/library/maine', color: MAP_PLANS_FILLCOLOR},
+    {abbr: 'MD', name: 'Maryland', plans: true, href: '/library/maryland', color: MAP_PLANS_FILLCOLOR},
+    {abbr: 'MA', name: 'Massachusetts', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
+    {abbr: 'MI', name: 'Michigan', plans: true, href: '/library/michigan', color: MAP_PLANS_FILLCOLOR},
+    {abbr: 'MN', name: 'Minnesota', plans: true, href: '/library/minnesota', color: MAP_PLANS_FILLCOLOR},
+    {abbr: 'MS', name: 'Mississippi', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
+    {abbr: 'MO', name: 'Missouri', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
+    {abbr: 'MT', name: 'Montana', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
+    {abbr: 'NE', name: 'Nebraska', plans: true, href: '/library/nebraska', color: MAP_PLANS_FILLCOLOR},
+    {abbr: 'NV', name: 'Nevada', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
+    {abbr: 'NH', name: 'New Hampshire', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
+    {abbr: 'NJ', name: 'New Jersey', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
+    {abbr: 'NM', name: 'New Mexico', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
+    {abbr: 'NY', name: 'New York', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
+    {abbr: 'NC', name: 'North Carolina', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
+    {abbr: 'ND', name: 'North Dakota', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
+    {abbr: 'OH', name: 'Ohio', plans: true, href: '/library/ohio', color: MAP_PLANS_FILLCOLOR},
+    {abbr: 'OK', name: 'Oklahoma', plans: true, href: '/library/oklahoma', color: MAP_PLANS_FILLCOLOR},
+    {abbr: 'OR', name: 'Oregon', plans: true, href: '/library/oregon', color: MAP_PLANS_FILLCOLOR},
+    {abbr: 'PA', name: 'Pennsylvania', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
+    {abbr: 'RI', name: 'Rhode Island', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
+    {abbr: 'SC', name: 'South Carolina', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
+    {abbr: 'SD', name: 'South Dakota', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
+    {abbr: 'TN', name: 'Tennessee', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
+    {abbr: 'TX', name: 'Texas', plans: true, href: '/library/texas', color: MAP_PLANS_FILLCOLOR},
+    {abbr: 'UT', name: 'Utah', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
+    {abbr: 'VT', name: 'Vermont', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
+    {abbr: 'VA', name: 'Virginia', plans: true, href: '/library/virginia', color: MAP_PLANS_FILLCOLOR},
+    {abbr: 'WA', name: 'Washington', plans: true, href: '/library/washington', color: MAP_PLANS_FILLCOLOR},
+    {abbr: 'WV', name: 'West Virginia', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
+    {abbr: 'WI', name: 'Wisconsin', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
+    {abbr: 'WY', name: 'Wyoming', plans: true, href: '/library/wyoming', color: MAP_PLANS_FILLCOLOR},
+];
+
 $(document).ready(function () {
   initStatePicker();
   renderMap();
 })
 
 window.initStatePicker = () => {
-  for (const [stateabbr, statename] of Object.entries(STATE_CODE_TO_NAME)) {
-    const link_name = statename.toLowerCase().replace(/ /g,"_");
-
+  for (const state of LIBRARY_STATES) {
     $('#state-library-list').append(
       $("<li>").append($("<a>")
-        .text(statename)
-        .attr('href','/library/' + link_name)
+        .text(state.name)
+        .attr('href', state.href)
         .attr('class', 'state-link')
-        .click(goToStateLibraryIfExists)
       )
     );
 
     $('#states-list').append(
       $("<option>")
-        .text(statename)
+        .text(state.name)
     );
   }
 
@@ -102,19 +154,17 @@ window.renderMap = () => {
         },
         series: [{
             // use the Highcharts-provided US states, joining on their "postal" to our "abbr"
-            data: [
-                {abbr: 'CO', name: 'Colorado'},
-                {abbr: 'MI', name: 'Michigan'},
-            ],
+            data: LIBRARY_STATES,
             mapData: polygons,
             borderColor: MAP_BORDER_COLOR,
+            colorKey: 'color',
             joinBy: ['postal', 'abbr'],
             // labels make small states easier to see, cursor makes it obvious to click
             cursor: 'pointer',
             dataLabels: {
                 enabled: true,
                 formatter: function () {
-                    if (this.point.value == MAP_NODATA_VALUE) {
+                    if (!this.point.plans) {
                         return `<span style="color: ${MAP_NODATA_LABELCOLOR}">${this.point.abbr}</span>`;
                     }
                     else {
@@ -137,21 +187,16 @@ window.renderMap = () => {
             // click events: call the popup maker
             events: {
                 click: function (e) {
-                    console.log('Clicked', e.point);
-
-                    const link_name = e.point.name.toLowerCase().replace(/ /g,"_");
-                    const moreinfourl = `/library/${link_name}/`;
-
                     /*
-                    // in any case, log the selection before we go
+                    // the selection before we go
                     logToGoogleAnalytics('selectlibrarystate', e.point.name);
                     */
 
                     if (e.altKey || e.ctrlKey || e.shiftKey || e.metaKey) {
-                        window.open(moreinfourl);
+                        window.open(e.point.href);
                     }
                     else {
-                        document.location.href = moreinfourl;
+                        document.location.href = e.point.href;
                     }
                 }
             },
