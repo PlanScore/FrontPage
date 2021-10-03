@@ -198,18 +198,21 @@ export const BELLCURVE_SPREAD = {
         mm: 0.09,
         pb: 0.18,
         d2: 1.50,
+        ftva: 0.17,
     },
     ushouse: {
         eg: 0.25,
         mm: 0.12,
         pb: 0.25,
         d2: 0.81,
+        ftva: 0.25,
     },
     statesenate: {
         eg: 0.22,
         mm: 0.13,
         pb: 0.19,
         d2: 1.00,
+        ftva: 0.29,
     },
 };
 
@@ -219,6 +222,7 @@ export const BELLCURVE_METRIC_TO_FILENAME_SLUG = {
     'pb': 'bias',
     'eg': 'eg',
     'd2': 'dec2',
+    'ftva': 'ftva',
 };
 
 // Efficiency Gap wasted vote chart; colors
