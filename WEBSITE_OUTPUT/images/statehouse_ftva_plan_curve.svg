@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="536px" height="237px" viewBox="0 0 536 237" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51.3 (57544) - http://www.bohemiancoding.com/sketch -->
+    <title>statehouse_ftva_plan_curve</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <polygon id="path-1" points="0.55 0.416668 536.45 0.416668 536.45 236.45 0.55 236.45"></polygon>
+        <linearGradient x1="0%" y1="84.8278797%" x2="96.7754569%" y2="84.8278181%" id="linearGradient-3">
+            <stop stop-color="#CD3952" offset="0%"></stop>
+            <stop stop-color="#DFDFDF" offset="48.393907%"></stop>
+            <stop stop-color="#0A4FAB" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="statehouse_ftva_plan_curve" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Clipped" transform="translate(267.500000, 118.500000) scale(-1, 1) translate(-267.500000, -118.500000) translate(-1.000000, 0.000000)">
+            <mask id="mask-2" fill="white">
+                <use xlink:href="#path-1"></use>
+            </mask>
+            <g id="Shape"></g>
+            <path d="M26.24297,189.24333 C26.24297,189.24333 75.13491,143.02014 99.58089,112.5325 C124.02686,82.04486 148.47282,16.15222 172.9188,6.3175 C197.36476,-3.517223 221.81073,37.78861 246.2567,53.52417 C270.70267,69.25972 295.14865,78.11098 319.5946,100.73083 C344.0406,123.3507 368.48654,179.40862 392.93253,189.24333 C417.3785,199.07806 441.82446,151.87138 466.27045,159.73917 C490.71643,167.60695 539.60834,236.45 539.60834,236.45 L26.24297,236.45 L26.24297,189.24333 Z" id="Shape" fill="url(#linearGradient-3)" mask="url(#mask-2)"></path>
+        </g>
+        <polygon id="Shape" fill="#C6C6C6" points="0 0 0 235 0 237 2 237 268 237 270 237 534 237 536 237 536 235 536 0 534 0 534 235 270 235 270 0 268 0 268 235 2 235 2 0"></polygon>
+    </g>
+</svg>

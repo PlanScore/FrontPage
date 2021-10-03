@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="536px" height="237px" viewBox="0 0 536 237" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51.3 (57544) - http://www.bohemiancoding.com/sketch -->
+    <title>statesenate_ftva_plan_curve</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <polygon id="path-1" points="0.55 0.416668 536.45 0.416668 536.45 236.45 0.55 236.45"></polygon>
+        <linearGradient x1="0%" y1="87.2774706%" x2="35.4875184%" y2="87.2774706%" id="linearGradient-3">
+            <stop stop-color="#CD3952" offset="0%"></stop>
+            <stop stop-color="#DFDFDF" offset="54.6567%"></stop>
+            <stop stop-color="#0A4FAB" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="statesenate_ftva_plan_curve" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Clipped" transform="translate(268.500000, 118.500000) scale(-1, 1) translate(-268.500000, -118.500000) ">
+            <mask id="mask-2" fill="white">
+                <use xlink:href="#path-1"></use>
+            </mask>
+            <g id="Shape"></g>
+            <path d="M74.68054,203.40533 C74.68054,203.40533 119.36595,130.235 141.70865,99.55066 C164.05135,68.86633 186.39406,27.95389 208.73676,19.29933 C231.07947,10.644775 253.42218,24.02 275.76486,47.62334 C298.10757,71.22667 320.4503,136.52922 342.79297,160.91933 C365.13568,185.30945 387.4784,181.37555 409.82108,193.964 C432.1638,206.55243 454.5065,230.1558 476.8492,236.45 C499.1919,242.74423 521.5346,231.72934 543.8773,231.72934 C566.22003,231.72934 588.56274,235.6632 610.9054,236.45 C633.2481,237.2368 655.5908,236.45 677.93353,236.45 C700.27625,236.45 722.61896,236.45 744.9616,236.45 C767.3043,236.45 789.64703,236.45 811.98975,236.45 C834.33246,236.45 856.6752,236.45 879.0179,236.45 C901.36053,236.45 923.70325,236.45 946.04596,236.45 C968.3887,236.45 990.7313,236.45 1013.0741,236.45 C1035.4167,236.45 1080.1022,236.45 1080.1022,236.45 L74.68054,236.45 L74.68054,203.40533 Z" id="Shape" fill="url(#linearGradient-3)" mask="url(#mask-2)"></path>
+        </g>
+        <polygon id="Shape" fill="#C6C6C6" points="0 0 0 235 0 237 2 237 268 237 270 237 534 237 536 237 536 235 536 0 534 0 534 235 270 235 270 0 268 0 268 235 2 235 2 0"></polygon>
+    </g>
+</svg>
