@@ -85,7 +85,7 @@ const LIBRARY_STATES = [
     {abbr: 'VA', name: 'Virginia', plans: true, href: '/library/virginia', color: MAP_PLANS_FILLCOLOR},
     {abbr: 'WA', name: 'Washington', plans: true, href: '/library/washington', color: MAP_PLANS_FILLCOLOR},
     {abbr: 'WV', name: 'West Virginia', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
-    {abbr: 'WI', name: 'Wisconsin', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
+    {abbr: 'WI', name: 'Wisconsin', plans: false, href: '/library/wisconsin', color: MAP_PLANS_FILLCOLOR},
     {abbr: 'WY', name: 'Wyoming', plans: true, href: '/library/wyoming', color: MAP_PLANS_FILLCOLOR},
 ];
 
