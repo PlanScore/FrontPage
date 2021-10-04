@@ -5,6 +5,11 @@
 
     <!--[include_head]-->
 
+    <!-- Highcharts does charts and also maps -->
+    <script src="https://code.highcharts.com/maps/8.0.4/highmaps.js"></script>
+    <script src="https://code.highcharts.com/maps/modules/data.js"></script>
+    <script src="/data/usmapchart.json"></script>
+
     <!-- this page's own JS + CSS -->
     <link href="index.css?[hash]" rel="stylesheet" />
     <script src="index.js?[hash]"></script>
@@ -35,6 +40,7 @@
 
     <h2>Explore all redistricting plans by state.</h2>
     <hr>
+    <div id="map"></div>
     <ul class="states" id="state-library-list">
       <!--Populates in js6 initStatePicker();-->
     </ul>

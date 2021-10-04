@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>PlanScore :: Wisconsin Plan Library</title>
+
+  <!--[include_head]-->
+
+  <!-- Leaflet for the map -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+
+  <!-- this page's own JS + CSS -->
+  <script>
+  var SELECTED_STATE = 'Wisconsin';
+  </script>
+  <link href="index.css?[hash]" rel="stylesheet" />
+  <script src="index.js?[hash]"></script>
+
+  <!-- OG tags -->
+  <meta property="og:title" content="PlanScore" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://planscore.org" />
+  <meta property="og:image" content="https://planscore.org/images/OG-default-01.jpg" />
+  <meta property="og:description" content="PlanScore is a first-of-its-kind gerrymandering scoring service for new district plans, allowing users to upload maps and instantly receive projected data about their partisan consequences. You can also use historical data to discover how partisan advantage has influenced redistricting in your state." />
+
+  <!-- Twitter tags note that per https://developer.twitter.com/en/docs/tweets/optimize-with-cards/guides/getting-started, we need only use the card metas that differ from OG -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@PlanScore" />
+
+</head>
+<body>
+
+  <!--[include_navbar]-->
+
+  <div class="container container-mainbody">
+    <h1>Redistricting Plans: Wisconsin</h1>
+    <hr>
+    <div class="intro">
+      <p>
+        In Wisconsin, redistricting plans are enacted by the legislature and are subject to gubernatorial veto. For the 2020 redistricting cycle, the Governor created by executive order a citizen redistricting commission to submit maps for the legislature's consideration. Republicans control the legislature and the Governor is a Democrat.
+      </p>
+      <div id="map"></div>
+    </div>
+    <h2>Explore all Wisconsin Plans</h2>
+    <hr>
+    <h3>US House Plans</h3>
+    <div class="card-deck">
+      <ul>
+        <!--PASTE NEW US HOUSE PLAN CARDS BELOW THIS LINE-->
+
+        <!--Plan A -->
+        <li class="card">
+          <div class="state">
+            <h3 class="state-name">Wisconsin</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
+          </div>
+          <div class="summary">
+            <a href="https://planscore.campaignlegal.org/plan.html?20211004T155439.300133155Z">View this WI US House Plan</a>
+            <div class="byline">Authored by: The People's Maps Commission</div>
+            <p>
+              Wisconsin Congressional Draft Plan A
+            </p>
+          </div>
+          <div class="status">
+              Added to PlanScore:
+              <time datetime="2021-10-04">Oct 4th, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
+          </div>
+        </li>
+
+        <!--Plan B -->
+        <li class="card">
+          <div class="state">
+            <h3 class="state-name">Wisconsin</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
+          </div>
+          <div class="summary">
+            <a href="https://planscore.campaignlegal.org/plan.html?20211004T155638.998498426Z">View this WI US House Plan</a>
+            <div class="byline">Authored by: The People's Maps Commission</div>
+            <p>
+              Wisconsin Congressional Draft Plan B
+            </p>
+          </div>
+          <div class="status">
+              Added to PlanScore:
+              <time datetime="2021-10-04">Oct 4th, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
+          </div>
+        </li>
+
+        <!--Plan C -->
+        <li class="card">
+          <div class="state">
+            <h3 class="state-name">Wisconsin</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
+          </div>
+          <div class="summary">
+            <a href="https://planscore.campaignlegal.org/plan.html?20211004T155801.537027337Z">View this WI US House Plan</a>
+            <div class="byline">Authored by: The People's Maps Commission</div>
+            <p>
+              Wisconsin Congressional Draft Plan C
+            </p>
+          </div>
+          <div class="status">
+              Added to PlanScore:
+              <time datetime="2021-10-04">Oct 4th, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
+          </div>
+        </li>
+        <!--PASTE NEW US HOUSE PLAN CARDS ABOVE THIS LINE-->
+      </ul>
+    </div>
+
+    <h3>State Senate Plans</h3>
+    <div class="card-deck">
+      <ul>
+        <!--PASTE NEW STATE SENATE PLAN CARDS BELOW THIS LINE-->
+        <!--Set 1 -->
+        <li class="card">
+          <div class="state">
+            <h3 class="state-name">Wisconsin</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
+          </div>
+          <div class="summary">
+            <a href="https://planscore.campaignlegal.org/plan.html?20211004T160428.185726312Z">View this WI State Senate Plan</a>
+            <div class="byline">Authored by: The People's Maps Commission</div>
+            <p>
+              Wisconsin State Senate Draft Set 1
+            </p>
+          </div>
+          <div class="status">
+              Added to PlanScore:
+              <time datetime="2021-10-04">Oct 4th, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
+          </div>
+        </li>
+
+        <!--Set 2 -->
+        <li class="card">
+          <div class="state">
+            <h3 class="state-name">Wisconsin</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
+          </div>
+          <div class="summary">
+            <a href="https://planscore.campaignlegal.org/plan.html?20211004T160529.315709365Z">View this WI State Senate Plan</a>
+            <div class="byline">Authored by: The People's Maps Commission</div>
+            <p>
+              Wisconsin State Senate Draft Set 2
+            </p>
+          </div>
+          <div class="status">
+              Added to PlanScore:
+              <time datetime="2021-10-04">Oct 4th, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
+          </div>
+        </li>
+
+        <!--Set 3 -->
+        <li class="card">
+          <div class="state">
+            <h3 class="state-name">Wisconsin</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
+          </div>
+          <div class="summary">
+            <a href="https://planscore.campaignlegal.org/plan.html?20211004T160653.749679580Z">View this WI State Senate Plan</a>
+            <div class="byline">Authored by: The People's Maps Commission</div>
+            <p>
+              Wisconsin State Senate Draft Set 3
+            </p>
+          </div>
+          <div class="status">
+              Added to PlanScore:
+              <time datetime="2021-10-04">Oct 4th, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
+          </div>
+        </li>
+        <!--PASTE NEW STATE SENATE CARDS ABOVE THIS LINE-->
+      </ul>
+    </div>
+
+    <h3>State House Plans</h3>
+    <div class="card-deck">
+      <ul>
+        <!--PASTE NEW STATE HOUSE PLAN CARDS BELOW THIS LINE-->
+        <!--Set 1 -->
+        <li class="card">
+          <div class="state">
+            <h3 class="state-name">Wisconsin</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
+          </div>
+          <div class="summary">
+            <a href="https://planscore.campaignlegal.org/plan.html?20211004T161431.008656538Z">View this WI State House Plan</a>
+            <div class="byline">Authored by: The People's Maps Commission</div>
+            <p>
+              Wisconsin State House Draft Set 1
+            </p>
+          </div>
+          <div class="status">
+              Added to PlanScore:
+              <time datetime="2021-10-04">Oct 4th, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
+          </div>
+        </li>
+
+        <!--Set 2 -->
+        <li class="card">
+          <div class="state">
+            <h3 class="state-name">Wisconsin</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
+          </div>
+          <div class="summary">
+            <a href="https://planscore.campaignlegal.org/plan.html?20211004T161548.040073713Z">View this WI State House Plan</a>
+            <div class="byline">Authored by: The People's Maps Commission</div>
+            <p>
+              Wisconsin State House Draft Set 2
+            </p>
+          </div>
+          <div class="status">
+              Added to PlanScore:
+              <time datetime="2021-10-04">Oct 4th, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
+          </div>
+        </li>
+
+        <!--Set 3 -->
+        <li class="card">
+          <div class="state">
+            <h3 class="state-name">Wisconsin</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
+          </div>
+          <div class="summary">
+            <a href="https://planscore.campaignlegal.org/plan.html?20211004T161711.040845791Z">View this WI State House Plan</a>
+            <div class="byline">Authored by: The People's Maps Commission</div>
+            <p>
+              Wisconsin State House Draft Set 3
+            </p>
+          </div>
+          <div class="status">
+              Added to PlanScore:
+              <time datetime="2021-10-04">Oct 4th, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
+          </div>
+        </li>
+        <!--PASTE NEW STATE HOUSE CARDS ABOVE THIS LINE-->
+      </ul>
+      </div><!--/card-deck-->
+    <a href="/library" class="btn btn-primary">
+      Back to Plan Library
+    </a>
+    <a href="/wisconsin" class="btn btn-primary"> <!-- The href should be lowercase -->
+      View Wisconsin Historical Plans
+    </a>
+  </div><!--/container-mainbody-->
+
+    <!--[include_footer]-->
+
+</body>
+</html>

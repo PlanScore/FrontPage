@@ -94,6 +94,7 @@ const LIBRARY_JS6_FILES = [
   './library/texas/index.js6',
   './library/virginia/index.js6',
   './library/washington/index.js6',
+  './library/wisconsin/index.js6',
   './library/wyoming/index.js6',
 
   './library/no_plans/index.js6'
