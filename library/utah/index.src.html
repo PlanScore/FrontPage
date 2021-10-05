@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>PlanScore :: Utah Plan Library</title>
+
+  <!--[include_head]-->
+
+  <!-- Leaflet for the map -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+
+  <!-- this page's own JS + CSS -->
+  <script>
+  var SELECTED_STATE = 'Utah';
+  </script>
+  <link href="index.css?[hash]" rel="stylesheet" />
+  <script src="index.js?[hash]"></script>
+
+  <!-- OG tags -->
+  <meta property="og:title" content="PlanScore" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://planscore.org" />
+  <meta property="og:image" content="https://planscore.org/images/OG-default-01.jpg" />
+  <meta property="og:description" content="PlanScore is a first-of-its-kind gerrymandering scoring service for new district plans, allowing users to upload maps and instantly receive projected data about their partisan consequences. You can also use historical data to discover how partisan advantage has influenced redistricting in your state." />
+
+  <!-- Twitter tags note that per https://developer.twitter.com/en/docs/tweets/optimize-with-cards/guides/getting-started, we need only use the card metas that differ from OG -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@PlanScore" />
+
+</head>
+<body>
+
+  <!--[include_navbar]-->
+
+  <div class="container container-mainbody">
+    <h1>Redistricting Plans: Utah</h1>
+    <hr>
+    <div class="intro">
+      <p>
+        In Utah, redistricting plans are enacted by the legislature and are subject to gubernatorial veto. Utah has an advisory redistricting commission which draws maps for the legislature's consideration, but ultimately the legislature and governor make the decision of what maps to adopt. Republicans control the legislature and the Governor's office.
+      </p>
+      <div id="map"></div>
+    </div>
+    <h2>Explore all Utah Plans</h2>
+    <hr>
+    <h3>US House Plans</h3>
+    <div class="card-deck">
+      <ul>
+        <!--PASTE NEW US HOUSE PLAN CARDS BELOW THIS LINE-->
+
+        <!--Purple v3 -->
+        <li class="card">
+          <div class="state">
+            <h3 class="state-name">Utah</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
+          </div>
+          <div class="summary">
+            <a href="https://planscore.campaignlegal.org/plan.html?20211005T061839.929718081Z">View this UT US House Plan</a>
+            <div class="byline">Authored by: Utah Independent Redistricting Committee</div>
+            <p>
+              Utah Congressional Draft Purple Draft v3
+            </p>
+          </div>
+          <div class="status">
+              Added to PlanScore:
+              <time datetime="2021-10-04">Oct 4th, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
+          </div>
+        </li>
+
+        <!--Orange v7 -->
+        <li class="card">
+          <div class="state">
+            <h3 class="state-name">Utah</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
+          </div>
+          <div class="summary">
+            <a href="https://planscore.campaignlegal.org/plan.html?20211005T061939.024029755Z">View this UT US House Plan</a>
+            <div class="byline">Authored by: Utah Independent Redistricting Committee</div>
+            <p>
+              Utah Congressional Draft Orange Draft v7
+            </p>
+          </div>
+          <div class="status">
+              Added to PlanScore:
+              <time datetime="2021-10-04">Oct 4th, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
+          </div>
+        </li>
+
+        <!--Green v1 -->
+        <li class="card">
+          <div class="state">
+            <h3 class="state-name">Utah</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
+          </div>
+          <div class="summary">
+            <a href="https://planscore.campaignlegal.org/plan.html?20211005T062040.506236021Z">View this UT US House Plan</a>
+            <div class="byline">Authored by: Utah Independent Redistricting Committee</div>
+            <p>
+              Utah Congressional Draft Green Draft v1
+            </p>
+          </div>
+          <div class="status">
+              Added to PlanScore:
+              <time datetime="2021-10-04">Oct 4th, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
+          </div>
+        </li>
+        <!--PASTE NEW US HOUSE PLAN CARDS ABOVE THIS LINE-->
+      </ul>
+    </div>
+
+    <h3>State Senate Plans</h3>
+    <div class="card-deck">
+      <ul>
+        <!--PASTE NEW STATE SENATE PLAN CARDS BELOW THIS LINE-->
+        <!-- Purple v1 -->
+        <li class="card">
+          <div class="state">
+            <h3 class="state-name">Utah</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
+          </div>
+          <div class="summary">
+            <a href="https://planscore.campaignlegal.org/plan.html?20211005T062241.540908492Z">View this UT State Senate Plan</a>
+            <div class="byline">Authored by: Utah Independent Redistricting Committee</div>
+            <p>
+              Utah State Senate Draft Purple Draft v1
+            </p>
+          </div>
+          <div class="status">
+              Added to PlanScore:
+              <time datetime="2021-10-04">Oct 4th, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
+          </div>
+        </li>
+
+        <!-- Orange v1 -->
+        <li class="card">
+          <div class="state">
+            <h3 class="state-name">Utah</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
+          </div>
+          <div class="summary">
+            <a href="https://planscore.campaignlegal.org/plan.html?20211005T062412.058182269Z">View this UT State Senate Plan</a>
+            <div class="byline">Authored by: Utah Independent Redistricting Committee</div>
+            <p>
+              Utah State Senate Draft Orange Draft v1
+            </p>
+          </div>
+          <div class="status">
+              Added to PlanScore:
+              <time datetime="2021-10-04">Oct 4th, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
+          </div>
+        </li>
+
+        <!-- Green v1 -->
+        <li class="card">
+          <div class="state">
+            <h3 class="state-name">Utah</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
+          </div>
+          <div class="summary">
+            <a href="https://planscore.campaignlegal.org/plan.html?20211005T062509.161134766Z">View this UT State Senate Plan</a>
+            <div class="byline">Authored by: Utah Independent Redistricting Committee</div>
+            <p>
+              Utah State Senate Draft Green Draft v1
+            </p>
+          </div>
+          <div class="status">
+              Added to PlanScore:
+              <time datetime="2021-10-04">Oct 4th, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
+          </div>
+        </li>
+        <!--PASTE NEW STATE SENATE CARDS ABOVE THIS LINE-->
+      </ul>
+    </div>
+
+    <h3>State House Plans</h3>
+    <div class="card-deck">
+      <ul>
+        <!--PASTE NEW STATE HOUSE PLAN CARDS BELOW THIS LINE-->
+        <!--Orange v2 -->
+        <li class="card">
+          <div class="state">
+            <h3 class="state-name">Utah</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
+          </div>
+          <div class="summary">
+            <a href="https://planscore.campaignlegal.org/plan.html?20211005T062630.992252927Z">View this UT State House Plan</a>
+            <div class="byline">Authored by: Utah Independent Redistricting Committee</div>
+            <p>
+              Utah State House Draft Orange Draft v2
+            </p>
+          </div>
+          <div class="status">
+              Added to PlanScore:
+              <time datetime="2021-10-04">Oct 4th, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
+          </div>
+        </li>
+
+        <!--Purple v2 -->
+        <li class="card">
+          <div class="state">
+            <h3 class="state-name">Utah</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
+          </div>
+          <div class="summary">
+            <a href="https://planscore.campaignlegal.org/plan.html?20211005T062715.562246515Z">View this UT State House Plan</a>
+            <div class="byline">Authored by: Utah Independent Redistricting Committee</div>
+            <p>
+              Utah State House Draft Purple Draft v1
+            </p>
+          </div>
+          <div class="status">
+              Added to PlanScore:
+              <time datetime="2021-10-04">Oct 4th, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
+          </div>
+        </li>
+        <!--PASTE NEW STATE HOUSE CARDS ABOVE THIS LINE-->
+      </ul>
+      </div><!--/card-deck-->
+    <a href="/library" class="btn btn-primary">
+      Back to Plan Library
+    </a>
+    <a href="/utah" class="btn btn-primary"> <!-- The href should be lowercase -->
+      View Utah Historical Plans
+    </a>
+  </div><!--/container-mainbody-->
+
+    <!--[include_footer]-->
+
+</body>
+</html>
