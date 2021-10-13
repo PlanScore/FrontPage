@@ -79,6 +79,7 @@ const STATE_JS6_FILES = [
 const LIBRARY_JS6_FILES = [
   './library/index.js6',
   './library/alaska/index.js6',
+  './library/arkansas/index.js6',
   './library/colorado/index.js6',
   './library/georgia/index.js6',
   './library/illinois/index.js6',
@@ -88,6 +89,7 @@ const LIBRARY_JS6_FILES = [
   './library/maryland/index.js6',
   './library/michigan/index.js6',
   './library/minnesota/index.js6',
+  './library/montana/index.js6',
   './library/nebraska/index.js6',
   './library/ohio/index.js6',
   './library/oklahoma/index.js6',

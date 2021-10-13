@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>PlanScore :: Montana Plan Library</title>
+
+  <!--[include_head]-->
+
+  <!-- Leaflet for the map -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+
+  <!-- this page's own JS + CSS -->
+  <script>
+  var SELECTED_STATE = 'Montana';
+  </script>
+  <link href="index.css?[hash]" rel="stylesheet" />
+  <script src="index.js?[hash]"></script>
+
+  <!-- OG tags -->
+  <meta property="og:title" content="PlanScore" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://planscore.org" />
+  <meta property="og:image" content="https://planscore.org/images/OG-default-01.jpg" />
+  <meta property="og:description" content="PlanScore is a first-of-its-kind gerrymandering scoring service for new district plans, allowing users to upload maps and instantly receive projected data about their partisan consequences. You can also use historical data to discover how partisan advantage has influenced redistricting in your state." />
+
+  <!-- Twitter tags note that per https://developer.twitter.com/en/docs/tweets/optimize-with-cards/guides/getting-started, we need only use the card metas that differ from OG -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@PlanScore" />
+
+</head>
+<body>
+
+  <!--[include_navbar]-->
+
+  <div class="container container-mainbody">
+    <h1>Redistricting Plans: Montana</h1>
+    <hr>
+    <div class="intro">
+      <p>
+        In Montana, redistricting plans are enacted by a 5-member bipartisan redistricting commission comprised of four appointees repectively selected by the majority and minority leaders of the state Senate and House and a chairperson selected by those appointees.
+      </p>
+      <div id="map"></div>
+    </div>
+    <h2>Explore all Montana Plans</h2>
+    <hr>
+    <h3>US House Plans</h3>
+    <div class="card-deck">
+      <ul>
+        <!--PASTE NEW US HOUSE PLAN CARDS BELOW THIS LINE-->
+
+        <!--MT 1 -->
+        <li class="card">
+          <div class="state">
+            <h3 class="state-name">Montana</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
+          </div>
+          <div class="summary">
+            <a href="https://planscore.campaignlegal.org/plan.html?20211013T085423.061733516Z">View MT US House Proposal Plan CP 1</a>
+            <div class="byline">Authored by: Montana Districting & Apportionment Commission</div>
+            <p>
+              Montana Commission Proposal 1
+            </p>
+          </div>
+          <div class="status">
+              Added to PlanScore:
+              <time datetime="2021-10-13">Oct 13th, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
+          </div>
+        </li>
+
+        <!--MT 2 -->
+        <li class="card">
+          <div class="state">
+            <h3 class="state-name">Montana</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
+          </div>
+          <div class="summary">
+            <a href="https://planscore.campaignlegal.org/plan.html?20211013T085806.128020580Z">View MT US House Proposal Plan CP 2</a>
+            <div class="byline">Authored by: Montana Districting & Apportionment Commission</div>
+            <p>
+              Montana Commission Proposal 2
+            </p>
+          </div>
+          <div class="status">
+              Added to PlanScore:
+              <time datetime="2021-10-13">Oct 13th, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
+          </div>
+        </li>
+
+        <!--MT -->
+        <li class="card">
+          <div class="state">
+            <h3 class="state-name">Montana</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
+          </div>
+          <div class="summary">
+            <a href="https://planscore.campaignlegal.org/plan.html?20211013T085900.437419202Z">View MT US House Proposal Plan CP 3</a>
+            <div class="byline">Authored by: Montana Districting & Apportionment Commission</div>
+            <p>
+              Montana Commission Proposal 3
+            </p>
+          </div>
+          <div class="status">
+              Added to PlanScore:
+              <time datetime="2021-10-13">Oct 13th, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
+          </div>
+        </li>
+
+        <!--MT 4 -->
+        <li class="card">
+          <div class="state">
+            <h3 class="state-name">Montana</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
+          </div>
+          <div class="summary">
+            <a href="https://planscore.campaignlegal.org/plan.html?20211013T085957.107942029Z">View MT US House Proposal Plan CP 4</a>
+            <div class="byline">Authored by: Montana Districting & Apportionment Commission</div>
+            <p>
+              Montana Commission Proposal 4
+            </p>
+          </div>
+          <div class="status">
+              Added to PlanScore:
+              <time datetime="2021-10-13">Oct 13th, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
+          </div>
+        </li>
+
+        <!--MT 5-->
+        <li class="card">
+          <div class="state">
+            <h3 class="state-name">Montana</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
+          </div>
+          <div class="summary">
+            <a href="https://planscore.campaignlegal.org/plan.html?20211013T090043.865538673Z">View MT US House Proposal Plan CP 5</a>
+            <div class="byline">Authored by: Montana Districting & Apportionment Commission</div>
+            <p>
+              Montana Commission Proposal 5
+            </p>
+          </div>
+          <div class="status">
+              Added to PlanScore:
+              <time datetime="2021-10-13">Oct 13th, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
+          </div>
+        </li>
+
+        <!--MT 6 -->
+        <li class="card">
+          <div class="state">
+            <h3 class="state-name">Montana</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
+          </div>
+          <div class="summary">
+            <a href="https://planscore.campaignlegal.org/plan.html?20211013T090115.914087939Z">View MT US House Proposal Plan CP 6</a>
+            <div class="byline">Authored by: Montana Districting & Apportionment Commission</div>
+            <p>
+              Montana Commission Proposal 6
+            </p>
+          </div>
+          <div class="status">
+              Added to PlanScore:
+              <time datetime="2021-10-13">Oct 13th, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
+          </div>
+        </li>
+
+        <!--MT 7 -->
+        <li class="card">
+          <div class="state">
+            <h3 class="state-name">Montana</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
+          </div>
+          <div class="summary">
+            <a href="https://planscore.campaignlegal.org/plan.html?20211013T090148.649131870Z">View MT US House Proposal Plan CP 7</a>
+            <div class="byline">Authored by: Montana Districting & Apportionment Commission</div>
+            <p>
+              Montana Commission Proposal 7
+            </p>
+          </div>
+          <div class="status">
+              Added to PlanScore:
+              <time datetime="2021-10-13">Oct 13th, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
+          </div>
+        </li>
+
+        <!--MT 8 -->
+        <li class="card">
+          <div class="state">
+            <h3 class="state-name">Montana</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
+          </div>
+          <div class="summary">
+            <a href="https://planscore.campaignlegal.org/plan.html?20211013T090235.936867484Z">View MT US House Proposal Plan CP 8</a>
+            <div class="byline">Authored by: Montana Districting & Apportionment Commission</div>
+            <p>
+              Montana Commission Proposal 8
+            </p>
+          </div>
+          <div class="status">
+              Added to PlanScore:
+              <time datetime="2021-10-13">Oct 13th, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
+          </div>
+        </li>
+
+        <!--MT 9 -->
+        <li class="card">
+          <div class="state">
+            <h3 class="state-name">Montana</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
+          </div>
+          <div class="summary">
+            <a href="https://planscore.campaignlegal.org/plan.html?20211013T090311.072564916Z">View MT US House Proposal Plan CP 9</a>
+            <div class="byline">Authored by: Montana Districting & Apportionment Commission</div>
+            <p>
+              Montana Commission Proposal 9
+            </p>
+          </div>
+          <div class="status">
+              Added to PlanScore:
+              <time datetime="2021-10-13">Oct 13th, 2021</time> <!-- BOTH DATETIME and rendered time should be updated -->
+          </div>
+        </li>
+
+        <!--PASTE NEW US HOUSE PLAN CARDS ABOVE THIS LINE-->
+      </ul>
+    </div>
+
+    <a href="/library" class="btn btn-primary">
+      Back to Plan Library
+    </a>
+    <a href="/montana" class="btn btn-primary"> <!-- The href should be lowercase -->
+      View Montana Historical Plans
+    </a>
+  </div><!--/container-mainbody-->
+
+    <!--[include_footer]-->
+
+</body>
+</html>
