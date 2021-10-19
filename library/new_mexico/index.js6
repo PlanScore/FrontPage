@@ -1,0 +1,46 @@
+// this page's HTML template with the [hash] cache-buster and its stylesheet
+require('./index.scss');
+require('./index.src.html');
+
+import { STATE_BOUNDING_BOXES } from "../../_common/constants";
+import { STATE_NAME_TO_CODE } from "../../_common/constants";
+
+// polyfills for this page's JavaScript needs
+require('core-js/fn/object/values');
+require('core-js/fn/object/entries');
+
+// bundle some local/vendor libraries for this page's JavaScript needs
+//require('../../_common/jslibs/leaflet-control-zoombar.js');
+//require('../../_common/jslibs/leaflet-control-zoombar.css');
+//require('../../_common/jslibs/leaflet-control-partylegend.js');
+//require('../../_common/jslibs/leaflet-control-partylegend.css');
+//require('../../_common/jslibs/leaflet-polygon.fillPattern.js');
+
+
+
+//
+// begin page-specific JavasScript
+// anything goes: jQuery, ES2015, whatever you need
+//
+$(document).ready(function ()
+{
+    var STATE_BBOX = STATE_BOUNDING_BOXES[STATE_NAME_TO_CODE[SELECTED_STATE]];
+    
+    var map = L.map('map', {
+        minZoom: 2,
+        maxZoom: 11,
+        zoomControl: false,
+        scrollWheelZoom: false,
+    }).fitBounds(STATE_BBOX);
+
+    L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_nolabels/{z}/{x}/{y}{r}.png', {
+        attribution: '<a href="http://www.openstreetmap.org/copyright">OSM</a>',
+        //attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+        subdomains: 'abcd',
+    }).addTo(map);
+    L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-labels/{z}/{x}/{y}{r}.png', {
+        //attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.',
+        subdomains: 'abcd',
+        pane: 'markerPane',
+    }).addTo(map);
+});
