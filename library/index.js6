@@ -37,7 +37,7 @@ const KEYCODE_ESC = 27;
 
 // Library pages
 const LIBRARY_STATES = [
-    {abbr: 'AL', name: 'Alabama', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
+    {abbr: 'AL', name: 'Alabama', plans: true, href: '/library/alabama', color: MAP_PLANS_FILLCOLOR},
     {abbr: 'AK', name: 'Alaska', plans: true, href: '/library/alaska', color: MAP_PLANS_FILLCOLOR},
     {abbr: 'AZ', name: 'Arizona', plans: true, href: '/library/arizona', color: MAP_PLANS_FILLCOLOR},
     {abbr: 'AR', name: 'Arkansas', plans: true, href: '/library/arkansas', color: MAP_PLANS_FILLCOLOR},
@@ -68,7 +68,7 @@ const LIBRARY_STATES = [
     {abbr: 'NH', name: 'New Hampshire', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
     {abbr: 'NJ', name: 'New Jersey', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
     {abbr: 'NM', name: 'New Mexico', plans: true, href: '/library/new_mexico', color: MAP_PLANS_FILLCOLOR},
-    {abbr: 'NY', name: 'New York', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
+    {abbr: 'NY', name: 'New York', plans: true, href: '/library/new_york', color: MAP_PLANS_FILLCOLOR},
     {abbr: 'NC', name: 'North Carolina', plans: true, href: '/library/north_carolina', color: MAP_PLANS_FILLCOLOR},
     {abbr: 'ND', name: 'North Dakota', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
     {abbr: 'OH', name: 'Ohio', plans: true, href: '/library/ohio', color: MAP_PLANS_FILLCOLOR},
