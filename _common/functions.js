@@ -49,6 +49,11 @@ export const lookupBias = (whichmetric, score, boundtype) => {
 // the bell charts are a bit of a trick. An IMG that's stretched, then DIVs for the marker line and labels
 // see also bellcurves.scss
 export const drawBiasBellChart = (metricid, datavalue, htmldivid, boundtype, planorelection) => {
+    if(boundtype == 'localplan')
+    {
+        // We don't have a bell curve for local plans, substitute US House in its place
+        boundtype = 'ushouse';
+    }
     const $div = $(`#${htmldivid}`);
     // Set the img src according to the combo of metricid + plan/election + office.
     $div.find('img.curveimg').remove();
