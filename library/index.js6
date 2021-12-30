@@ -66,7 +66,7 @@ const LIBRARY_STATES = [
     {abbr: 'NE', name: 'Nebraska', plans: true, href: '/library/nebraska', color: MAP_PLANS_FILLCOLOR},
     {abbr: 'NV', name: 'Nevada', plans: true, href: '/library/nevada', color: MAP_PLANS_FILLCOLOR},
     {abbr: 'NH', name: 'New Hampshire', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
-    {abbr: 'NJ', name: 'New Jersey', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
+    {abbr: 'NJ', name: 'New Jersey', plans: true, href: '/library/new_jersey', color: MAP_PLANS_FILLCOLOR},
     {abbr: 'NM', name: 'New Mexico', plans: true, href: '/library/new_mexico', color: MAP_PLANS_FILLCOLOR},
     {abbr: 'NY', name: 'New York', plans: true, href: '/library/new_york', color: MAP_PLANS_FILLCOLOR},
     {abbr: 'NC', name: 'North Carolina', plans: true, href: '/library/north_carolina', color: MAP_PLANS_FILLCOLOR},
