@@ -44,7 +44,7 @@ const LIBRARY_STATES = [
     {abbr: 'CA', name: 'California', plans: true, href: '/library/california', color: MAP_PLANS_FILLCOLOR},
     {abbr: 'CO', name: 'Colorado', plans: true, href: '/library/colorado', color: MAP_PLANS_FILLCOLOR},
     {abbr: 'CT', name: 'Connecticut', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
-    {abbr: 'DE', name: 'Delaware', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
+    {abbr: 'DE', name: 'Delaware', plans: true, href: '/library/delaware', color: MAP_PLANS_FILLCOLOR},
     {abbr: 'FL', name: 'Florida', plans: true, href: '/library/florida', color: MAP_PLANS_FILLCOLOR},
     {abbr: 'GA', name: 'Georgia', plans: true, href: '/library/georgia', color: MAP_PLANS_FILLCOLOR},
     {abbr: 'HI', name: 'Hawaii', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
