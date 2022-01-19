@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>PlanScore :: Kansas Plan Library</title>
+
+  <!--[include_head]-->
+
+  <!-- Leaflet for the map -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+
+  <!-- this page's own JS + CSS -->
+  <script>
+  var SELECTED_STATE = 'Kansas';
+  </script>
+  <link href="index.css?[hash]" rel="stylesheet" />
+  <script src="index.js?[hash]"></script>
+
+  <!-- OG tags -->
+  <meta property="og:title" content="PlanScore" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://planscore.org" />
+  <meta property="og:image" content="https://planscore.org/images/OG-default-01.jpg" />
+  <meta property="og:description" content="PlanScore is a first-of-its-kind gerrymandering scoring service for new district plans, allowing users to upload maps and instantly receive projected data about their partisan consequences. You can also use historical data to discover how partisan advantage has influenced redistricting in your state." />
+
+  <!-- Twitter tags note that per https://developer.twitter.com/en/docs/tweets/optimize-with-cards/guides/getting-started, we need only use the card metas that differ from OG -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@PlanScore" />
+
+</head>
+<body>
+
+  <!--[include_navbar]-->
+
+  <div class="container container-mainbody">
+    <h1>Redistricting Plans: Kansas</h1>
+    <hr>
+    <div class="intro">
+      <p>
+        In Kansas, redistricting plans are enacted by the legislature and are subject to gubernatorial veto. Republicans control the legislature and the Governor is Democratic.
+      </p>
+      <div id="map"></div>
+    </div>
+    <h2>Explore all Kansas Plans</h2>
+    <hr>
+    <h3>US House Plans</h3>
+    <div class="card-deck">
+      <ul>
+        <!--PASTE NEW US HOUSE PLAN CARDS BELOW THIS LINE-->
+
+        <!-- KS Ad Astra -->
+        <li class="card">
+          <div class="state">
+            <h3 class="state-name enacted">Kansas</h3> <!--ENACT Switch to class="state-name enacted" if this plan is enacted-->
+          </div>
+          <div class="summary">
+            <a href="https://planscore.campaignlegal.org/plan.html?20220119T183502.534396568Z">View KS US House Ad Astra Plan</a>
+            <div class="byline">Authored by: Kansas House Committee on Redistricting</div>
+            <p>
+              Ad Astra Proposed Congressional Plan Presented by Representative Croft
+            </p>
+          </div>
+          <div class="status">
+              Added to PlanScore:
+              <time datetime="2022-01-19">Jan 19th, 2022</time> <!-- BOTH DATETIME and rendered time should be updated -->
+          </div>
+        </li>
+      
+        <!--PASTE NEW US HOUSE PLAN CARDS ABOVE THIS LINE-->
+      </ul>
+    </div>
+
+    <a href="/library" class="btn btn-primary">
+      Back to Plan Library
+    </a>
+    <a href="/kansas" class="btn btn-primary"> <!-- The href should be lowercase -->
+      View Kansas Historical Plans
+    </a>
+  </div><!--/container-mainbody-->
+
+    <!--[include_footer]-->
+
+</body>
+</html>

@@ -52,7 +52,7 @@ const LIBRARY_STATES = [
     {abbr: 'IL', name: 'Illinois', plans: true, href: '/library/illinois', color: MAP_PLANS_FILLCOLOR},
     {abbr: 'IN', name: 'Indiana', plans: true, href: '/library/indiana', color: MAP_PLANS_FILLCOLOR},
     {abbr: 'IA', name: 'Iowa', plans: true, href: '/library/iowa', color: MAP_PLANS_FILLCOLOR},
-    {abbr: 'KS', name: 'Kansas', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
+    {abbr: 'KS', name: 'Kansas', plans: true, href: '/library/kansas', color: MAP_PLANS_FILLCOLOR},
     {abbr: 'KY', name: 'Kentucky', plans: true, href: '/library/kentucky', color: MAP_PLANS_FILLCOLOR},
     {abbr: 'LA', name: 'Louisiana', plans: false, href: '/library/no_plans', color: MAP_NODATA_FILLCOLOR},
     {abbr: 'ME', name: 'Maine', plans: true, href: '/library/maine', color: MAP_PLANS_FILLCOLOR},
