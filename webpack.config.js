@@ -20,6 +20,7 @@ const GLOBAL_JS6_FILES = [
     './metrics/meanmedian/index.js6',
     './metrics/partisanbias/index.js6',
     './metrics/declination/index.js6',
+    './2022-redistricting-review/index.js6',
 ];
 
 const STATE_JS6_FILES = [
