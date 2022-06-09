@@ -1,0 +1,321 @@
+// this page's HTML template with the [hash] cache-buster and its stylesheet
+require('./index.scss');
+require('./index.src.html');
+
+import { STATE_BOUNDING_BOXES } from "../../_common/constants";
+import { STATE_NAME_TO_CODE } from "../../_common/constants";
+
+// polyfills for this page's JavaScript needs
+require('core-js/fn/object/values');
+require('core-js/fn/object/entries');
+
+// bundle some local/vendor libraries for this page's JavaScript needs
+//require('../../_common/jslibs/leaflet-control-zoombar.js');
+//require('../../_common/jslibs/leaflet-control-zoombar.css');
+//require('../../_common/jslibs/leaflet-control-partylegend.js');
+//require('../../_common/jslibs/leaflet-control-partylegend.css');
+//require('../../_common/jslibs/leaflet-polygon.fillPattern.js');
+
+
+
+//
+// begin page-specific JavasScript
+// anything goes: jQuery, ES2015, whatever you need
+//
+$(document).ready(function ()
+{
+    var STATE_BBOX = STATE_BOUNDING_BOXES[STATE_NAME_TO_CODE[SELECTED_STATE]];
+    
+    var map = L.map('map', {
+        minZoom: 2,
+        maxZoom: 11,
+        zoomControl: false,
+        scrollWheelZoom: false,
+    }).fitBounds(STATE_BBOX);
+
+    L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_nolabels/{z}/{x}/{y}{r}.png', {
+        attribution: '<a href="http://www.openstreetmap.org/copyright">OSM</a>',
+        //attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+        subdomains: 'abcd',
+    }).addTo(map);
+    L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-labels/{z}/{x}/{y}{r}.png', {
+        //attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.',
+        subdomains: 'abcd',
+        pane: 'markerPane',
+    }).addTo(map);
+});
+
+
+
+function BarChart( dataFile ,{
+    x = (d, i) => i,
+    y = d => d,
+    bartype = d => d,
+    marginTop = 50,
+    marginRight = 0,
+    marginBottom = 30,
+    marginLeft = 400,
+    width = 1540,
+    height = 800,
+    xDomain,
+    xRange = [marginLeft, width - marginRight],
+    yType = d3.scaleLinear,
+    yDomain,
+    xPadding = 0.1,
+    yRange = [height - marginBottom, marginTop], 
+    yFormat,
+    yLabel,
+    duration: initialDuration = 250,
+    delay: initialDelay = (_, i) => i * 20
+    
+
+
+
+} = {}) {
+    
+    const keys = ["Court", "IRC", "SL", "SM"];
+     // Compute values.
+     let data =  dataFile.filter(d => keys.includes(d.Type))
+    
+
+    
+        
+    
+    const X = d3.map(data, x);
+    const Y = d3.map(data, y);
+    const Typearr = d3.map(data, bartype);
+    
+    // Compute default domains, and unique the x-domain.
+    if (xDomain === undefined) xDomain = X;
+    if (yDomain === undefined) yDomain = [0, d3.max(Y)];
+    xDomain = new d3.InternSet(xDomain);
+
+    // Omit any data not present in the x-domain.
+    const I = d3.range(X.length).filter(i => xDomain.has(X[i]));
+
+    const legendData = { "Court": "#1f77b4", "IRC": "green", "SL": "yellow", "SM": "blue" }
+
+    const myColor = d3.scaleOrdinal().domain(keys).range(["#1f77b4", "green", "yellow", "blue"]);
+
+
+    // Compute the x-scale.
+
+
+    // Construct scales, axes, and formats.
+    const xScale = d3.scaleBand(xDomain, xRange).padding(xPadding)
+    const yScale = yType(yDomain, yRange)
+    const xAxis = d3.axisBottom(xScale).tickSizeOuter(0)
+    const yAxis = d3.axisLeft(yScale).ticks(10)
+    const format = yScale.tickFormat(1);
+    
+
+    
+    
+  
+    
+
+
+
+    const svg = d3.create("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .attr("viewBox", [0, 0, width, height])
+        .attr("style", "max-width: 100%; height: auto; height: intrinsic;");
+    
+    const yGroup = svg.append("g")
+        .attr("transform", `translate(${marginLeft},0)`)
+        .call(yAxis)
+        .call(g => g.select(".domain").remove())
+        .call(g => g.selectAll(".tick").call(grid))
+        .call(g => g.append("text")
+            .attr("x", marginLeft-400)
+            .attr("y", 1)
+            .attr("text-anchor", "start")
+            .text(yLabel)
+    )
+
+    let rect = svg.append("g")
+    .selectAll("rect")
+    .data(I)
+    .join("rect")
+        .property("key", i => X[i])
+        .call(position, i => xScale(X[i]), i => yScale(Y[i]))
+        .style("mix-blend-mode", "multiply")
+        .style("fill",  i => myColor(Typearr[i]))
+        .call(rect => rect.append("title").text(i => [X[i], format(Y[i])].join("\n")))
+    
+    
+    const xGroup = svg.append("g")
+        .attr("transform", `translate(0,${height - marginBottom})`)
+        .call(xAxis)
+    
+    function position(rect, x, y) {
+        return rect
+            .attr("x", x)
+            .attr("y", y)
+            .attr("width", xScale.bandwidth())
+            .attr("height", typeof y === "function" ? i => yScale(0) - y(i) : i => yScale(0) - y)
+            
+    }
+
+
+    function grid(tick) { 
+        return tick.append("line")
+            .attr("class", "grid")
+            .attr("x2", width - marginLeft- marginRight)
+            .attr("stroke", "#ccc")
+            .attr("stroke-opacity", 0.1)
+        
+
+    }
+    
+
+    var legendItemSize = 12;
+        var legendSpacing = 4;
+  var xOffset = 150;
+  var yOffset = 100;
+        var legend = d3
+   .select('#legend')
+   .append('svg')
+            .selectAll('.legendItem')
+            .data(data);
+    legend
+    .enter()
+    .append('rect')
+    .attr('class', 'legendItem')
+    .attr('width', legendItemSize)
+    .attr('height', legendItemSize)
+    .attr("fill", function (d) { return legendData[d.Type]; })
+    .attr('transform',
+    (d, i) => {
+        var x = xOffset;
+        var y = yOffset + (legendItemSize + legendSpacing) * i;
+        return `translate(${x}, ${y})`;
+        });
+    
+    
+    
+    legend
+    .enter()
+    .append('text')
+    .attr('x', xOffset + legendItemSize + 5)
+.attr('y', (d, i) => yOffset + (legendItemSize + legendSpacing) * i + 12)
+.text(legendData => legendData.Type)
+
+    
+
+
+
+
+    
+
+    
+
+    
+    
+
+    
+    
+
+
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    return Object.assign(svg.node(), {
+        update(data, {
+            xDomain,
+            yDomain,
+            duration = initialDuration,
+            delay = initialDelay
+        } = {}) {
+            const X = d3.map(data, x)
+            const Y = d3.map(data, y)
+
+
+            // Compute the domains.
+            if (xDomain === undefined) xDomain = X;
+            if (yDomain === undefined) yDomain = [0, d3.max(Y)];
+            xDomain = new d3.InternSet(xDomain);
+
+
+            // Omit any data not present in the x-domain.
+            const I = d3.range(X.length).filter(i => xDomain.has(X[i]));
+
+            xScale.domain(xDomain);
+            yScale.domain(yDomain);
+
+
+            const t = svg.transition().duration(duration);
+
+            rect = rect
+                .data(I, function (i) { return this.tagname === "rect" ? this.key : x[i] })
+                .join(
+                    enter => enter.append("rect")
+                        .property("key", i => Typearr[i])
+                        .call(position, i => xScale(X[i]), i => yScale(Y[i]))
+                        .style("mix-blend-mode", "multiply")
+                        .attr("fill", function (d, i) { 
+                            return myColor(Typearr[i])
+                        })        
+                        .call(enter => enter.append("title")),
+                    update => update,
+                    exit => exit.transition(t)
+                        .delay(delay)
+                        .attr("y", yScale(0))
+                        .attr("height", 0)
+
+                        .remove()
+                
+            
+            )
+            rect.select("title").text(i => [X[i], format(Y[i])].join("\n"))
+            rect.style("fill", function (d, i) { 
+                return myColor(Typearr[i])
+            })
+
+            // plut bars with the same color together
+            
+                
+             
+            rect.transition(t)
+                .delay(delay)
+                .call(position, i => xScale(X[i]), i => yScale(Y[i]))
+                .style("mix-blend-mode", "multiply")
+            xGroup.transition(t)
+                .call(xAxis)
+                .call(g => g.selectAll(".tick").delay(delay))
+            yGroup.transition(t)
+                .call(yAxis)
+                .selection()
+                    .call(g => g.select(".domain").remove())
+                    .call(g => g.selectAll(".tick").selectAll(".grid").data([,]).join(grid));
+                
+                
+                                                                    
+        }
+
+
+
+    })  
+
+}
+
+
+
+
+

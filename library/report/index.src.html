@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>PlanScore :: Final Report</title>
+
+  <!--[include_head]-->
+
+  <!-- Leaflet for the map -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+
+  <!-- this page's own JS + CSS -->
+  <script>
+  var SELECTED_STATE = 'Iowa';
+  </script>
+  <link href="index.css?[hash]" rel="stylesheet" />
+  <script src="index.js?[hash]"></script>
+
+  <!-- OG tags -->
+  <meta property="og:title" content="PlanScore" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://planscore.org" />
+  <meta property="og:image" content="https://planscore.org/images/OG-default-01.jpg" />
+  <meta property="og:description" content="PlanScore is a first-of-its-kind gerrymandering scoring service for new district plans, allowing users to upload maps and instantly receive projected data about their partisan consequences. You can also use historical data to discover how partisan advantage has influenced redistricting in your state." />
+
+  <!-- Twitter tags note that per https://developer.twitter.com/en/docs/tweets/optimize-with-cards/guides/getting-started, we need only use the card metas that differ from OG -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@PlanScore" />
+
+</head>
+<body>
+ 
+  
+  <div class="dropdown">
+    <button class="drop-btn">Dropdown</button>
+    <div class="dropdown-content">
+      <li id="tafash">alphabetical</li>
+      <li id="afash2">descending</li>
+      <li id="afash4">ascending</li>
+      <li id="fash3">type</li>
+    </div>
+     
+  </div>
+
+    <div id="chart" class="chart">
+      <div id="legend"></div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.13.0/d3-legend.js"></script>
+    <script src="index.js"></script>
+    <script>
+    //  read csv to constant
+ 
+    const csv = "states.csv";
+
+    
+    const csvdata = d3.csv(csv).then((data)=>{
+      const chart =  BarChart(data,{
+        x: d=> d.State,
+        y: d=> d.Num,
+        bartype: d=> d.Type,
+        yFormat: "%",
+  yLabel: "↑ Frequency",
+  duration: 750
+      })
+
+      
+      const update2  = chart.update(d3.sort(data, (a,b)=> b.Num - a.Num))
+      // sort with color 
+      const update3  = chart.update(d3.sort(data, (a,b)=> a.Type - b.Type))
+
+     
+    
+      document.getElementById("chart").appendChild(chart)
+      document.getElementById("tafash").addEventListener("click", ()=>{
+        chart.update(d3.sort(data, (a,b)=> a.State.localeCompare(b.State)))
+      })
+      document.getElementById("afash2").addEventListener("click", ()=>{
+        chart.update(d3.sort(data, (a,b)=> b.Num - a.Num))
+      })
+      document.getElementById("afash4").addEventListener("click", ()=>{
+        chart.update(d3.sort(data, (a,b)=> a.Num - b.Num))
+      })
+      
+      // sort type and shift bars
+    
+    })    
+    </script>
+        <!--[include_footer]-->
+</body>
+</html>
