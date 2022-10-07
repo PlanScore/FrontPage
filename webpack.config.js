@@ -120,9 +120,7 @@ const LIBRARY_JS6_FILES = [
   './library/washington/index.js6',
   './library/west_virginia/index.js6',
   './library/wisconsin/index.js6',
-
   './library/no_plans/index.js6'
-  
 ]
 
 const JS6_FILES = [
