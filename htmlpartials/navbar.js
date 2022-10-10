@@ -8,12 +8,12 @@ const htmlblock = `
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="/"><img id="brand-logo" src="/images/logo.svg" alt="PlanScore: a project of Campaign Legal Center"/></a>
+        <a class="navbar-brand" href="/"><img id="brand-logo" src="/images/logo.svg" alt="PlanScore"/></a>
     </div>
     <div class="collapse navbar-collapse" id="navbar">
         <ul class="nav navbar-nav navbar-right">
           <li class="mobile-only"><a href="/">Home</a></li>
-          <li><a href="/library">View the Library</a></li>
+          <li><a href="/library">View 2022 Plans</a></li>
           <li><a href="/upload.html">Score a Plan</a></li>
           <li><a href="/about/">What is PlanScore?</a></li>
         </ul>
