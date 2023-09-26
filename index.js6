@@ -178,7 +178,7 @@ window.initLoadStartingConditions = () => {
     // analyze the #year-polytype hash to see what year + type we should load
     // provide some defaults
     let year = PLAN_YEARS[PLAN_YEARS.length - 1];
-    let type = 'ushouse';
+    let type = 'statehouse';
 
     const year_and_type = /^#!(\d\d\d\d)\-(\w+)$/.exec(window.location.hash);
     if (year_and_type) {
