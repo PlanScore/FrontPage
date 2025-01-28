@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import argparse
 import collections
 import csv
 import math
@@ -29,19 +30,22 @@ mmd_breaks = [i/100 for i in range(-12, 13, 1)]
 mmd_ranges = [[mn, round(mn/2 + mx/2, 6), mx] for (mn, mx) in zip(mmd_breaks, mmd_breaks[1:])]
 mmd_ranges[0][0], mmd_ranges[-1][-1] = -math.inf, math.inf
 
+parser = argparse.ArgumentParser(description="Pipe stdin rows 47-62 from https://docs.google.com/spreadsheets/d/19ILB6-s2kDi2f-nkx4iqx0XeuiDu5oDgjf2IGi9-yaI/edit?gid=344536830#gid=344536830")
+parser.add_argument("destination", help="SVG filename to output")
+
 if __name__ == '__main__':
-    destination = sys.argv[1]
+    args = parser.parse_args()
     
-    if destination.endswith('_eg_plan_curve.svg'):
+    if args.destination.endswith('_eg_plan_curve.svg'):
         xmin, xmax, ranges, = eg_xmin, eg_xmax, eg_ranges
-    elif destination.endswith('_bias_plan_curve.svg'):
+    elif args.destination.endswith('_bias_plan_curve.svg'):
         xmin, xmax, ranges, = pb_xmin, pb_xmax, pb_ranges
-    elif destination.endswith('_dec2_plan_curve.svg'):
+    elif args.destination.endswith('_dec2_plan_curve.svg'):
         xmin, xmax, ranges, = dec_xmin, dec_xmax, dec_ranges
-    elif destination.endswith('_mmd_plan_curve.svg'):
+    elif args.destination.endswith('_mmd_plan_curve.svg'):
         xmin, xmax, ranges, = mmd_xmin, mmd_xmax, mmd_ranges
     else:
-        raise ValueError(destination)
+        raise ValueError(args.destination)
     
     buckets = [
         Bucket(float(row[-2]), int(row[-1] or '0'))
@@ -79,11 +83,11 @@ if __name__ == '__main__':
     right = max(xmax, max(n for ((_, n, _), _) in hlist[:-1]))
     middle = 100 * abs(left) / (abs(left) + right)
     
-    with open(destination, 'w') as file:
+    with open(args.destination, 'w') as file:
         print(f'''<?xml version="1.0" encoding="UTF-8"?>
 <svg width="{pixelwidth}px" height="{pixelheight}px" viewBox="0 0 {pixelwidth} {pixelheight}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <!-- Generator: Sketch 51.3 (57544) - http://www.bohemiancoding.com/sketch -->
-    <title>{os.path.splitext(os.path.basename(destination))[0]}</title>
+    <title>{os.path.splitext(os.path.basename(args.destination))[0]}</title>
     <desc>Created with Sketch.</desc>
     <defs>
         <linearGradient x1="{middle - 40}%" y1="0%" x2="{middle + 40}%" y2="0%" id="linearGradient-1">
