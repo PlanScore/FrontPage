@@ -342,7 +342,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
         // if we already did one, then we can just replace the chart.series[0] and not completely destroy and recreate the chart
         // on browsers other than Chrome this is a substantial performance gain
         let chart = $('#map').data('mapchart');
-        if (chart && false) {
+        if (chart) {
             // a chart already exists; just update its data
             chart.series[0].setData(data);
         }
