@@ -344,6 +344,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
         let chart = $('#map').data('mapchart');
         if (chart) {
             // a chart already exists; just update its data
+            chart.colorAxis[0].dataClasses = map_choropleth_colors;
             chart.series[0].setData(data);
         }
         else {
