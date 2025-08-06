@@ -100,6 +100,10 @@
         <br/>
 
         <span data-hasdata-atall="true" data-hasdata-thisyear="true">
+          <script>
+            if ('alabama' == 'texas') { document.write('<p>View <a href="/library/alabama">proposed Alabama mid-decade redistricting plans in the Library</a>.</p>') }
+          </script>
+
           <p><span data-metric="biasstatementhowmanymetrics"></span> <span data-metric="biasstatementconclusion"></span></p>
 
           <ul class="nav nav-tabs" id="tabs-metrics">
@@ -262,7 +266,7 @@
             We do not show data on the partisan fairness metrics in states with less than seven districts because the metrics in these states tend to be more volatile and thus less informative about partisan bias. For example, in a state with only three congressional seats, a change in the winner of one seat could cause a huge shift in their efficiency gap.
           </p>
         </span>
-        <a href="/library/alabama" class="btn btn-primary">
+        <a href="/library/alabama" class="btn btn-primary" onclick="goToStateLibraryIfExists(event)">
           View Alabama Library Plans
         </a>
       </div>
