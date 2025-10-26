@@ -316,18 +316,34 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             // determine fill color and label color based on data
             if (stateValue === MAP_NODATA_VALUE || stateValue === undefined) {
                 // no data: gray fill, gray label
-                $shape.attr('style', `fill:${MAP_NODATA_FILLCOLOR}; stroke:#555; stroke-width:1.0;`);
-                $label.attr('style', `fill:${MAP_NODATA_LABELCOLOR};`);
+                $shape.css({
+                    'fill': MAP_NODATA_FILLCOLOR,
+                    'stroke': '#555',
+                    'stroke-width': '1.0'
+                });
+                $label.css('fill', MAP_NODATA_LABELCOLOR);
                 if ($offshoreBox.length > 0) {
-                    $offshoreBox.attr('style', `fill:${MAP_NODATA_FILLCOLOR}; stroke:#555; stroke-width:1.0;`);
+                    $offshoreBox.css({
+                        'fill': MAP_NODATA_FILLCOLOR,
+                        'stroke': '#555',
+                        'stroke-width': '1.0'
+                    });
                 }
             } else {
                 // has data: color based on bias score, black label
                 const biasInfo = lookupBias('eg', stateValue, CURRENT_VIEW.boundtype);
-                $shape.attr('style', `fill:${biasInfo.color}; stroke:#555; stroke-width:1.0;`);
-                $label.attr('style', `fill:${MAP_LABELCOLOR};`);
+                $shape.css({
+                    'fill': biasInfo.color,
+                    'stroke': '#555',
+                    'stroke-width': '1.0'
+                });
+                $label.css('fill', MAP_LABELCOLOR);
                 if ($offshoreBox.length > 0) {
-                    $offshoreBox.attr('style', `fill:${biasInfo.color}; stroke:#555; stroke-width:1.0;`);
+                    $offshoreBox.css({
+                        'fill': biasInfo.color,
+                        'stroke': '#555',
+                        'stroke-width': '1.0'
+                    });
                 }
             }
         });
