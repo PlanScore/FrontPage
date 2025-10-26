@@ -350,9 +350,10 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
 
         // add click handlers if not already added
         if (!$('#map').data('handlers-attached')) {
-            // click handlers for state shapes, offshore boxes, and labels
-            $('.state-shape, .offshore-box, .state-label').on('click', function(e) {
-                const stateAbbr = $(this).attr('id').replace('state-shape-', '').replace('offshore-box-', '').replace('state-label-', '');
+            // click handlers for state shapes and offshore boxes
+            // labels have pointer-events: none so clicks fall through
+            $('.state-shape, .offshore-box').on('click', function(e) {
+                const stateAbbr = $(this).attr('id').replace('state-shape-', '').replace('offshore-box-', '');
                 const stateInfo = data.find(d => d.abbr === stateAbbr);
                 if (!stateInfo) return;
 
@@ -372,30 +373,77 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                 }
             });
 
-            // add hover effects
+            // hover effects - coordinate between state shapes and offshore boxes
             $('.state-shape').on('mouseenter', function() {
+                const stateAbbr = $(this).attr('id').replace('state-shape-', '');
+                const $offshoreBox = $(`#offshore-box-${stateAbbr}`);
+
+                $(this).data('hovering', true);
                 $(this).css({
                     'stroke': MAP_MOUSEOVER_COLOR,
                     'stroke-width': MAP_MOUSEOVER_WIDTH
                 });
+                if ($offshoreBox.length > 0) {
+                    $offshoreBox.css({
+                        'stroke': MAP_MOUSEOVER_COLOR,
+                        'stroke-width': MAP_MOUSEOVER_WIDTH
+                    });
+                }
             }).on('mouseleave', function() {
-                $(this).css({
-                    'stroke': '#555',
-                    'stroke-width': '1.0'
-                });
+                const stateAbbr = $(this).attr('id').replace('state-shape-', '');
+                const $offshoreBox = $(`#offshore-box-${stateAbbr}`);
+
+                $(this).data('hovering', false);
+
+                // only clear if offshore box is also not being hovered
+                if (!$offshoreBox.data('hovering')) {
+                    $(this).css({
+                        'stroke': '#555',
+                        'stroke-width': '1.0'
+                    });
+                    if ($offshoreBox.length > 0) {
+                        $offshoreBox.css({
+                            'stroke': '#555',
+                            'stroke-width': '1.0'
+                        });
+                    }
+                }
             });
 
-            // hover effects for offshore boxes
             $('.offshore-box').on('mouseenter', function() {
+                const stateAbbr = $(this).attr('id').replace('offshore-box-', '');
+                const $shape = $(`#state-shape-${stateAbbr}`);
+
+                $(this).data('hovering', true);
                 $(this).css({
                     'stroke': MAP_MOUSEOVER_COLOR,
                     'stroke-width': MAP_MOUSEOVER_WIDTH
                 });
+                if ($shape.length > 0) {
+                    $shape.css({
+                        'stroke': MAP_MOUSEOVER_COLOR,
+                        'stroke-width': MAP_MOUSEOVER_WIDTH
+                    });
+                }
             }).on('mouseleave', function() {
-                $(this).css({
-                    'stroke': '#555',
-                    'stroke-width': '1.0'
-                });
+                const stateAbbr = $(this).attr('id').replace('offshore-box-', '');
+                const $shape = $(`#state-shape-${stateAbbr}`);
+
+                $(this).data('hovering', false);
+
+                // only clear if state shape is also not being hovered
+                if (!$shape.data('hovering')) {
+                    $(this).css({
+                        'stroke': '#555',
+                        'stroke-width': '1.0'
+                    });
+                    if ($shape.length > 0) {
+                        $shape.css({
+                            'stroke': '#555',
+                            'stroke-width': '1.0'
+                        });
+                    }
+                }
             });
 
             // add pointer cursor
