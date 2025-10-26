@@ -297,138 +297,159 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
     });
 
     function renderMapWithNewData(data) {
-        // attach this raw data into the chart DIV so we can access it later
+        // attach this raw data into the SVG so we can access it later
         // see also selectState() which needs to access the compiled data
         $('#map').data('biasdata', data);
 
-        // Highcharts trick: load up the us-small data (see the SCRIPT tag for usmapchart.json)
-        // which includes breakout boxes for the small New England States (https://github.com/PlanScore/PlanScore/issues/78)
-        // preprocess it to add the state's ABBR as the label for the boxes
-        const polygons = Highcharts.geojson(Highcharts.maps['countries/us/custom/us-small']);
-        const has_callout_boxes = [ 'NJ', 'MD', 'DE', 'CT', 'RI', 'MA', 'NH', 'VT' ];
-        $.each(polygons, function () {
-            var path = this.path, copy = { path: path };
+        // loop through each state in the data and update the SVG
+        data.forEach(function(stateData) {
+            const stateAbbr = stateData.abbr;
+            const stateValue = stateData.value;
 
-            if (has_callout_boxes.indexOf(this.properties.postal) !== -1) {
-                Highcharts.seriesTypes.map.prototype.getBox.call({}, [copy]);
-                this.middleX = ((path[1] + path[4]) / 2 - copy._minX) / (copy._maxX - copy._minX); // eslint-disable-line no-underscore-dangle
-                this.middleY = ((path[2] + path[7]) / 2 - copy._minY) / (copy._maxY - copy._minY); // eslint-disable-line no-underscore-dangle
+            // find the SVG elements for this state
+            const $shape = $(`#state-shape-${stateAbbr}`);
+            const $label = $(`#state-label-${stateAbbr}`);
+            const $offshoreBox = $(`#offshore-box-${stateAbbr}`);
+
+            if ($shape.length === 0) return; // skip if state not found
+
+            // determine fill color and label color based on data
+            if (stateValue === MAP_NODATA_VALUE || stateValue === undefined) {
+                // no data: gray fill, gray label
+                $shape.css({
+                    'fill': MAP_NODATA_FILLCOLOR,
+                    'stroke': '#555',
+                    'stroke-width': '1.0'
+                });
+                $label.css('fill', MAP_NODATA_LABELCOLOR);
+                if ($offshoreBox.length > 0) {
+                    $offshoreBox.css({
+                        'fill': MAP_NODATA_FILLCOLOR,
+                        'stroke': '#555',
+                        'stroke-width': '1.0'
+                    });
+                }
+            } else {
+                // has data: color based on bias score, black label
+                const biasInfo = lookupBias('eg', stateValue, CURRENT_VIEW.boundtype);
+                $shape.css({
+                    'fill': biasInfo.color,
+                    'stroke': '#555',
+                    'stroke-width': '1.0'
+                });
+                $label.css('fill', MAP_LABELCOLOR);
+                if ($offshoreBox.length > 0) {
+                    $offshoreBox.css({
+                        'fill': biasInfo.color,
+                        'stroke': '#555',
+                        'stroke-width': '1.0'
+                    });
+                }
             }
         });
 
-        // Highcharts does color gradients but only min-to-max, and not the three-stops (red/white/blue) that we want
-        // generate a Highcharts colorAxis.dataClasses sort-of constructed from our color ramp
-        const map_choropleth_colors = [];
-        const whichmetric = 'eg';
-        const boundtype = CURRENT_VIEW.boundtype;
-        const spread = BELLCURVE_SPREAD[boundtype][whichmetric];
-        const slice_step = 0.05 * Math.abs(spread);
-        for (let slice_lower = -spread; slice_lower < spread; slice_lower += slice_step) {
-            map_choropleth_colors.push({
-                from: slice_lower,
-                to: slice_lower + slice_step,
-                color: lookupBias('eg', slice_lower + 0.5 * slice_step, boundtype).color,  // middle score for this slice's range
+        // add click handlers if not already added
+        if (!$('#map').data('handlers-attached')) {
+            // click handlers for state shapes and offshore boxes
+            // labels have pointer-events: none so clicks fall through
+            $('.state-shape, .offshore-box').on('click', function(e) {
+                const stateAbbr = $(this).attr('id').replace('state-shape-', '').replace('offshore-box-', '');
+                const stateInfo = data.find(d => d.abbr === stateAbbr);
+                if (!stateInfo) return;
+
+                // compose URL for the selected state + boundary + year
+                const plan_or_election = 'plan';
+                const stateslug = stateInfo.name.toLowerCase().replace(/\W/g, '_');
+                const moreinfourl = `/${stateslug}/#!${CURRENT_VIEW.year}-${plan_or_election}-${CURRENT_VIEW.boundtype}`;
+
+                // log the selection
+                logToGoogleAnalytics('selectstate', stateInfo.name);
+
+                // navigate (new window if modifier key held)
+                if (e.altKey || e.ctrlKey || e.shiftKey || e.metaKey) {
+                    window.open(moreinfourl);
+                } else {
+                    document.location.href = moreinfourl;
+                }
             });
 
-            // add the 999999 No Data style
-            map_choropleth_colors.push({
-                from: MAP_NODATA_VALUE,
-                to: MAP_NODATA_VALUE,
-                color: MAP_NODATA_FILLCOLOR,
-            });
-        }
+            // hover effects - coordinate between state shapes and offshore boxes
+            $('.state-shape').on('mouseenter', function() {
+                const stateAbbr = $(this).attr('id').replace('state-shape-', '');
+                const $offshoreBox = $(`#offshore-box-${stateAbbr}`);
 
-        // render the map chart
-        // if we already did one, then we can just replace the chart.series[0] and not completely destroy and recreate the chart
-        // on browsers other than Chrome this is a substantial performance gain
-        let chart = $('#map').data('mapchart');
-        if (chart) {
-            // a chart already exists; just update its data
-            chart.colorAxis[0].dataClasses = map_choropleth_colors;
-            chart.series[0].setData(data);
-        }
-        else {
-            // a chart has not yet been created; create it and then stow that reference
-            const newmapchart = Highcharts.mapChart('map', {
-                chart: {
-                    borderWidth: 0,
-                    spacing: [ 0, 0, 0, 0 ],
-                },
-                credits: {
-                    enabled: false,
-                },
-                title: {
-                    text: '',  // no big title
-                },
-                legend: {
-                    enabled: false,  // we have a custom-crafted label
-                },
-                colorAxis: {
-                    dataClasses: map_choropleth_colors,
-                },
-                tooltip: {
-                    enabled: false,
-                },
-                series: [{
-                    // use the Highcharts-provided US states, joining on their "postal" to our "abbr"
-                    data: data,
-                    mapData: polygons,
-                    borderColor: MAP_BORDER_COLOR,
-                    joinBy: ['postal', 'abbr'],
-                    // labels make small states easier to see, cursor makes it obvious to click
-                    cursor: 'pointer',
-                    dataLabels: {
-                        enabled: true,
-                        formatter: function () {
-                            if (this.point.value == MAP_NODATA_VALUE) {
-                                return `<span style="color: ${MAP_NODATA_LABELCOLOR}">${this.point.abbr}</span>`;
-                            }
-                            else {
-                                return this.point.abbr;
-                            }
-                        },
-                        style: {
-                            fontSize: MAP_LABELSIZE,
-                            color: MAP_LABELCOLOR,
-                            textOutline: false
-                        }
-                    },
-                    states: {
-                        hover: {
-                            brightness: 0,
-                            borderColor: MAP_MOUSEOVER_COLOR,
-                            borderWidth: MAP_MOUSEOVER_WIDTH,
-                        }
-                    },
-                    // click events: call the popup maker
-                    events: {
-                        click: function (e) {
-// GDA https://github.com/PlanScore/PlanScore/issues/238 -- temporary measure to have a click proceed directly to the state page; if they choose to keep it, then selectState() goes away in favor of this
-// selectState(e.point.abbr, { closeIfSameState: true });
-// logToGoogleAnalytics('selectstate', e.point.name);
-                            // compose URL for the selected state + boundary + year (e.g. /california/#!2010-plan-ushouse) and send them to it
-                            // see the states page programming for details as to the expected hash params
-                            // if they're holding the ctrl/alt/command key, try to open in a new window
-                            const plan_or_election = 'plan';
-                            const stateslug        = e.point.name.toLowerCase().replace(/\W/g, '_');
-                            const moreinfourl      = `/${stateslug}/#!${CURRENT_VIEW.year}-${plan_or_election}-${CURRENT_VIEW.boundtype}`;
+                $(this).data('hovering', true);
+                $(this).css({
+                    'stroke': MAP_MOUSEOVER_COLOR,
+                    'stroke-width': MAP_MOUSEOVER_WIDTH
+                });
+                if ($offshoreBox.length > 0) {
+                    $offshoreBox.css({
+                        'stroke': MAP_MOUSEOVER_COLOR,
+                        'stroke-width': MAP_MOUSEOVER_WIDTH
+                    });
+                }
+            }).on('mouseleave', function() {
+                const stateAbbr = $(this).attr('id').replace('state-shape-', '');
+                const $offshoreBox = $(`#offshore-box-${stateAbbr}`);
 
-                            // in any case, log the selection before we go
-                            logToGoogleAnalytics('selectstate', e.point.name);
+                $(this).data('hovering', false);
 
-                            if (e.altKey || e.ctrlKey || e.shiftKey || e.metaKey) {
-                                window.open(moreinfourl);
-                            }
-                            else {
-                                document.location.href = moreinfourl;
-                            }
-                        }
-                    },
-                }]
+                // only clear if offshore box is also not being hovered
+                if (!$offshoreBox.data('hovering')) {
+                    $(this).css({
+                        'stroke': '#555',
+                        'stroke-width': '1.0'
+                    });
+                    if ($offshoreBox.length > 0) {
+                        $offshoreBox.css({
+                            'stroke': '#555',
+                            'stroke-width': '1.0'
+                        });
+                    }
+                }
             });
 
-            // stow it for later retrieval
-            $('#map').data('mapchart', newmapchart);
+            $('.offshore-box').on('mouseenter', function() {
+                const stateAbbr = $(this).attr('id').replace('offshore-box-', '');
+                const $shape = $(`#state-shape-${stateAbbr}`);
+
+                $(this).data('hovering', true);
+                $(this).css({
+                    'stroke': MAP_MOUSEOVER_COLOR,
+                    'stroke-width': MAP_MOUSEOVER_WIDTH
+                });
+                if ($shape.length > 0) {
+                    $shape.css({
+                        'stroke': MAP_MOUSEOVER_COLOR,
+                        'stroke-width': MAP_MOUSEOVER_WIDTH
+                    });
+                }
+            }).on('mouseleave', function() {
+                const stateAbbr = $(this).attr('id').replace('offshore-box-', '');
+                const $shape = $(`#state-shape-${stateAbbr}`);
+
+                $(this).data('hovering', false);
+
+                // only clear if state shape is also not being hovered
+                if (!$shape.data('hovering')) {
+                    $(this).css({
+                        'stroke': '#555',
+                        'stroke-width': '1.0'
+                    });
+                    if ($shape.length > 0) {
+                        $shape.css({
+                            'stroke': '#555',
+                            'stroke-width': '1.0'
+                        });
+                    }
+                }
+            });
+
+            // add pointer cursor
+            $('.state-shape, .offshore-box').css('cursor', 'pointer');
+
+            $('#map').data('handlers-attached', true);
         }
     }
 
