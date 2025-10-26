@@ -350,9 +350,9 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
 
         // add click handlers if not already added
         if (!$('#map').data('handlers-attached')) {
-            // click handlers for both state shapes and offshore boxes
-            $('.state-shape, .offshore-box').on('click', function(e) {
-                const stateAbbr = $(this).attr('id').replace('state-shape-', '').replace('offshore-box-', '');
+            // click handlers for state shapes, offshore boxes, and labels
+            $('.state-shape, .offshore-box, .state-label').on('click', function(e) {
+                const stateAbbr = $(this).attr('id').replace('state-shape-', '').replace('offshore-box-', '').replace('state-label-', '');
                 const stateInfo = data.find(d => d.abbr === stateAbbr);
                 if (!stateInfo) return;
 
@@ -399,7 +399,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             });
 
             // add pointer cursor
-            $('.state-shape, .offshore-box').css('cursor', 'pointer');
+            $('.state-shape, .offshore-box, .state-label').css('cursor', 'pointer');
 
             $('#map').data('handlers-attached', true);
         }
