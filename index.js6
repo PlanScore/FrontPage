@@ -399,7 +399,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             });
 
             // add pointer cursor
-            $('.state-shape, .offshore-box, .state-label').css('cursor', 'pointer');
+            $('.state-shape, .offshore-box').css('cursor', 'pointer');
 
             $('#map').data('handlers-attached', true);
         }
