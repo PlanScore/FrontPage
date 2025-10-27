@@ -371,15 +371,26 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
 
             // Apply scaling for National E.G. or reset to normal
             const scaleFactor = scaleFactors[stateAbbr] || 1.0;
-            const transform = $shape.attr('transform');
-            const translateMatch = transform.match(/translate\(([^)]+)\)/);
-            if (translateMatch) {
-                const translatePart = translateMatch[1];
-                const newTransform = `translate(${translatePart}) scale(${scaleFactor},${scaleFactor})`;
-                $shape.attr('transform', newTransform);
+            const transform = $shape.css('transform');
+            // CSS transform is a matrix, we need to extract translate values
+            // or we can read from computed style and reconstruct
+            // For simplicity, we'll get the original CSS rule value
+            const cssTransform = window.getComputedStyle($shape[0]).transform;
 
-                if (CURRENT_VIEW.boundtype === 'nationaleg' && scaleFactor !== 1.0) {
-                    console.log(`${stateAbbr}: Applied transform="${newTransform}"`);
+            // Extract translate values from the current transform
+            // Matrix format: matrix(scaleX, skewY, skewX, scaleY, translateX, translateY)
+            if (cssTransform && cssTransform !== 'none') {
+                const matrixMatch = cssTransform.match(/matrix\(([^)]+)\)/);
+                if (matrixMatch) {
+                    const values = matrixMatch[1].split(',').map(v => parseFloat(v.trim()));
+                    const translateX = values[4];
+                    const translateY = values[5];
+                    const newTransform = `translate(${translateX}px, ${translateY}px) scale(${scaleFactor}, ${scaleFactor})`;
+                    $shape.css('transform', newTransform);
+
+                    if (CURRENT_VIEW.boundtype === 'nationaleg' && scaleFactor !== 1.0) {
+                        console.log(`${stateAbbr}: Applied transform="${newTransform}"`);
+                    }
                 }
             }
 
