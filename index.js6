@@ -6,6 +6,7 @@ require('./index.src.html');
 // shared constants between pages: the list of years, the red-blue color gradient, ...
 import { PLAN_YEARS } from "./_common/constants";
 import { STATE_CODE_TO_NAME } from "./_common/constants";
+import { US_HOUSE_SEATS } from "./_common/constants";
 import { BELLCURVE_SPREAD } from "./_common/constants";
 import { lookupBias } from "./_common/functions";
 
@@ -226,7 +227,9 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
     }
 
     // fetch the CSV file and then use the callbacks to update the map
-    const url = `/data/bias_${CURRENT_VIEW.boundtype}.csv`;
+    // Special case: nationaleg uses ushouse data but with special scaling
+    const csvBoundType = CURRENT_VIEW.boundtype === 'nationaleg' ? 'ushouse' : CURRENT_VIEW.boundtype;
+    const url = `/data/bias_${csvBoundType}.csv`;
     Papa.parse(url, {
         download: true,
         header: true,
@@ -301,6 +304,59 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
         // see also selectState() which needs to access the compiled data
         $('#map').data('biasdata', data);
 
+        // Calculate scales for National E.G. view
+        let scaleFactors = {};
+        if (CURRENT_VIEW.boundtype === 'nationaleg') {
+            console.log('=== National E.G. Scaling ===');
+
+            // Calculate impact values: abs(bias) * seats
+            // We'll normalize these impacts, then convert to scale factors
+            const impacts = {};
+            const dataAreas = {};
+            data.forEach(function(stateData) {
+                const seats = US_HOUSE_SEATS[stateData.abbr];
+                if (stateData.value !== MAP_NODATA_VALUE && stateData.value !== undefined && seats) {
+                    const impact = Math.abs(stateData.value) * seats;
+                    impacts[stateData.abbr] = impact;
+
+                    const $shape = $(`#state-shape-${stateData.abbr}`);
+                    dataAreas[stateData.abbr] = parseFloat($shape.attr('data-area')) || 1;
+
+                    console.log(`${stateData.abbr}: bias=${stateData.value.toFixed(4)}, abs(bias)=${Math.abs(stateData.value).toFixed(4)}, seats=${seats}, impact=${impact.toFixed(4)}`);
+                }
+            });
+
+            // Find the maximum and minimum impact values
+            const maxImpact = Math.max(...Object.values(impacts));
+            const minImpact = Math.min(...Object.values(impacts));
+
+            console.log(`Min impact: ${minImpact.toFixed(4)}, Max impact: ${maxImpact.toFixed(4)}`);
+
+            // Calculate average data-area as a reference
+            const avgDataArea = Object.values(dataAreas).reduce((a, b) => a + b, 0) / Object.values(dataAreas).length;
+            console.log(`Average data-area: ${avgDataArea.toExponential(4)}`);
+
+            // Normalize impacts and convert to scale factors
+            // Target area range: 0.04 (20%^2) to 1.5625 (125%^2) times reference area
+            if (maxImpact > 0 && maxImpact !== minImpact) {
+                Object.keys(impacts).forEach(abbr => {
+                    const normalizedImpact = (impacts[abbr] - minImpact) / (maxImpact - minImpact);
+                    const targetAreaRatio = 0.04 + (normalizedImpact * 1.5225);  // ranges from 0.04 to 1.5625
+                    const targetArea = targetAreaRatio * avgDataArea;
+                    const scale = Math.sqrt(targetArea / dataAreas[abbr]);
+
+                    // Clamp scale between 0.20 and 1.25
+                    const clampedScale = Math.max(0.20, Math.min(1.25, scale));
+                    scaleFactors[abbr] = clampedScale;
+
+                    const clamped = (clampedScale !== scale) ? ' (CLAMPED)' : '';
+                    console.log(`${abbr}: impact=${impacts[abbr].toFixed(4)}, normalized=${normalizedImpact.toFixed(4)}, areaRatio=${targetAreaRatio.toFixed(4)}, scale=${scale.toFixed(4)}, finalScale=${clampedScale.toFixed(4)}${clamped}`);
+                });
+            }
+
+            console.log('Scale factors:', scaleFactors);
+        }
+
         // loop through each state in the data and update the SVG
         data.forEach(function(stateData) {
             const stateAbbr = stateData.abbr;
@@ -312,6 +368,20 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             const $offshoreBox = $(`#offshore-box-${stateAbbr}`);
 
             if ($shape.length === 0) return; // skip if state not found
+
+            // Apply scaling for National E.G. or reset to normal
+            const scaleFactor = scaleFactors[stateAbbr] || 1.0;
+            const transform = $shape.attr('transform');
+            const translateMatch = transform.match(/translate\(([^)]+)\)/);
+            if (translateMatch) {
+                const translatePart = translateMatch[1];
+                const newTransform = `translate(${translatePart}) scale(${scaleFactor},${scaleFactor})`;
+                $shape.attr('transform', newTransform);
+
+                if (CURRENT_VIEW.boundtype === 'nationaleg' && scaleFactor !== 1.0) {
+                    console.log(`${stateAbbr}: Applied transform="${newTransform}"`);
+                }
+            }
 
             // determine fill color and label color based on data
             if (stateValue === MAP_NODATA_VALUE || stateValue === undefined) {
