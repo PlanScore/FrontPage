@@ -227,9 +227,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
     }
 
     // fetch the CSV file and then use the callbacks to update the map
-    // Special case: nationaleg uses ushouse data but with special scaling
-    const csvBoundType = CURRENT_VIEW.boundtype === 'nationaleg' ? 'ushouse' : CURRENT_VIEW.boundtype;
-    const url = `/data/bias_${csvBoundType}.csv`;
+    const url = `/data/bias_${CURRENT_VIEW.boundtype}.csv`;
     Papa.parse(url, {
         download: true,
         header: true,
@@ -238,10 +236,11 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             // nearest year to our chosen which does have data, favoring more-recent year in event of a tie
             // primarily used when switching district types, as not all district types have the same coverage for every year (e.g. State House 2016)
             if (options.fudgeYearIfNoData) {
-                const hasdata = results.data.filter((datarow) => { return datarow.year == CURRENT_VIEW.year; }).length;
+                const yearColumn = CURRENT_VIEW.boundtype === 'nationaleg' ? 'cycle' : 'year';
+                const hasdata = results.data.filter((datarow) => { return datarow[yearColumn] == CURRENT_VIEW.year; }).length;
                 if (! hasdata) {
                     const wehavetheseyears = results.data.map((datarow) => {
-                        return datarow.year ? parseInt(datarow.year) : 0;  // workaround for 176, iOS 11 including blank rows so year=NaN
+                        return datarow[yearColumn] ? parseInt(datarow[yearColumn]) : 0;  // workaround for 176, iOS 11 including blank rows so year=NaN
                     });
                     wehavetheseyears.sort((p, q) => {
                         const px = Math.abs(p - parseInt(CURRENT_VIEW.year));
@@ -270,8 +269,10 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             // workaround here: rewrite any odd-numbered years to add 1 (1973 becomes 1974) so we still have even numbers
             // for this visual display having 1974 show the plan enacted in 1973 is sufficiently accurate
             results.data = results.data.map(function (datarow) {
-                const year = parseInt(datarow.year);
-                if (year % 2 == 1) datarow.year = String(year + 1);
+                // For nationaleg, use 'cycle' column instead of 'year'
+                const yearColumn = CURRENT_VIEW.boundtype === 'nationaleg' ? 'cycle' : 'year';
+                const year = parseInt(datarow[yearColumn]);
+                if (year % 2 == 1) datarow[yearColumn] = String(year + 1);
                 return datarow;
             });
 
@@ -279,10 +280,21 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             // and for each row assign the bias score to the state's row in the above
             // this is loop-within-loop as we match arrays to arrays, but P=50 and Q=20ish so it's affordable
             results = results.data.forEach(function (datarow) {
-                if (datarow.year != CURRENT_VIEW.year) return;  // wrong year; next
-                const chartrow = chartdata.filter((filteringthisonerow) => { return filteringthisonerow.abbr == datarow.state; })[0];
-                chartrow.value = parseFloat(datarow.eg_adj_avg);
-                chartrow.percentrank = Math.round(100 * datarow.eg_avg_percentrank).toFixed(0);
+                // For nationaleg, use different column names
+                if (CURRENT_VIEW.boundtype === 'nationaleg') {
+                    if (datarow.cycle != CURRENT_VIEW.year) return;  // wrong year; next
+                    const chartrow = chartdata.filter((filteringthisonerow) => { return filteringthisonerow.abbr == datarow.stateabrev; })[0];
+                    if (!chartrow) return;  // state not found, skip
+                    chartrow.value = parseFloat(datarow.eg);
+                    chartrow.seats = parseInt(datarow.districts);
+                    chartrow.percentrank = null;
+                } else {
+                    if (datarow.year != CURRENT_VIEW.year) return;  // wrong year; next
+                    const chartrow = chartdata.filter((filteringthisonerow) => { return filteringthisonerow.abbr == datarow.state; })[0];
+                    if (!chartrow) return;  // state not found, skip
+                    chartrow.value = parseFloat(datarow.eg_adj_avg);
+                    chartrow.percentrank = Math.round(100 * datarow.eg_avg_percentrank).toFixed(0);
+                }
             });
             renderMapWithNewData(chartdata);
             updateStateListingSwatches(chartdata);
@@ -314,7 +326,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             const impacts = {};
             const dataAreas = {};
             data.forEach(function(stateData) {
-                const seats = US_HOUSE_SEATS[stateData.abbr];
+                const seats = stateData.seats;
                 if (stateData.value !== MAP_NODATA_VALUE && stateData.value !== undefined && seats) {
                     const impact = Math.abs(stateData.value) * seats;
                     impacts[stateData.abbr] = impact;
@@ -371,27 +383,27 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
 
             // Apply scaling for National E.G. or reset to normal
             const scaleFactor = scaleFactors[stateAbbr] || 1.0;
-            const transform = $shape.css('transform');
+
             // CSS transform is a matrix, we need to extract translate values
-            // or we can read from computed style and reconstruct
-            // For simplicity, we'll get the original CSS rule value
-            const cssTransform = window.getComputedStyle($shape[0]).transform;
-
-            // Extract translate values from the current transform
             // Matrix format: matrix(scaleX, skewY, skewX, scaleY, translateX, translateY)
-            if (cssTransform && cssTransform !== 'none') {
-                const matrixMatch = cssTransform.match(/matrix\(([^)]+)\)/);
-                if (matrixMatch) {
-                    const values = matrixMatch[1].split(',').map(v => parseFloat(v.trim()));
-                    const translateX = values[4];
-                    const translateY = values[5];
-                    const newTransform = `translate(${translateX}px, ${translateY}px) scale(${scaleFactor}, ${scaleFactor})`;
-                    $shape.css('transform', newTransform);
+            try {
+                const cssTransform = window.getComputedStyle($shape[0]).transform;
+                if (cssTransform && cssTransform !== 'none') {
+                    const matrixMatch = cssTransform.match(/matrix\(([^)]+)\)/);
+                    if (matrixMatch) {
+                        const values = matrixMatch[1].split(',').map(v => parseFloat(v.trim()));
+                        const translateX = values[4];
+                        const translateY = values[5];
+                        const newTransform = `translate(${translateX}px, ${translateY}px) scale(${scaleFactor}, ${scaleFactor})`;
+                        $shape.css('transform', newTransform);
 
-                    if (CURRENT_VIEW.boundtype === 'nationaleg' && scaleFactor !== 1.0) {
-                        console.log(`${stateAbbr}: Applied transform="${newTransform}"`);
+                        if (CURRENT_VIEW.boundtype === 'nationaleg' && scaleFactor !== 1.0) {
+                            console.log(`${stateAbbr}: Applied transform="${newTransform}"`);
+                        }
                     }
                 }
+            } catch (e) {
+                // Silently skip transform errors
             }
 
             // determine fill color and label color based on data
