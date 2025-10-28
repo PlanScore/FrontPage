@@ -235,10 +235,11 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             // nearest year to our chosen which does have data, favoring more-recent year in event of a tie
             // primarily used when switching district types, as not all district types have the same coverage for every year (e.g. State House 2016)
             if (options.fudgeYearIfNoData) {
-                const hasdata = results.data.filter((datarow) => { return datarow.year == CURRENT_VIEW.year; }).length;
+                const yearColumn = CURRENT_VIEW.boundtype === 'nationaleg' ? 'cycle' : 'year';
+                const hasdata = results.data.filter((datarow) => { return datarow[yearColumn] == CURRENT_VIEW.year; }).length;
                 if (! hasdata) {
                     const wehavetheseyears = results.data.map((datarow) => {
-                        return datarow.year ? parseInt(datarow.year) : 0;  // workaround for 176, iOS 11 including blank rows so year=NaN
+                        return datarow[yearColumn] ? parseInt(datarow[yearColumn]) : 0;  // workaround for 176, iOS 11 including blank rows so year=NaN
                     });
                     wehavetheseyears.sort((p, q) => {
                         const px = Math.abs(p - parseInt(CURRENT_VIEW.year));
@@ -267,8 +268,10 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             // workaround here: rewrite any odd-numbered years to add 1 (1973 becomes 1974) so we still have even numbers
             // for this visual display having 1974 show the plan enacted in 1973 is sufficiently accurate
             results.data = results.data.map(function (datarow) {
-                const year = parseInt(datarow.year);
-                if (year % 2 == 1) datarow.year = String(year + 1);
+                // For nationaleg, use 'cycle' column instead of 'year'
+                const yearColumn = CURRENT_VIEW.boundtype === 'nationaleg' ? 'cycle' : 'year';
+                const year = parseInt(datarow[yearColumn]);
+                if (year % 2 == 1) datarow[yearColumn] = String(year + 1);
                 return datarow;
             });
 
@@ -276,10 +279,21 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             // and for each row assign the bias score to the state's row in the above
             // this is loop-within-loop as we match arrays to arrays, but P=50 and Q=20ish so it's affordable
             results = results.data.forEach(function (datarow) {
-                if (datarow.year != CURRENT_VIEW.year) return;  // wrong year; next
-                const chartrow = chartdata.filter((filteringthisonerow) => { return filteringthisonerow.abbr == datarow.state; })[0];
-                chartrow.value = parseFloat(datarow.eg_adj_avg);
-                chartrow.percentrank = Math.round(100 * datarow.eg_avg_percentrank).toFixed(0);
+                // For nationaleg, use different column names
+                if (CURRENT_VIEW.boundtype === 'nationaleg') {
+                    if (datarow.cycle != CURRENT_VIEW.year) return;  // wrong year; next
+                    const chartrow = chartdata.filter((filteringthisonerow) => { return filteringthisonerow.abbr == datarow.stateabrev; })[0];
+                    if (!chartrow) return;  // state not found, skip
+                    chartrow.value = parseFloat(datarow.eg);
+                    chartrow.seats = parseInt(datarow.districts);
+                    chartrow.percentrank = null;
+                } else {
+                    if (datarow.year != CURRENT_VIEW.year) return;  // wrong year; next
+                    const chartrow = chartdata.filter((filteringthisonerow) => { return filteringthisonerow.abbr == datarow.state; })[0];
+                    if (!chartrow) return;  // state not found, skip
+                    chartrow.value = parseFloat(datarow.eg_adj_avg);
+                    chartrow.percentrank = Math.round(100 * datarow.eg_avg_percentrank).toFixed(0);
+                }
             });
             renderMapWithNewData(chartdata);
             updateStateListingSwatches(chartdata);
@@ -301,6 +315,59 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
         // see also selectState() which needs to access the compiled data
         $('#map').data('biasdata', data);
 
+        // Calculate scales for National E.G. view
+        let scaleFactors = {};
+        if (CURRENT_VIEW.boundtype === 'nationaleg') {
+            console.log('=== National E.G. Scaling ===');
+
+            // Calculate impact values: abs(bias) * seats
+            // We'll normalize these impacts, then convert to scale factors
+            const impacts = {};
+            const dataAreas = {};
+            data.forEach(function(stateData) {
+                const seats = stateData.seats;
+                if (stateData.value !== MAP_NODATA_VALUE && stateData.value !== undefined && seats) {
+                    const impact = Math.abs(stateData.value) * seats;
+                    impacts[stateData.abbr] = impact;
+
+                    const $shape = $(`#state-shape-${stateData.abbr}`);
+                    dataAreas[stateData.abbr] = parseFloat($shape.attr('data-area')) || 1;
+
+                    console.log(`${stateData.abbr}: bias=${stateData.value.toFixed(4)}, abs(bias)=${Math.abs(stateData.value).toFixed(4)}, seats=${seats}, impact=${impact.toFixed(4)}`);
+                }
+            });
+
+            // Find the maximum and minimum impact values
+            const maxImpact = Math.max(...Object.values(impacts));
+            const minImpact = Math.min(...Object.values(impacts));
+
+            console.log(`Min impact: ${minImpact.toFixed(4)}, Max impact: ${maxImpact.toFixed(4)}`);
+
+            // Calculate average data-area as a reference
+            const avgDataArea = Object.values(dataAreas).reduce((a, b) => a + b, 0) / Object.values(dataAreas).length;
+            console.log(`Average data-area: ${avgDataArea.toExponential(4)}`);
+
+            // Normalize impacts and convert to scale factors
+            // Target area range: 0.04 (20%^2) to 1.5625 (125%^2) times reference area
+            if (maxImpact > 0 && maxImpact !== minImpact) {
+                Object.keys(impacts).forEach(abbr => {
+                    const normalizedImpact = (impacts[abbr] - minImpact) / (maxImpact - minImpact);
+                    const targetAreaRatio = 0.04 + (normalizedImpact * 1.5225);  // ranges from 0.04 to 1.5625
+                    const targetArea = targetAreaRatio * avgDataArea;
+                    const scale = Math.sqrt(targetArea / dataAreas[abbr]);
+
+                    // Clamp scale between 0.20 and 1.25
+                    const clampedScale = Math.max(0.20, Math.min(1.25, scale));
+                    scaleFactors[abbr] = clampedScale;
+
+                    const clamped = (clampedScale !== scale) ? ' (CLAMPED)' : '';
+                    console.log(`${abbr}: impact=${impacts[abbr].toFixed(4)}, normalized=${normalizedImpact.toFixed(4)}, areaRatio=${targetAreaRatio.toFixed(4)}, scale=${scale.toFixed(4)}, finalScale=${clampedScale.toFixed(4)}${clamped}`);
+                });
+            }
+
+            console.log('Scale factors:', scaleFactors);
+        }
+
         // loop through each state in the data and update the SVG
         data.forEach(function(stateData) {
             const stateAbbr = stateData.abbr;
@@ -312,6 +379,31 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             const $offshoreBox = $(`#offshore-box-${stateAbbr}`);
 
             if ($shape.length === 0) return; // skip if state not found
+
+            // Apply scaling for National E.G. or reset to normal
+            const scaleFactor = scaleFactors[stateAbbr] || 1.0;
+
+            // CSS transform is a matrix, we need to extract translate values
+            // Matrix format: matrix(scaleX, skewY, skewX, scaleY, translateX, translateY)
+            try {
+                const cssTransform = window.getComputedStyle($shape[0]).transform;
+                if (cssTransform && cssTransform !== 'none') {
+                    const matrixMatch = cssTransform.match(/matrix\(([^)]+)\)/);
+                    if (matrixMatch) {
+                        const values = matrixMatch[1].split(',').map(v => parseFloat(v.trim()));
+                        const translateX = values[4];
+                        const translateY = values[5];
+                        const newTransform = `translate(${translateX}px, ${translateY}px) scale(${scaleFactor}, ${scaleFactor})`;
+                        $shape.css('transform', newTransform);
+
+                        if (CURRENT_VIEW.boundtype === 'nationaleg' && scaleFactor !== 1.0) {
+                            console.log(`${stateAbbr}: Applied transform="${newTransform}"`);
+                        }
+                    }
+                }
+            } catch (e) {
+                // Silently skip transform errors
+            }
 
             // determine fill color and label color based on data
             if (stateValue === MAP_NODATA_VALUE || stateValue === undefined) {
@@ -330,14 +422,22 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                     });
                 }
             } else {
-                // has data: color based on bias score, black label
+                // has data: color based on bias score
                 const biasInfo = lookupBias('eg', stateValue, CURRENT_VIEW.boundtype);
                 $shape.css({
                     'fill': biasInfo.color,
                     'stroke': '#555',
                     'stroke-width': '1.0'
                 });
-                $label.css('fill', MAP_LABELCOLOR);
+
+                // For National E.G., use white text for extreme values (beyond ±0.15)
+                // to improve readability over dark backgrounds
+                let labelColor = MAP_LABELCOLOR;
+                if (CURRENT_VIEW.boundtype === 'nationaleg' && Math.abs(stateValue) > 0.15) {
+                    labelColor = 'white';
+                }
+                $label.css('fill', labelColor);
+
                 if ($offshoreBox.length > 0) {
                     $offshoreBox.css({
                         'fill': biasInfo.color,

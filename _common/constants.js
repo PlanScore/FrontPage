@@ -215,6 +215,13 @@ export const BELLCURVE_SPREAD = {
         d2: 1.00,
         ftva: 0.29,
     },
+    nationaleg: {
+        eg: 0.25,
+        mm: 0.12,
+        pb: 0.25,
+        d2: 0.81,
+        ftva: 0.25,
+    },
 };
 
 // The metricid's passed to drawBiasBellChart don't match the images/*_curve.svg filename pattern exactly.
