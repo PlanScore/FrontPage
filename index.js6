@@ -6,7 +6,6 @@ require('./index.src.html');
 // shared constants between pages: the list of years, the red-blue color gradient, ...
 import { PLAN_YEARS } from "./_common/constants";
 import { STATE_CODE_TO_NAME } from "./_common/constants";
-import { US_HOUSE_SEATS } from "./_common/constants";
 import { BELLCURVE_SPREAD } from "./_common/constants";
 import { lookupBias } from "./_common/functions";
 
