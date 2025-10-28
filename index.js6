@@ -423,14 +423,22 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                     });
                 }
             } else {
-                // has data: color based on bias score, black label
+                // has data: color based on bias score
                 const biasInfo = lookupBias('eg', stateValue, CURRENT_VIEW.boundtype);
                 $shape.css({
                     'fill': biasInfo.color,
                     'stroke': '#555',
                     'stroke-width': '1.0'
                 });
-                $label.css('fill', MAP_LABELCOLOR);
+
+                // For National E.G., use white text for extreme values (beyond ±0.15)
+                // to improve readability over dark backgrounds
+                let labelColor = MAP_LABELCOLOR;
+                if (CURRENT_VIEW.boundtype === 'nationaleg' && Math.abs(stateValue) > 0.15) {
+                    labelColor = 'white';
+                }
+                $label.css('fill', labelColor);
+
                 if ($offshoreBox.length > 0) {
                     $offshoreBox.css({
                         'fill': biasInfo.color,
