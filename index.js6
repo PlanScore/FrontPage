@@ -450,7 +450,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                 }
             }
 
-            // add pointer cursors under the same conditions that control clicks below
+            // add pointer cursors under the same conditions that control clicks in attachMapEventHandlers()
             if (stateValue === MAP_NODATA_VALUE || stateValue === undefined || (CURRENT_VIEW.boundtype == 'nationaleg' && stateData.seats < MINIMUM_SEATS)) {
                 // remove pointer cursors
                 $shape.css('cursor', 'not-allowed');
@@ -462,15 +462,20 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             }
         });
 
+        attachMapEventHandlers();
+    }
+
+    function attachMapEventHandlers()
+    {
         // add click handlers if not already added
         if (!$('#map').data('handlers-attached')) {
             // click handlers for state shapes and offshore boxes
             // labels have pointer-events: none so clicks fall through
             $('.state-shape, .offshore-box').on('click', function(e) {
                 const stateAbbr = $(this).attr('id').replace('state-shape-', '').replace('offshore-box-', '');
-                const stateInfo = data.find(d => d.abbr === stateAbbr);
+                const stateInfo = $('#map').data('biasdata').find(d => d.abbr === stateAbbr);
 
-                // continue with click under the same conditions that control pointers above
+                // continue with click under the same conditions that control pointers in renderMapWithNewData()
                 if (!stateInfo || stateInfo.value === MAP_NODATA_VALUE || stateInfo.value === undefined || (CURRENT_VIEW.boundtype == 'nationaleg' && stateInfo.seats < MINIMUM_SEATS)) {
                     return;
                 }
