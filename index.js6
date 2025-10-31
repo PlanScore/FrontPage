@@ -45,6 +45,9 @@ const MAP_MOUSEOVER_WIDTH = 2;
 // the Esc key
 const KEYCODE_ESC = 27;
 
+// Minimum seats required for clickable states in National E.G. view
+const MINIMUM_SEATS = 7;
+
 
 //
 // PAGE STARTUP / INIT FUNCTIONS
@@ -377,6 +380,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             const $shape = $(`#state-shape-${stateAbbr}`);
             const $label = $(`#state-label-${stateAbbr}`);
             const $offshoreBox = $(`#offshore-box-${stateAbbr}`);
+            const hasOffshoreBox = ($offshoreBox.length > 0);
 
             if ($shape.length === 0) return; // skip if state not found
 
@@ -414,7 +418,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                     'stroke-width': '1.0'
                 });
                 $label.css('fill', MAP_NODATA_LABELCOLOR);
-                if ($offshoreBox.length > 0) {
+                if (hasOffshoreBox) {
                     $offshoreBox.css({
                         'fill': MAP_NODATA_FILLCOLOR,
                         'stroke': '#555',
@@ -430,37 +434,60 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                     'stroke-width': '1.0'
                 });
 
-                // For National E.G., use white text for extreme values (beyond ±0.15)
+                // Use white text for extreme values (beyond ±0.15)
                 // to improve readability over dark backgrounds
-                let labelColor = MAP_LABELCOLOR;
-                if (CURRENT_VIEW.boundtype === 'nationaleg' && Math.abs(stateValue) > 0.15) {
-                    labelColor = 'white';
+                let labelColor = 'white';
+                if (Math.abs(stateValue) < 0.15 || hasOffshoreBox) {
+                    // Use standard label color for non-extreme values and offshore boxes
+                    labelColor = MAP_LABELCOLOR;
                 }
                 $label.css('fill', labelColor);
 
-                if ($offshoreBox.length > 0) {
+                if (hasOffshoreBox) {
                     $offshoreBox.css({
                         'fill': biasInfo.color,
+                        'fill-opacity': 0.35,
                         'stroke': '#555',
                         'stroke-width': '1.0'
                     });
                 }
             }
+
+            // add pointer cursors under the same conditions that control clicks in attachMapEventHandlers()
+            if (stateValue === MAP_NODATA_VALUE || stateValue === undefined || (CURRENT_VIEW.boundtype == 'nationaleg' && stateData.seats < MINIMUM_SEATS)) {
+                // remove pointer cursors
+                $shape.css('cursor', 'not-allowed');
+                $offshoreBox.css('cursor', 'not-allowed');
+            } else {
+                // add pointer cursors
+                $shape.css('cursor', 'pointer');
+                $offshoreBox.css('cursor', 'pointer');
+            }
         });
 
+        attachMapEventHandlers();
+    }
+
+    function attachMapEventHandlers()
+    {
         // add click handlers if not already added
         if (!$('#map').data('handlers-attached')) {
             // click handlers for state shapes and offshore boxes
             // labels have pointer-events: none so clicks fall through
             $('.state-shape, .offshore-box').on('click', function(e) {
                 const stateAbbr = $(this).attr('id').replace('state-shape-', '').replace('offshore-box-', '');
-                const stateInfo = data.find(d => d.abbr === stateAbbr);
-                if (!stateInfo) return;
+                const stateInfo = $('#map').data('biasdata').find(d => d.abbr === stateAbbr);
+
+                // continue with click under the same conditions that control pointers in renderMapWithNewData()
+                if (!stateInfo || stateInfo.value === MAP_NODATA_VALUE || stateInfo.value === undefined || (CURRENT_VIEW.boundtype == 'nationaleg' && stateInfo.seats < MINIMUM_SEATS)) {
+                    return;
+                }
 
                 // compose URL for the selected state + boundary + year
                 const plan_or_election = 'plan';
                 const stateslug = stateInfo.name.toLowerCase().replace(/\W/g, '_');
-                const moreinfourl = `/${stateslug}/#!${CURRENT_VIEW.year}-${plan_or_election}-${CURRENT_VIEW.boundtype}`;
+                const currview = (CURRENT_VIEW.boundtype == 'nationaleg') ? 'ushouse' : CURRENT_VIEW.boundtype;
+                const moreinfourl = `/${stateslug}/#!${CURRENT_VIEW.year}-${plan_or_election}-${currview}`;
 
                 // log the selection
                 logToGoogleAnalytics('selectstate', stateInfo.name);
@@ -545,9 +572,6 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                     }
                 }
             });
-
-            // add pointer cursor
-            $('.state-shape, .offshore-box').css('cursor', 'pointer');
 
             $('#map').data('handlers-attached', true);
         }
