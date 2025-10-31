@@ -436,18 +436,21 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                 // For National E.G., use white text for extreme values (beyond ±0.15)
                 // to improve readability over dark backgrounds
                 let labelColor = MAP_LABELCOLOR;
-                if (CURRENT_VIEW.boundtype === 'nationaleg' && Math.abs(stateValue) > 0.15) {
+                if (CURRENT_VIEW.boundtype === 'nationaleg' && Math.abs(stateValue) > 0.15 && $offshoreBox.length == 0) {
+                    // invert extreme bias label colors on National E.G. but not for offshore boxes
                     labelColor = 'white';
                 }
-                $label.css('fill', labelColor);
 
                 if ($offshoreBox.length > 0) {
                     $offshoreBox.css({
                         'fill': biasInfo.color,
+                        'fill-opacity': 0.35,
                         'stroke': '#555',
                         'stroke-width': '1.0'
                     });
                 }
+
+                $label.css('fill', labelColor);
             }
 
             // add pointer cursors under the same conditions that control clicks in attachMapEventHandlers()
