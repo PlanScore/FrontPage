@@ -37,6 +37,10 @@ h3,
   transform: translateX(150px);
   transition: transform 0.5s ease-in-out;
 
+  &.no-transition {
+    transition: none;
+  }
+
   .d3 {
     grid-area: d3;
     background-color: $biascolor-d3;
@@ -106,6 +110,10 @@ h3,
     line-height: 1rem;
     opacity: 0;
     transition: opacity 0.5s ease-in-out;
+
+    &.no-transition {
+      transition: none;
+    }
   }
 }
 

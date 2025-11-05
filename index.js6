@@ -21,6 +21,9 @@ import { lookupBias } from "./_common/functions";
 // these are affected by window.selectXXX() family of functions which ultimately are all wrappers over loadDataForSelectedBoundaryAndYear()
 const CURRENT_VIEW = {};
 
+// track whether this is the first render, so we can suppress transitions on initial load
+let firstRender = true;
+
 // year picker timeline animation; see yearAnimationToggle()
 const ANIMATION = {
     delayseconds: 0.75,  // time delay (in seconds) between switches
@@ -54,6 +57,13 @@ const MINIMUM_SEATS = 7;
 //
 
 $(document).ready(function () {
+    // Suppress transitions for the initial render
+    $('.state-shape').addClass('no-transition');
+    $('.offshore-box').addClass('no-transition');
+    $('.state-label').addClass('no-transition');
+    $('#maplegend').addClass('no-transition');
+    $('#nationaleg-text').addClass('no-transition');
+
     initYearPickers();
     initBoundaryPicker();
     initStatePopup();
@@ -466,6 +476,19 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
         });
 
         attachMapEventHandlers();
+
+        // Re-enable transitions after the first render completes
+        if (firstRender) {
+            firstRender = false;
+            // Use setTimeout to ensure the initial render is complete before re-enabling transitions
+            setTimeout(function() {
+                $('.state-shape').removeClass('no-transition');
+                $('.offshore-box').removeClass('no-transition');
+                $('.state-label').removeClass('no-transition');
+                $('#maplegend').removeClass('no-transition');
+                $('#nationaleg-text').removeClass('no-transition');
+            }, 100);
+        }
     }
 
     function attachMapEventHandlers()
