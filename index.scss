@@ -28,12 +28,12 @@ h3,
   display: grid;
   font-size: 12px;
   grid-template-areas:
-    "d3 d2 d1 balanced r1 r2 r3 . nodata"
-    "demtext demtext demtext reptext reptext reptext reptext nodatatext nodatatext";
-  grid-template-columns: repeat(9, minmax(30px, 40px));
+    "d3 d2 d1 balanced r1 r2 r3 . nodata . nationaleg-text"
+    "demtext demtext demtext reptext reptext reptext reptext nodatatext nodatatext . nationaleg-text";
+  grid-template-columns: repeat(10, minmax(30px, 40px)) 300px;
   grid-template-rows: 20px auto;
   margin: auto;
-  max-width: 360px;
+  max-width: 660px;
 
   .d3 {
     grid-area: d3;
@@ -97,6 +97,11 @@ h3,
 
   @media (max-width: $screen-xxs) {
     max-width: 280px;
+  }
+  
+  #nationaleg-text {
+    grid-area: nationaleg-text;
+    line-height: 1rem;
   }
 }
 
