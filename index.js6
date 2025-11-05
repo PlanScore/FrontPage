@@ -636,6 +636,13 @@ window.selectBoundaryType = (boundtype, options={}) => {
     // UI update: highlight this button
     $('#boundarypicker div[data-boundary]').removeClass('active').filter(`[data-boundary="${boundtype}"]`).addClass('active');
 
+    // UI update: toggle nationaleg-selected class for conditional legend display
+    if (boundtype === 'nationaleg') {
+        $('body').addClass('nationaleg-selected');
+    } else {
+        $('body').removeClass('nationaleg-selected');
+    }
+
     // save to the state and refresh the map + data
     // per 169 this invokes a new year-fudging should we encounter a no-data condition
     CURRENT_VIEW.boundtype = boundtype;
