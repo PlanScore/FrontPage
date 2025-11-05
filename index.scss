@@ -24,7 +24,7 @@ h3,
   margin-top: 72px;
 }
 
-#maplegend-wrapper {
+#maplegend {
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -38,98 +38,98 @@ h3,
     align-items: center;
     gap: 8px;
   }
+
+  .maplegend-colors {
+    display: grid;
+    font-size: 12px;
+    grid-template-areas:
+      "d3 d2 d1 balanced r1 r2 r3 . nodata"
+      "demtext demtext demtext reptext reptext reptext reptext nodatatext nodatatext";
+    grid-template-columns: repeat(9, minmax(30px, 40px));
+    grid-template-rows: 20px auto;
+    max-width: 360px;
+  
+    .d3 {
+      grid-area: d3;
+      background-color: $biascolor-d3;
+    }
+  
+    .d2 {
+      grid-area: d2;
+      background-color: $biascolor-d2;
+    }
+  
+    .d1 {
+      grid-area: d1;
+      background-color: $biascolor-d1;
+    }
+  
+    .balanced {
+      grid-area: balanced;
+      background-color: $biascolor-0;
+    }
+  
+    .r1 {
+      grid-area: r1;
+      background-color: $biascolor-r1;
+    }
+  
+    .r2 {
+      grid-area: r2;
+      background-color: $biascolor-r2;
+    }
+  
+    .r3 {
+      grid-area: r3;
+      background-color: $biascolor-r3;
+    }
+  
+    .nodata {
+      grid-area: nodata;
+      background-color: $biascolor-r3;
+      background-color: white;
+      border: 1px solid $gray-med;
+    }
+  
+    .demtext {
+      grid-area: demtext;
+    }
+  
+    .reptext {
+      grid-area: reptext;
+      justify-self: end;
+    }
+  
+    .nodatatext {
+      grid-area: nodatatext;
+      justify-self: end;
+    }
+  
+    @media (max-width: $screen-xs) {
+      max-width: 324px;
+    }
+  
+    @media (max-width: $screen-xxs) {
+      max-width: 280px;
+    }
+  }
+  
+  .nationaleg-text {
+    display: none;
+    max-width: 300px;
+    line-height: 1rem;
+    font-size: 12px;
+    flex-shrink: 1;
+  
+    @media (max-width: 650px) {
+      max-width: 100%;
+      text-align: center;
+    }
+  }
 }
 
-#maplegend {
-  display: grid;
-  font-size: 12px;
-  grid-template-areas:
-    "d3 d2 d1 balanced r1 r2 r3 . nodata"
-    "demtext demtext demtext reptext reptext reptext reptext nodatatext nodatatext";
-  grid-template-columns: repeat(9, minmax(30px, 40px));
-  grid-template-rows: 20px auto;
-  max-width: 360px;
-
-  .d3 {
-    grid-area: d3;
-    background-color: $biascolor-d3;
-  }
-
-  .d2 {
-    grid-area: d2;
-    background-color: $biascolor-d2;
-  }
-
-  .d1 {
-    grid-area: d1;
-    background-color: $biascolor-d1;
-  }
-
-  .balanced {
-    grid-area: balanced;
-    background-color: $biascolor-0;
-  }
-
-  .r1 {
-    grid-area: r1;
-    background-color: $biascolor-r1;
-  }
-
-  .r2 {
-    grid-area: r2;
-    background-color: $biascolor-r2;
-  }
-
-  .r3 {
-    grid-area: r3;
-    background-color: $biascolor-r3;
-  }
-
-  .nodata {
-    grid-area: nodata;
-    background-color: $biascolor-r3;
-    background-color: white;
-    border: 1px solid $gray-med;
-  }
-
-  .demtext {
-    grid-area: demtext;
-  }
-
-  .reptext {
-    grid-area: reptext;
-    justify-self: end;
-  }
-
-  .nodatatext {
-    grid-area: nodatatext;
-    justify-self: end;
-  }
-
-  @media (max-width: $screen-xs) {
-    max-width: 324px;
-  }
-
-  @media (max-width: $screen-xxs) {
-    max-width: 280px;
-  }
-}
-
-#nationaleg-text {
-  display: none;
-  max-width: 300px;
-  line-height: 1rem;
-  font-size: 12px;
-  flex-shrink: 1;
-
-  @media (max-width: 650px) {
-    max-width: 100%;
-    text-align: center;
-  }
-}
-
-body.nationaleg-selected #nationaleg-text {
-  display: block;
+body.nationaleg-selected .nationaleg-text {
+  display: block !important;
 }
 
 #map {

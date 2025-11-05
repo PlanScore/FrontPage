@@ -58,11 +58,9 @@ const MINIMUM_SEATS = 7;
 
 $(document).ready(function () {
     // Suppress transitions for the initial render
-    $('.state-shape').addClass('no-transition');
-    $('.offshore-box').addClass('no-transition');
-    $('.state-label').addClass('no-transition');
-    $('#maplegend').addClass('no-transition');
-    $('#nationaleg-text').addClass('no-transition');
+    $('.state-shape').addClass('suppress-transition');
+    $('.offshore-box').addClass('suppress-transition');
+    $('.state-label').addClass('suppress-transition');
 
     initYearPickers();
     initBoundaryPicker();
@@ -482,11 +480,9 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             firstRender = false;
             // Use setTimeout to ensure the initial render is complete before re-enabling transitions
             setTimeout(function() {
-                $('.state-shape').removeClass('no-transition');
-                $('.offshore-box').removeClass('no-transition');
-                $('.state-label').removeClass('no-transition');
-                $('#maplegend').removeClass('no-transition');
-                $('#nationaleg-text').removeClass('no-transition');
+                $('.state-shape').removeClass('suppress-transition');
+                $('.offshore-box').removeClass('suppress-transition');
+                $('.state-label').removeClass('suppress-transition');
             }, 100);
         }
     }
