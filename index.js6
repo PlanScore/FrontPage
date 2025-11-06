@@ -522,8 +522,28 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                         $tooltip.css('display', 'none');
                         $tooltip.data('current-state', null);
                     } else {
-                        // Update link and show tooltip
-                        $('#tooltip-link').attr('href', moreinfourl);
+                        // Update tooltip content
+                        $('#tooltip-state-name').text(stateInfo.name);
+
+                        // Format and display bias percentage with party affiliation
+                        if (stateInfo.value !== MAP_NODATA_VALUE && stateInfo.value !== undefined) {
+                            const biasPercent = Math.abs(stateInfo.value * 100).toFixed(1);
+                            const party = stateInfo.value >= 0 ? 'Democratic' : 'Republican';
+                            $('#tooltip-bias').text(`+${biasPercent}% ${party}`);
+                        } else {
+                            $('#tooltip-bias').text('No data');
+                        }
+
+                        // Update link text and conditionally show/hide it
+                        const linkText = `(${CURRENT_VIEW.year} Plan)`;
+                        $('#tooltip-link').text(linkText).attr('href', moreinfourl);
+
+                        // Show link only if state has valid data and meets minimum seats requirement
+                        if (stateInfo.value !== MAP_NODATA_VALUE && stateInfo.value !== undefined && stateInfo.seats >= MINIMUM_SEATS) {
+                            $('#tooltip-link').css('display', 'inline');
+                        } else {
+                            $('#tooltip-link').css('display', 'none');
+                        }
 
                         // Get the state shape element and extract its anchor point (translate values)
                         const $shape = $(`#state-shape-${stateAbbr}`);
@@ -538,10 +558,10 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                             centerY = parseFloat(translateMatch[2]);
                         }
 
-                        // Position tooltip so tip (at 100, 87.5 in tooltip coordinates) points to shape center
+                        // Position tooltip so tip (at 100, 59.5 in tooltip coordinates) points to shape center
                         // Adjust Y to keep label visible below the tip
                         const tooltipX = centerX - 100;
-                        const tooltipY = centerY - 87.5 - 10;  // Extra 10px above to keep label visible
+                        const tooltipY = centerY - 59.5 - 10;  // Extra 10px above to keep label visible
 
 
                         // Transform the entire tooltip group
