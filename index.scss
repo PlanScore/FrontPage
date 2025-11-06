@@ -25,84 +25,130 @@ h3,
 }
 
 #maplegend {
-  display: grid;
-  font-size: 12px;
-  grid-template-areas:
-    "d3 d2 d1 balanced r1 r2 r3 . nodata"
-    "demtext demtext demtext reptext reptext reptext reptext nodatatext nodatatext";
-  grid-template-columns: repeat(9, minmax(30px, 40px));
-  grid-template-rows: 20px auto;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
+  max-width: 800px;
   margin: auto;
-  max-width: 360px;
 
-  .d3 {
-    grid-area: d3;
-    background-color: $biascolor-d3;
+  @media (max-width: 650px) {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
   }
 
-  .d2 {
-    grid-area: d2;
-    background-color: $biascolor-d2;
+  .maplegend-colors {
+    display: grid;
+    font-size: 12px;
+    grid-template-areas:
+      "d3 d2 d1 balanced r1 r2 r3 . nodata"
+      "demtext demtext demtext reptext reptext reptext reptext nodatatext nodatatext";
+    grid-template-columns: repeat(9, minmax(30px, 40px));
+    grid-template-rows: 20px auto;
+    max-width: 360px;
+  
+    .d3 {
+      grid-area: d3;
+      background-color: $biascolor-d3;
+    }
+  
+    .d2 {
+      grid-area: d2;
+      background-color: $biascolor-d2;
+    }
+  
+    .d1 {
+      grid-area: d1;
+      background-color: $biascolor-d1;
+    }
+  
+    .balanced {
+      grid-area: balanced;
+      background-color: $biascolor-0;
+    }
+  
+    .r1 {
+      grid-area: r1;
+      background-color: $biascolor-r1;
+    }
+  
+    .r2 {
+      grid-area: r2;
+      background-color: $biascolor-r2;
+    }
+  
+    .r3 {
+      grid-area: r3;
+      background-color: $biascolor-r3;
+    }
+  
+    .nodata {
+      grid-area: nodata;
+      background-color: $biascolor-r3;
+      background-color: white;
+      border: 1px solid $gray-med;
+    }
+  
+    .demtext {
+      grid-area: demtext;
+    }
+  
+    .reptext {
+      grid-area: reptext;
+      justify-self: end;
+    }
+  
+    .nodatatext {
+      grid-area: nodatatext;
+      justify-self: end;
+    }
+  
+    @media (max-width: $screen-xs) {
+      max-width: 324px;
+    }
+  
+    @media (max-width: $screen-xxs) {
+      max-width: 280px;
+    }
   }
-
-  .d1 {
-    grid-area: d1;
-    background-color: $biascolor-d1;
+  
+  .nationaleg-text {
+    display: none;
+    max-width: 300px;
+    line-height: 1rem;
+    font-size: 12px;
+    flex-shrink: 1;
+  
+    @media (max-width: 650px) {
+      max-width: 100%;
+      text-align: center;
+    }
   }
+}
 
-  .balanced {
-    grid-area: balanced;
-    background-color: $biascolor-0;
-  }
+body.nationaleg-selected .nationaleg-text {
+  display: block !important;
+}
 
-  .r1 {
-    grid-area: r1;
-    background-color: $biascolor-r1;
-  }
+// Reverse order of legend items on wide screens when National E.G. is selected
+body.nationaleg-selected #maplegend {
+  @media (min-width: 651px) {
+    .nationaleg-text {
+      order: -1;  // Move text to the left
+    }
 
-  .r2 {
-    grid-area: r2;
-    background-color: $biascolor-r2;
-  }
-
-  .r3 {
-    grid-area: r3;
-    background-color: $biascolor-r3;
-  }
-
-  .nodata {
-    grid-area: nodata;
-    background-color: $biascolor-r3;
-    background-color: white;
-    border: 1px solid $gray-med;
-  }
-
-  .demtext {
-    grid-area: demtext;
-  }
-
-  .reptext {
-    grid-area: reptext;
-    justify-self: end;
-  }
-
-  .nodatatext {
-    grid-area: nodatatext;
-    justify-self: end;
-  }
-
-  @media (max-width: $screen-xs) {
-    max-width: 324px;
-  }
-
-  @media (max-width: $screen-xxs) {
-    max-width: 280px;
+    .maplegend-colors {
+      order: 0;   // Keep colors on the right (default)
+    }
   }
 }
 
 #map {
   height: 400px;
   width: 100%;
+  overflow: visible; /* Allow tooltip to extend beyond SVG bounds */
 
   @media screen and (max-width: $screen-sm) {
     max-height: 66vw; /* phone screens, try not to have extra space at top+bottom */
@@ -110,6 +156,14 @@ h3,
 
   path.highcharts-key-us-dc {
     display: none;  /* https://github.com/PlanScore/PlanScore/issues/78 adds small-states legend, this hides DC which we don't have */
+  }
+
+  #state-tooltip {
+    pointer-events: none;
+
+    .shape {
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+    }
   }
 }
 

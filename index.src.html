@@ -57,17 +57,23 @@
     <br/>
 
   <div id="maplegend">
-    <div class="slice d3"></div>
-    <div class="slice d2"></div>
-    <div class="slice d1"></div>
-    <div class="slice balanced"></div>
-    <div class="slice r1"></div>
-    <div class="slice r2"></div>
-    <div class="slice r3"></div>
-    <div class="slice nodata"></div>
-    <div class="demtext">Skews Democrat</div>
-    <div class="reptext">Skews Republican</div>
-    <div class="nodatatext">No Data</div>
+    <div class="maplegend-colors">
+      <div class="slice d3"></div>
+      <div class="slice d2"></div>
+      <div class="slice d1"></div>
+      <div class="slice balanced"></div>
+      <div class="slice r1"></div>
+      <div class="slice r2"></div>
+      <div class="slice r3"></div>
+      <div class="slice nodata"></div>
+      <div class="demtext">Skews Democrat</div>
+      <div class="reptext">Skews Republican</div>
+      <div class="nodatatext">No Data</div>
+    </div>
+    <div class="nationaleg-text">
+      States are sized by efficiency&nbsp;gap &times;&nbsp;number of seats
+      to show national impact on bias in the U.S. House
+    </div>
   </div>
 
   <svg id="map" version="1.1" xmlns="http://www.w3.org/2000/svg" width="720" height="400" viewBox="0 0 720 400">
@@ -94,6 +100,9 @@
               transition: fill 0.5s ease-in-out;
               user-select: none;
               pointer-events: none;
+          }
+          .suppress-transition {
+              transition: none !important;
           }
       </style>
     <desc>Created with render-graph4.py</desc>
@@ -337,6 +346,16 @@
       <text x="415.4" y="99.4" class="state-label" id="state-label-WI" style="fill:black;">WI</text>
       <text x="532.1" y="173.5" class="state-label" id="state-label-WV" style="fill:black;">WV</text>
       <text x="227.8" y="127.3" class="state-label" id="state-label-WY" style="fill:black;">WY</text>
+    </g>
+    <!-- Tooltip for National E.G. tab -->
+    <g id="state-tooltip" style="display: none;">
+      <path class="shape" d="M 5,0 L 195,0 A 5,5 0 0 1 200,5 L 200,47 A 5,5 0 0 1 195,52 L 107.5,52 L 100,59.5 L 92.5,52 L 5,52 A 5,5 0 0 1 0,47 L 0,5 A 5,5 0 0 1 5,0 Z" fill="white" stroke="#555" stroke-width="1"/>
+      <foreignObject class="content" x="10" y="8" width="180" height="36" style="pointer-events: auto;">
+        <div xmlns="http://www.w3.org/1999/xhtml" style="font-family: 'Lucida Grande', 'Lucida Sans Unicode', Arial, Helvetica, sans-serif; font-size: 12px; line-height: 1.4; text-align: center;">
+          <div><strong class="state-name"></strong> <a class="link" href="#" style="color: #0066cc; display: none;"></a></div>
+          <div class="bias"></div>
+        </div>
+      </foreignObject>
     </g>
   </svg>
 

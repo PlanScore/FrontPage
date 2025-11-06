@@ -21,6 +21,9 @@ import { lookupBias } from "./_common/functions";
 // these are affected by window.selectXXX() family of functions which ultimately are all wrappers over loadDataForSelectedBoundaryAndYear()
 const CURRENT_VIEW = {};
 
+// track whether this is the first render, so we can suppress transitions on initial load
+let firstRender = true;
+
 // year picker timeline animation; see yearAnimationToggle()
 const ANIMATION = {
     delayseconds: 0.75,  // time delay (in seconds) between switches
@@ -54,6 +57,11 @@ const MINIMUM_SEATS = 7;
 //
 
 $(document).ready(function () {
+    // Suppress transitions for the initial render
+    $('.state-shape').addClass('suppress-transition');
+    $('.offshore-box').addClass('suppress-transition');
+    $('.state-label').addClass('suppress-transition');
+
     initYearPickers();
     initBoundaryPicker();
     initStatePopup();
@@ -313,6 +321,35 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
         },
     });
 
+    function updateTooltipContent(stateInfo) {
+        // Update tooltip content with state data
+        $('#state-tooltip .state-name').text(stateInfo.name);
+
+        // Format and display bias percentage with party affiliation
+        if (stateInfo.value !== MAP_NODATA_VALUE && stateInfo.value !== undefined) {
+            const biasPercent = Math.abs(stateInfo.value * 100).toFixed(1);
+            const party = stateInfo.value >= 0 ? 'Democratic' : 'Republican';
+            $('#state-tooltip .bias').text(`+${biasPercent}% ${party}`);
+        } else {
+            $('#state-tooltip .bias').text('No data');
+        }
+
+        // Update link with current year
+        const plan_or_election = 'plan';
+        const stateslug = stateInfo.name.toLowerCase().replace(/\W/g, '_');
+        const currview = (CURRENT_VIEW.boundtype == 'nationaleg') ? 'ushouse' : CURRENT_VIEW.boundtype;
+        const moreinfourl = `/${stateslug}/#!${CURRENT_VIEW.year}-${plan_or_election}-${currview}`;
+        const linkText = `(${CURRENT_VIEW.year} Plan)`;
+        $('#state-tooltip .link').text(linkText).attr('href', moreinfourl);
+
+        // Show/hide link based on data and seat count
+        if (stateInfo.value !== MAP_NODATA_VALUE && stateInfo.value !== undefined && stateInfo.seats >= MINIMUM_SEATS) {
+            $('#state-tooltip .link').css('display', 'inline');
+        } else {
+            $('#state-tooltip .link').css('display', 'none');
+        }
+    }
+
     function renderMapWithNewData(data) {
         // attach this raw data into the SVG so we can access it later
         // see also selectState() which needs to access the compiled data
@@ -454,18 +491,44 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             }
 
             // add pointer cursors under the same conditions that control clicks in attachMapEventHandlers()
-            if (stateValue === MAP_NODATA_VALUE || stateValue === undefined || (CURRENT_VIEW.boundtype == 'nationaleg' && stateData.seats < MINIMUM_SEATS)) {
-                // remove pointer cursors
-                $shape.css('cursor', 'not-allowed');
-                $offshoreBox.css('cursor', 'not-allowed');
-            } else {
-                // add pointer cursors
+            if (CURRENT_VIEW.boundtype === 'nationaleg') {
+                // In National E.G. view, all states are clickable (show tooltip)
                 $shape.css('cursor', 'pointer');
                 $offshoreBox.css('cursor', 'pointer');
+            } else {
+                // In other views, only states with data are clickable
+                if (stateValue === MAP_NODATA_VALUE || stateValue === undefined) {
+                    $shape.css('cursor', 'not-allowed');
+                    $offshoreBox.css('cursor', 'not-allowed');
+                } else {
+                    $shape.css('cursor', 'pointer');
+                    $offshoreBox.css('cursor', 'pointer');
+                }
             }
         });
 
         attachMapEventHandlers();
+
+        // Re-enable transitions after the first render completes
+        if (firstRender) {
+            firstRender = false;
+            // Use setTimeout to ensure the initial render is complete before re-enabling transitions
+            setTimeout(function() {
+                $('.state-shape').removeClass('suppress-transition');
+                $('.offshore-box').removeClass('suppress-transition');
+                $('.state-label').removeClass('suppress-transition');
+            }, 100);
+        }
+
+        // Update tooltip if it's currently visible (for year changes)
+        const $tooltip = $('#state-tooltip');
+        const currentStateAbbr = $tooltip.data('current-state');
+        if (currentStateAbbr && $tooltip.css('display') !== 'none') {
+            const stateInfo = data.find(d => d.abbr === currentStateAbbr);
+            if (stateInfo) {
+                updateTooltipContent(stateInfo);
+            }
+        }
     }
 
     function attachMapEventHandlers()
@@ -478,10 +541,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                 const stateAbbr = $(this).attr('id').replace('state-shape-', '').replace('offshore-box-', '');
                 const stateInfo = $('#map').data('biasdata').find(d => d.abbr === stateAbbr);
 
-                // continue with click under the same conditions that control pointers in renderMapWithNewData()
-                if (!stateInfo || stateInfo.value === MAP_NODATA_VALUE || stateInfo.value === undefined || (CURRENT_VIEW.boundtype == 'nationaleg' && stateInfo.seats < MINIMUM_SEATS)) {
-                    return;
-                }
+                if (!stateInfo) return; // state not found in data
 
                 // compose URL for the selected state + boundary + year
                 const plan_or_election = 'plan';
@@ -489,14 +549,62 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                 const currview = (CURRENT_VIEW.boundtype == 'nationaleg') ? 'ushouse' : CURRENT_VIEW.boundtype;
                 const moreinfourl = `/${stateslug}/#!${CURRENT_VIEW.year}-${plan_or_election}-${currview}`;
 
-                // log the selection
-                logToGoogleAnalytics('selectstate', stateInfo.name);
+                // For National E.G. tab, show tooltip for ALL states
+                if (CURRENT_VIEW.boundtype === 'nationaleg') {
+                    const $tooltip = $('#state-tooltip');
 
-                // navigate (new window if modifier key held)
-                if (e.altKey || e.ctrlKey || e.shiftKey || e.metaKey) {
-                    window.open(moreinfourl);
+                    // log the selection
+                    logToGoogleAnalytics('selectstate', stateInfo.name);
+
+                    // Simple toggle: if already showing for this state, hide it
+                    if ($tooltip.data('current-state') === stateAbbr && $tooltip.css('display') !== 'none') {
+                        $tooltip.css('display', 'none');
+                        $tooltip.data('current-state', null);
+                    } else {
+                        // Update tooltip content
+                        updateTooltipContent(stateInfo);
+
+                        // Get the state shape element and extract its anchor point (translate values)
+                        const $shape = $(`#state-shape-${stateAbbr}`);
+                        const styleAttr = $shape.attr('style');
+                        let centerX = 0;
+                        let centerY = 0;
+
+                        // The translate values represent the anchor/center point of the shape
+                        const translateMatch = styleAttr.match(/translate\(([^,]+)px,\s*([^)]+)px\)/);
+                        if (translateMatch) {
+                            centerX = parseFloat(translateMatch[1]);
+                            centerY = parseFloat(translateMatch[2]);
+                        }
+
+                        // Position tooltip so tip (at 100, 59.5 in tooltip coordinates) points to shape center
+                        // Adjust Y to keep label visible below the tip
+                        const tooltipX = centerX - 100;
+                        const tooltipY = centerY - 59.5 - 10;  // Extra 10px above to keep label visible
+
+
+                        // Transform the entire tooltip group
+                        $tooltip.attr('transform', `translate(${tooltipX}, ${tooltipY})`);
+
+                        $tooltip.css('display', 'block');
+                        $tooltip.data('current-state', stateAbbr);
+                    }
+                    e.stopPropagation();
                 } else {
-                    document.location.href = moreinfourl;
+                    // For other tabs, check if state is clickable
+                    if (stateInfo.value === MAP_NODATA_VALUE || stateInfo.value === undefined) {
+                        return;
+                    }
+
+                    // log the selection
+                    logToGoogleAnalytics('selectstate', stateInfo.name);
+
+                    // navigate (new window if modifier key held)
+                    if (e.altKey || e.ctrlKey || e.shiftKey || e.metaKey) {
+                        window.open(moreinfourl);
+                    } else {
+                        document.location.href = moreinfourl;
+                    }
                 }
             });
 
@@ -633,8 +741,18 @@ window.selectYear = (year, options={}) => {
 };
 
 window.selectBoundaryType = (boundtype, options={}) => {
+    // Hide tooltip when changing boundary types
+    $('#state-tooltip').css('display', 'none').data('current-state', null);
+
     // UI update: highlight this button
     $('#boundarypicker div[data-boundary]').removeClass('active').filter(`[data-boundary="${boundtype}"]`).addClass('active');
+
+    // UI update: toggle nationaleg-selected class for conditional legend display
+    if (boundtype === 'nationaleg') {
+        $('body').addClass('nationaleg-selected');
+    } else {
+        $('body').removeClass('nationaleg-selected');
+    }
 
     // save to the state and refresh the map + data
     // per 169 this invokes a new year-fudging should we encounter a no-data condition
