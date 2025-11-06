@@ -132,6 +132,19 @@ body.nationaleg-selected .nationaleg-text {
   display: block !important;
 }
 
+// Reverse order of legend items on wide screens when National E.G. is selected
+body.nationaleg-selected #maplegend {
+  @media (min-width: 651px) {
+    .nationaleg-text {
+      order: -1;  // Move text to the left
+    }
+
+    .maplegend-colors {
+      order: 0;   // Keep colors on the right (default)
+    }
+  }
+}
+
 #map {
   height: 400px;
   width: 100%;
