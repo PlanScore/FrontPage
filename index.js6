@@ -328,8 +328,9 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
         // Format and display bias percentage with party affiliation
         if (stateInfo.value !== MAP_NODATA_VALUE && stateInfo.value !== undefined) {
             const biasPercent = Math.abs(stateInfo.value * 100).toFixed(1);
+            const biasSeats = Math.abs(stateInfo.value * stateInfo.seats).toFixed(1);
             const party = stateInfo.value >= 0 ? 'Democratic' : 'Republican';
-            $('#state-tooltip .bias').text(`+${biasPercent}% ${party}`);
+            $('#state-tooltip .bias').text(`+${biasPercent}% ${party}, ${biasSeats} seats`);
         } else {
             $('#state-tooltip .bias').text('No data');
         }
