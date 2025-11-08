@@ -195,8 +195,6 @@ window.initLoadStartingConditions = () => {
     if (year_and_type) {
         year = year_and_type[1];
         type = year_and_type[2];
-        // Legacy URL support: map old 'ushouse' hash to 'oldhouse'
-        if (type === 'ushouse') type = 'oldhouse';
     }
 
     // ready, set, go
@@ -239,7 +237,8 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
     }
 
     // fetch the CSV file and then use the callbacks to update the map
-    const url = `/data/bias_${CURRENT_VIEW.boundtype}.csv`;
+    const boundtypeFile = (CURRENT_VIEW.boundtype === 'ushouse') ? 'ushouse-elections' : CURRENT_VIEW.boundtype;
+    const url = `/data/bias_${boundtypeFile}.csv`;
     Papa.parse(url, {
         download: true,
         header: true,
@@ -340,8 +339,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
         // Update link with current year
         const plan_or_election = 'plan';
         const stateslug = stateInfo.name.toLowerCase().replace(/\W/g, '_');
-        const currview = (CURRENT_VIEW.boundtype == 'oldhouse') ? 'ushouse'
-                        : CURRENT_VIEW.boundtype;
+        const currview = CURRENT_VIEW.boundtype;
         const moreinfourl = `/${stateslug}/#!${CURRENT_VIEW.year}-${plan_or_election}-${currview}`;
         const linkText = `(${CURRENT_VIEW.year} Plan)`;
         $('#state-tooltip .link').text(linkText).attr('href', moreinfourl);
@@ -410,8 +408,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             }
 
             // Update content of #ushouse-legend
-            const lookupBoundtype = (CURRENT_VIEW.boundtype == 'oldhouse') ? 'ushouse' : CURRENT_VIEW.boundtype;
-            const biasEval = lookupBias('eg', biasSeats / totalSeats, lookupBoundtype);
+            const biasEval = lookupBias('eg', biasSeats / totalSeats, CURRENT_VIEW.boundtype);
             const absBiasPercent = Math.abs(100 * biasSeats / totalSeats).toFixed(1);
             const absBiasSeats = Math.abs(biasSeats).toFixed(1);
             $('#ushouse-legend .swatch').css({ 'fill': biasEval.color });
@@ -471,8 +468,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                 }
             } else {
                 // has data: color based on bias score
-                const lookupBoundtype = (CURRENT_VIEW.boundtype == 'oldhouse') ? 'ushouse' : CURRENT_VIEW.boundtype;
-                const biasInfo = lookupBias('eg', stateValue, lookupBoundtype);
+                const biasInfo = lookupBias('eg', stateValue, CURRENT_VIEW.boundtype);
                 $shape.css({
                     'fill': biasInfo.color,
                     'stroke': '#555',
@@ -554,8 +550,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                 // compose URL for the selected state + boundary + year
                 const plan_or_election = 'plan';
                 const stateslug = stateInfo.name.toLowerCase().replace(/\W/g, '_');
-                const currview = (CURRENT_VIEW.boundtype == 'oldhouse') ? 'ushouse'
-                                : CURRENT_VIEW.boundtype;
+                const currview = CURRENT_VIEW.boundtype;
                 const moreinfourl = `/${stateslug}/#!${CURRENT_VIEW.year}-${plan_or_election}-${currview}`;
 
                 // For U.S. House tab, show tooltip for ALL states
@@ -708,8 +703,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             const state_info = findStateInfoByName(data, state_name);
 
             // find bias color and apply CSS
-            const lookupBoundtype = (CURRENT_VIEW.boundtype == 'oldhouse') ? 'ushouse' : CURRENT_VIEW.boundtype;
-            const biaseval = lookupBias('eg', state_info.value, lookupBoundtype);
+            const biaseval = lookupBias('eg', state_info.value, CURRENT_VIEW.boundtype);
             const words = biaseval.description;
             const color = biaseval.color;
             if (state_info.value === MAP_NODATA_VALUE || state_info.value === undefined) {
@@ -727,8 +721,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             const $link             = $(this);
             const baseurl           = $link.prop('href').replace(/\#.*$/, '');
             const plan_or_election  = 'plan';
-            const currview = (CURRENT_VIEW.boundtype == 'oldhouse') ? 'ushouse'
-                            : CURRENT_VIEW.boundtype;
+            const currview = CURRENT_VIEW.boundtype;
             const hashcomponent     = `#!${CURRENT_VIEW.year}-${plan_or_election}-${currview}`;
             const url               = `${baseurl}${hashcomponent}`;
             $link.prop('href', url);
@@ -831,8 +824,7 @@ window.selectState = (stateabbr, options={}) => {
         biasinfo.analysis = 'No data was available for this election year.';
     }
     else {
-        const lookupBoundtype = (CURRENT_VIEW.boundtype == 'oldhouse') ? 'ushouse' : CURRENT_VIEW.boundtype;
-        const favor_party = lookupBias('eg', biasinfo.value, lookupBoundtype).party;
+        const favor_party = lookupBias('eg', biasinfo.value, CURRENT_VIEW.boundtype).party;
 
         if (favor_party) {
             biasinfo.analysis = `This plan is more skewed than <b>${biasinfo.percentrank}%</b> of the enacted plans we have analyzed nationwide.`;
