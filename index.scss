@@ -344,6 +344,14 @@ body.nationaleg-selected #maplegend {
     height: 14px;
     width: 14px;
   }
+
+  a.suppress-link {
+    cursor: not-allowed;
+    pointer-events: none;
+    color: #ccc;
+
+    span.swatch { opacity: 20% }
+  }
 }
 
 // is this working? Haven't seen it yet.

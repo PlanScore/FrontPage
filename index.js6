@@ -48,8 +48,8 @@ const MAP_MOUSEOVER_WIDTH = 2;
 // the Esc key
 const KEYCODE_ESC = 27;
 
-// Minimum seats required for clickable states in National E.G. view
-const MINIMUM_SEATS = 7;
+// Minimum seats required for clickable states in U.S. House view
+const MINIMUM_USHOUSE_SEATS = 7;
 
 
 //
@@ -344,7 +344,9 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
         $('#state-tooltip .link').text(linkText).attr('href', moreinfourl);
 
         // Show/hide link based on data and seat count
-        if (stateInfo.value !== MAP_NODATA_VALUE && stateInfo.value !== undefined && stateInfo.seats >= MINIMUM_SEATS) {
+        const hasValue = stateInfo.value !== MAP_NODATA_VALUE && stateInfo.value !== undefined;
+        const hasSeats = stateInfo.seats >= MINIMUM_USHOUSE_SEATS || stateInfo.seats == undefined;
+        if (hasValue && hasSeats) {
             $('#state-tooltip .link').css('display', 'inline');
         } else {
             $('#state-tooltip .link').css('display', 'none');
@@ -672,12 +674,18 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
         }
     }
 
+    function findStateInfoByName(data, state_name) {
+        // find this swatch's state name, and fetch that state info from the raw data
+        const state_info = data.filter((stateinfo) => { return stateinfo.name === state_name; }).slice(0, 1)[0];
+        return state_info;
+    }
+
     function updateStateListingSwatches(data) {
         const $swatches = $('.states-listing span.swatch');
         $swatches.each(function () {
             // find this swatch's state name, and fetch that state info from the raw data
             const state_name = $(this).closest('a').text().trim();
-            const state_info = data.filter((stateinfo) => { return stateinfo.name === state_name; }).slice(0, 1)[0];
+            const state_info = findStateInfoByName(data, state_name);
 
             // find bias color and apply CSS
             const biaseval = lookupBias('eg', state_info.value, CURRENT_VIEW.boundtype);
@@ -698,9 +706,21 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             const $link             = $(this);
             const baseurl           = $link.prop('href').replace(/\#.*$/, '');
             const plan_or_election  = 'plan';
-            const hashcomponent     = `#!${CURRENT_VIEW.year}-${plan_or_election}-${CURRENT_VIEW.boundtype}`;
+            const currview = (CURRENT_VIEW.boundtype == 'nationaleg') ? 'ushouse' : CURRENT_VIEW.boundtype;
+            const hashcomponent     = `#!${CURRENT_VIEW.year}-${plan_or_election}-${currview}`;
             const url               = `${baseurl}${hashcomponent}`;
             $link.prop('href', url);
+
+            // find this swatch's state name, and fetch that state info from the raw data
+            const stateName = $(this).text().trim();
+            const stateInfo = findStateInfoByName(data, stateName);
+            const hasValue = stateInfo.value !== MAP_NODATA_VALUE && stateInfo.value !== undefined;
+            const hasSeats = stateInfo.seats >= MINIMUM_USHOUSE_SEATS || stateInfo.seats == undefined;
+            if (hasValue && hasSeats) {
+                $(this).removeClass('suppress-link');
+            } else {
+                $(this).addClass('suppress-link');
+            }
         });
     }
 };
