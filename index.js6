@@ -295,8 +295,8 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                     if (datarow.cycle != CURRENT_VIEW.year) return;  // wrong year; next
                     const chartrow = chartdata.filter((filteringthisonerow) => { return filteringthisonerow.abbr == datarow.stateabrev; })[0];
                     if (!chartrow) return;  // state not found, skip
-                    chartrow.value = parseFloat(datarow.eg);
-                    chartrow.seats = parseInt(datarow.districts);
+                    chartrow.value = parseFloat(datarow.EG);
+                    chartrow.seats = parseInt(datarow.seats);
                     chartrow.percentrank = null;
                 } else {
                     if (datarow.year != CURRENT_VIEW.year) return;  // wrong year; next
