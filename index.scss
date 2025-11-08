@@ -20,7 +20,8 @@ h1.title {
 
 h2,
 h3,
-.nav-tabs {
+.nav-tabs,
+#footnotes {
   margin-top: 72px;
 }
 
@@ -240,7 +241,7 @@ body.ushouse-selected {
 
       span.currentyear {
         display: inline-block;
-        width: 34px;
+        width: 38px;
         font-size: 13px;
         height: 17px;  /* contrived to fit font size */
         background-color: $navy;

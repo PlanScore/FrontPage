@@ -156,7 +156,7 @@ window.initYearPickers = () => {
         if (year % 10 === 2) $button.addClass('decplan');
         if (year % 4 === 0)  $button.addClass('presidential');
 
-        $('<span class="currentyear"></span>').text(year).appendTo($button);
+        $('<span class="currentyear"></span>').text(year === 2026 ? '2026*' : year).appendTo($button);
         $('<span class="currentyearline"></span>').appendTo($button);
 
         $('<a></a>').appendTo($button); // for styling and as a click magnet
@@ -341,7 +341,8 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
         const stateslug = stateInfo.name.toLowerCase().replace(/\W/g, '_');
         const currview = CURRENT_VIEW.boundtype;
         const moreinfourl = `/${stateslug}/#!${CURRENT_VIEW.year}-${plan_or_election}-${currview}`;
-        const linkText = `(${CURRENT_VIEW.year} Plan)`;
+        const curryear = CURRENT_VIEW.year === '2026' ? '2026*' : CURRENT_VIEW.year;
+        const linkText = `(${curryear} Plan)`;
         $('#state-tooltip .link').text(linkText).attr('href', moreinfourl);
 
         // Show/hide link based on data and seat count
@@ -411,8 +412,9 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             const biasEval = lookupBias('eg', biasSeats / totalSeats, CURRENT_VIEW.boundtype);
             const absBiasPercent = Math.abs(100 * biasSeats / totalSeats).toFixed(1);
             const absBiasSeats = Math.abs(biasSeats).toFixed(1);
+            const currYear = CURRENT_VIEW.year === '2026' ? '2026*' : CURRENT_VIEW.year;
             $('#ushouse-legend .swatch').css({ 'fill': biasEval.color });
-            $('#ushouse-legend .caption').text(`Total ${CURRENT_VIEW.year} Bias`);
+            $('#ushouse-legend .caption').text(`Total ${currYear} Bias`);
             $('#ushouse-legend .bias').text(`+${absBiasPercent}% ${biasEval.party}, ${absBiasSeats} seats`);
         }
 
