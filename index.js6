@@ -365,6 +365,8 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             // We'll normalize these impacts, then convert to scale factors
             const impacts = {};
             const dataAreas = {};
+            let biasSeats = 0;
+            let totalSeats = 0;
             data.forEach(function(stateData) {
                 const seats = stateData.seats;
                 if (stateData.value !== MAP_NODATA_VALUE && stateData.value !== undefined && seats) {
@@ -373,6 +375,10 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
 
                     const $shape = $(`#state-shape-${stateData.abbr}`);
                     dataAreas[stateData.abbr] = parseFloat($shape.attr('data-area')) || 1;
+
+                    // Accumulate bias weighted by seats for national summary
+                    biasSeats += stateData.value * seats;
+                    totalSeats += seats;
                 }
             });
 
@@ -399,6 +405,14 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                     const clamped = (clampedScale !== scale) ? ' (CLAMPED)' : '';
                 });
             }
+
+            // Update content of #nationaleg-legend
+            const biasEval = lookupBias('eg', biasSeats / totalSeats, CURRENT_VIEW.boundtype);
+            const absBiasPercent = Math.abs(100 * biasSeats / totalSeats).toFixed(1);
+            const absBiasSeats = Math.abs(biasSeats).toFixed(1);
+            $('#nationaleg-legend .swatch').css({ 'fill': biasEval.color });
+            $('#nationaleg-legend .caption').text(`Total ${CURRENT_VIEW.year} Bias`);
+            $('#nationaleg-legend .bias').text(`+${absBiasPercent}% ${biasEval.party}, ${absBiasSeats} seats`);
         }
 
         // loop through each state in the data and update the SVG
