@@ -359,8 +359,6 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
         // Calculate scales for National E.G. view
         let scaleFactors = {};
         if (CURRENT_VIEW.boundtype === 'nationaleg') {
-            console.log('=== National E.G. Scaling ===');
-
             // Calculate impact values: abs(bias) * seats
             // We'll normalize these impacts, then convert to scale factors
             const impacts = {};
@@ -373,8 +371,6 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
 
                     const $shape = $(`#state-shape-${stateData.abbr}`);
                     dataAreas[stateData.abbr] = parseFloat($shape.attr('data-area')) || 1;
-
-                    console.log(`${stateData.abbr}: bias=${stateData.value.toFixed(4)}, abs(bias)=${Math.abs(stateData.value).toFixed(4)}, seats=${seats}, impact=${impact.toFixed(4)}`);
                 }
             });
 
@@ -382,11 +378,8 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             const maxImpact = Math.max(...Object.values(impacts));
             const minImpact = Math.min(...Object.values(impacts));
 
-            console.log(`Min impact: ${minImpact.toFixed(4)}, Max impact: ${maxImpact.toFixed(4)}`);
-
             // Calculate average data-area as a reference
             const avgDataArea = Object.values(dataAreas).reduce((a, b) => a + b, 0) / Object.values(dataAreas).length;
-            console.log(`Average data-area: ${avgDataArea.toExponential(4)}`);
 
             // Normalize impacts and convert to scale factors
             // Target area range: 0.04 (20%^2) to 1.5625 (125%^2) times reference area
@@ -402,11 +395,8 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                     scaleFactors[abbr] = clampedScale;
 
                     const clamped = (clampedScale !== scale) ? ' (CLAMPED)' : '';
-                    console.log(`${abbr}: impact=${impacts[abbr].toFixed(4)}, normalized=${normalizedImpact.toFixed(4)}, areaRatio=${targetAreaRatio.toFixed(4)}, scale=${scale.toFixed(4)}, finalScale=${clampedScale.toFixed(4)}${clamped}`);
                 });
             }
-
-            console.log('Scale factors:', scaleFactors);
         }
 
         // loop through each state in the data and update the SVG
@@ -437,10 +427,6 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                         const translateY = values[5];
                         const newTransform = `translate(${translateX}px, ${translateY}px) scale(${scaleFactor}, ${scaleFactor})`;
                         $shape.css('transform', newTransform);
-
-                        if (CURRENT_VIEW.boundtype === 'nationaleg' && scaleFactor !== 1.0) {
-                            console.log(`${stateAbbr}: Applied transform="${newTransform}"`);
-                        }
                     }
                 }
             } catch (e) {
