@@ -20,7 +20,8 @@ h1.title {
 
 h2,
 h3,
-.nav-tabs {
+.nav-tabs,
+#footnotes {
   margin-top: 72px;
 }
 
@@ -33,6 +34,10 @@ h3,
   max-width: 800px;
   margin: auto;
 
+  /* Match font choices in SVG */
+  font-family: "Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;
+  font-size: 12px;
+
   @media (max-width: 650px) {
     flex-direction: column;
     align-items: center;
@@ -41,7 +46,6 @@ h3,
 
   .maplegend-colors {
     display: grid;
-    font-size: 12px;
     grid-template-areas:
       "d3 d2 d1 balanced r1 r2 r3 . nodata"
       "demtext demtext demtext reptext reptext reptext reptext nodatatext nodatatext";
@@ -114,33 +118,16 @@ h3,
     }
   }
   
-  .nationaleg-text {
+  .ushouse-text {
     display: none;
     max-width: 300px;
     line-height: 1rem;
-    font-size: 12px;
+    font-size: 11px;
     flex-shrink: 1;
-  
+
     @media (max-width: 650px) {
       max-width: 100%;
       text-align: center;
-    }
-  }
-}
-
-body.nationaleg-selected .nationaleg-text {
-  display: block !important;
-}
-
-// Reverse order of legend items on wide screens when National E.G. is selected
-body.nationaleg-selected #maplegend {
-  @media (min-width: 651px) {
-    .nationaleg-text {
-      order: -1;  // Move text to the left
-    }
-
-    .maplegend-colors {
-      order: 0;   // Keep colors on the right (default)
     }
   }
 }
@@ -163,6 +150,31 @@ body.nationaleg-selected #maplegend {
 
     .shape {
       filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+    }
+  }
+
+  #ushouse-legend {
+    display: none;
+  }
+}
+
+/* Special cases for when the U.S. House view is active */
+body.ushouse-selected {
+  // Two elements only visible in this view
+  #map #ushouse-legend, #maplegend .ushouse-text {
+    display: block !important;
+  }
+
+  // Reverse order of legend items on wide screens when U.S. House is selected
+  #maplegend {
+    @media (min-width: 651px) {
+      .ushouse-text {
+        order: -1;  // Move text to the left
+      }
+
+      .maplegend-colors {
+        order: 0;   // Keep colors on the right (default)
+      }
     }
   }
 }
@@ -229,7 +241,7 @@ body.nationaleg-selected #maplegend {
 
       span.currentyear {
         display: inline-block;
-        width: 34px;
+        width: 38px;
         font-size: 13px;
         height: 17px;  /* contrived to fit font size */
         background-color: $navy;
@@ -343,6 +355,14 @@ body.nationaleg-selected #maplegend {
     display: inline-block;
     height: 14px;
     width: 14px;
+  }
+
+  a.suppress-link {
+    cursor: not-allowed;
+    pointer-events: none;
+    color: #ccc;
+
+    span.swatch { opacity: 20% }
   }
 }
 

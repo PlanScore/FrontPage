@@ -48,8 +48,8 @@ const MAP_MOUSEOVER_WIDTH = 2;
 // the Esc key
 const KEYCODE_ESC = 27;
 
-// Minimum seats required for clickable states in National E.G. view
-const MINIMUM_SEATS = 7;
+// Minimum seats required for clickable states in U.S. House view
+const MINIMUM_USHOUSE_SEATS = 7;
 
 
 //
@@ -156,7 +156,7 @@ window.initYearPickers = () => {
         if (year % 10 === 2) $button.addClass('decplan');
         if (year % 4 === 0)  $button.addClass('presidential');
 
-        $('<span class="currentyear"></span>').text(year).appendTo($button);
+        $('<span class="currentyear"></span>').text(year === 2026 ? '2026*' : year).appendTo($button);
         $('<span class="currentyearline"></span>').appendTo($button);
 
         $('<a></a>').appendTo($button); // for styling and as a click magnet
@@ -189,7 +189,7 @@ window.initLoadStartingConditions = () => {
     // analyze the #year-polytype hash to see what year + type we should load
     // provide some defaults
     let year = PLAN_YEARS[PLAN_YEARS.length - 1];
-    let type = 'statehouse';
+    let type = 'ushouse';
 
     const year_and_type = /^#!(\d\d\d\d)\-(\w+)$/.exec(window.location.hash);
     if (year_and_type) {
@@ -237,7 +237,8 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
     }
 
     // fetch the CSV file and then use the callbacks to update the map
-    const url = `/data/bias_${CURRENT_VIEW.boundtype}.csv`;
+    const boundtypeFile = (CURRENT_VIEW.boundtype === 'ushouse') ? 'ushouse-elections' : CURRENT_VIEW.boundtype;
+    const url = `/data/bias_${boundtypeFile}.csv`;
     Papa.parse(url, {
         download: true,
         header: true,
@@ -246,7 +247,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             // nearest year to our chosen which does have data, favoring more-recent year in event of a tie
             // primarily used when switching district types, as not all district types have the same coverage for every year (e.g. State House 2016)
             if (options.fudgeYearIfNoData) {
-                const yearColumn = CURRENT_VIEW.boundtype === 'nationaleg' ? 'cycle' : 'year';
+                const yearColumn = CURRENT_VIEW.boundtype === 'ushouse' ? 'cycle' : 'year';
                 const hasdata = results.data.filter((datarow) => { return datarow[yearColumn] == CURRENT_VIEW.year; }).length;
                 if (! hasdata) {
                     const wehavetheseyears = results.data.map((datarow) => {
@@ -279,8 +280,8 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             // workaround here: rewrite any odd-numbered years to add 1 (1973 becomes 1974) so we still have even numbers
             // for this visual display having 1974 show the plan enacted in 1973 is sufficiently accurate
             results.data = results.data.map(function (datarow) {
-                // For nationaleg, use 'cycle' column instead of 'year'
-                const yearColumn = CURRENT_VIEW.boundtype === 'nationaleg' ? 'cycle' : 'year';
+                // For ushouse, use 'cycle' column instead of 'year'
+                const yearColumn = CURRENT_VIEW.boundtype === 'ushouse' ? 'cycle' : 'year';
                 const year = parseInt(datarow[yearColumn]);
                 if (year % 2 == 1) datarow[yearColumn] = String(year + 1);
                 return datarow;
@@ -290,8 +291,8 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             // and for each row assign the bias score to the state's row in the above
             // this is loop-within-loop as we match arrays to arrays, but P=50 and Q=20ish so it's affordable
             results = results.data.forEach(function (datarow) {
-                // For nationaleg, use different column names
-                if (CURRENT_VIEW.boundtype === 'nationaleg') {
+                // For ushouse, use different column names
+                if (CURRENT_VIEW.boundtype === 'ushouse') {
                     if (datarow.cycle != CURRENT_VIEW.year) return;  // wrong year; next
                     const chartrow = chartdata.filter((filteringthisonerow) => { return filteringthisonerow.abbr == datarow.stateabrev; })[0];
                     if (!chartrow) return;  // state not found, skip
@@ -338,13 +339,16 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
         // Update link with current year
         const plan_or_election = 'plan';
         const stateslug = stateInfo.name.toLowerCase().replace(/\W/g, '_');
-        const currview = (CURRENT_VIEW.boundtype == 'nationaleg') ? 'ushouse' : CURRENT_VIEW.boundtype;
+        const currview = CURRENT_VIEW.boundtype;
         const moreinfourl = `/${stateslug}/#!${CURRENT_VIEW.year}-${plan_or_election}-${currview}`;
-        const linkText = `(${CURRENT_VIEW.year} Plan)`;
+        const curryear = CURRENT_VIEW.year === '2026' ? '2026*' : CURRENT_VIEW.year;
+        const linkText = `(${curryear} Plan)`;
         $('#state-tooltip .link').text(linkText).attr('href', moreinfourl);
 
         // Show/hide link based on data and seat count
-        if (stateInfo.value !== MAP_NODATA_VALUE && stateInfo.value !== undefined && stateInfo.seats >= MINIMUM_SEATS) {
+        const hasValue = stateInfo.value !== MAP_NODATA_VALUE && stateInfo.value !== undefined;
+        const hasSeats = stateInfo.seats >= MINIMUM_USHOUSE_SEATS || stateInfo.seats == undefined;
+        if (hasValue && hasSeats) {
             $('#state-tooltip .link').css('display', 'inline');
         } else {
             $('#state-tooltip .link').css('display', 'none');
@@ -356,15 +360,15 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
         // see also selectState() which needs to access the compiled data
         $('#map').data('biasdata', data);
 
-        // Calculate scales for National E.G. view
+        // Calculate scales for U.S. House view
         let scaleFactors = {};
-        if (CURRENT_VIEW.boundtype === 'nationaleg') {
-            console.log('=== National E.G. Scaling ===');
-
+        if (CURRENT_VIEW.boundtype === 'ushouse') {
             // Calculate impact values: abs(bias) * seats
             // We'll normalize these impacts, then convert to scale factors
             const impacts = {};
             const dataAreas = {};
+            let biasSeats = 0;
+            let totalSeats = 0;
             data.forEach(function(stateData) {
                 const seats = stateData.seats;
                 if (stateData.value !== MAP_NODATA_VALUE && stateData.value !== undefined && seats) {
@@ -374,7 +378,9 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                     const $shape = $(`#state-shape-${stateData.abbr}`);
                     dataAreas[stateData.abbr] = parseFloat($shape.attr('data-area')) || 1;
 
-                    console.log(`${stateData.abbr}: bias=${stateData.value.toFixed(4)}, abs(bias)=${Math.abs(stateData.value).toFixed(4)}, seats=${seats}, impact=${impact.toFixed(4)}`);
+                    // Accumulate bias weighted by seats for national summary
+                    biasSeats += stateData.value * seats;
+                    totalSeats += seats;
                 }
             });
 
@@ -382,11 +388,8 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             const maxImpact = Math.max(...Object.values(impacts));
             const minImpact = Math.min(...Object.values(impacts));
 
-            console.log(`Min impact: ${minImpact.toFixed(4)}, Max impact: ${maxImpact.toFixed(4)}`);
-
             // Calculate average data-area as a reference
             const avgDataArea = Object.values(dataAreas).reduce((a, b) => a + b, 0) / Object.values(dataAreas).length;
-            console.log(`Average data-area: ${avgDataArea.toExponential(4)}`);
 
             // Normalize impacts and convert to scale factors
             // Target area range: 0.04 (20%^2) to 1.5625 (125%^2) times reference area
@@ -402,11 +405,17 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                     scaleFactors[abbr] = clampedScale;
 
                     const clamped = (clampedScale !== scale) ? ' (CLAMPED)' : '';
-                    console.log(`${abbr}: impact=${impacts[abbr].toFixed(4)}, normalized=${normalizedImpact.toFixed(4)}, areaRatio=${targetAreaRatio.toFixed(4)}, scale=${scale.toFixed(4)}, finalScale=${clampedScale.toFixed(4)}${clamped}`);
                 });
             }
 
-            console.log('Scale factors:', scaleFactors);
+            // Update content of #ushouse-legend
+            const biasEval = lookupBias('eg', biasSeats / totalSeats, CURRENT_VIEW.boundtype);
+            const absBiasPercent = Math.abs(100 * biasSeats / totalSeats).toFixed(1);
+            const absBiasSeats = Math.abs(biasSeats).toFixed(1);
+            const currYear = CURRENT_VIEW.year === '2026' ? '2026*' : CURRENT_VIEW.year;
+            $('#ushouse-legend .swatch').css({ 'fill': biasEval.color });
+            $('#ushouse-legend .caption').text(`Total ${currYear} Bias`);
+            $('#ushouse-legend .bias').text(`+${absBiasPercent}% ${biasEval.party}, ${absBiasSeats} seats`);
         }
 
         // loop through each state in the data and update the SVG
@@ -422,7 +431,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
 
             if ($shape.length === 0) return; // skip if state not found
 
-            // Apply scaling for National E.G. or reset to normal
+            // Apply scaling for national bias or reset to normal
             const scaleFactor = scaleFactors[stateAbbr] || 1.0;
 
             // CSS transform is a matrix, we need to extract translate values
@@ -437,10 +446,6 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                         const translateY = values[5];
                         const newTransform = `translate(${translateX}px, ${translateY}px) scale(${scaleFactor}, ${scaleFactor})`;
                         $shape.css('transform', newTransform);
-
-                        if (CURRENT_VIEW.boundtype === 'nationaleg' && scaleFactor !== 1.0) {
-                            console.log(`${stateAbbr}: Applied transform="${newTransform}"`);
-                        }
                     }
                 }
             } catch (e) {
@@ -492,8 +497,8 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             }
 
             // add pointer cursors under the same conditions that control clicks in attachMapEventHandlers()
-            if (CURRENT_VIEW.boundtype === 'nationaleg') {
-                // In National E.G. view, all states are clickable (show tooltip)
+            if (CURRENT_VIEW.boundtype === 'ushouse') {
+                // In U.S. House view, all states are clickable (show tooltip)
                 $shape.css('cursor', 'pointer');
                 $offshoreBox.css('cursor', 'pointer');
             } else {
@@ -547,11 +552,11 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                 // compose URL for the selected state + boundary + year
                 const plan_or_election = 'plan';
                 const stateslug = stateInfo.name.toLowerCase().replace(/\W/g, '_');
-                const currview = (CURRENT_VIEW.boundtype == 'nationaleg') ? 'ushouse' : CURRENT_VIEW.boundtype;
+                const currview = CURRENT_VIEW.boundtype;
                 const moreinfourl = `/${stateslug}/#!${CURRENT_VIEW.year}-${plan_or_election}-${currview}`;
 
-                // For National E.G. tab, show tooltip for ALL states
-                if (CURRENT_VIEW.boundtype === 'nationaleg') {
+                // For U.S. House tab, show tooltip for ALL states
+                if (CURRENT_VIEW.boundtype === 'ushouse') {
                     const $tooltip = $('#state-tooltip');
 
                     // log the selection
@@ -686,12 +691,18 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
         }
     }
 
+    function findStateInfoByName(data, state_name) {
+        // find this swatch's state name, and fetch that state info from the raw data
+        const state_info = data.filter((stateinfo) => { return stateinfo.name === state_name; }).slice(0, 1)[0];
+        return state_info;
+    }
+
     function updateStateListingSwatches(data) {
         const $swatches = $('.states-listing span.swatch');
         $swatches.each(function () {
             // find this swatch's state name, and fetch that state info from the raw data
             const state_name = $(this).closest('a').text().trim();
-            const state_info = data.filter((stateinfo) => { return stateinfo.name === state_name; }).slice(0, 1)[0];
+            const state_info = findStateInfoByName(data, state_name);
 
             // find bias color and apply CSS
             const biaseval = lookupBias('eg', state_info.value, CURRENT_VIEW.boundtype);
@@ -712,9 +723,21 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             const $link             = $(this);
             const baseurl           = $link.prop('href').replace(/\#.*$/, '');
             const plan_or_election  = 'plan';
-            const hashcomponent     = `#!${CURRENT_VIEW.year}-${plan_or_election}-${CURRENT_VIEW.boundtype}`;
+            const currview = CURRENT_VIEW.boundtype;
+            const hashcomponent     = `#!${CURRENT_VIEW.year}-${plan_or_election}-${currview}`;
             const url               = `${baseurl}${hashcomponent}`;
             $link.prop('href', url);
+
+            // find this swatch's state name, and fetch that state info from the raw data
+            const stateName = $(this).text().trim();
+            const stateInfo = findStateInfoByName(data, stateName);
+            const hasValue = stateInfo.value !== MAP_NODATA_VALUE && stateInfo.value !== undefined;
+            const hasSeats = stateInfo.seats >= MINIMUM_USHOUSE_SEATS || stateInfo.seats == undefined;
+            if (hasValue && hasSeats) {
+                $(this).removeClass('suppress-link');
+            } else {
+                $(this).addClass('suppress-link');
+            }
         });
     }
 };
@@ -748,11 +771,11 @@ window.selectBoundaryType = (boundtype, options={}) => {
     // UI update: highlight this button
     $('#boundarypicker div[data-boundary]').removeClass('active').filter(`[data-boundary="${boundtype}"]`).addClass('active');
 
-    // UI update: toggle nationaleg-selected class for conditional legend display
-    if (boundtype === 'nationaleg') {
-        $('body').addClass('nationaleg-selected');
+    // UI update: toggle ushouse-selected class for conditional legend display
+    if (boundtype === 'ushouse') {
+        $('body').addClass('ushouse-selected');
     } else {
-        $('body').removeClass('nationaleg-selected');
+        $('body').removeClass('ushouse-selected');
     }
 
     // save to the state and refresh the map + data
