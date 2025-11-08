@@ -117,13 +117,13 @@ h3,
     }
   }
   
-  .nationaleg-text {
+  .ushouse-text {
     display: none;
     max-width: 300px;
     line-height: 1rem;
     font-size: 11px;
     flex-shrink: 1;
-  
+
     @media (max-width: 650px) {
       max-width: 100%;
       text-align: center;
@@ -152,22 +152,22 @@ h3,
     }
   }
 
-  #nationaleg-legend {
+  #ushouse-legend {
     display: none;
   }
 }
 
-/* Special cases for when the National E.G. view is active */
-body.nationaleg-selected {
+/* Special cases for when the U.S. House view is active */
+body.ushouse-selected {
   // Two elements only visible in this view
-  #map #nationaleg-legend, #maplegend .nationaleg-text {
+  #map #ushouse-legend, #maplegend .ushouse-text {
     display: block !important;
   }
 
-  // Reverse order of legend items on wide screens when National E.G. is selected
+  // Reverse order of legend items on wide screens when U.S. House is selected
   #maplegend {
     @media (min-width: 651px) {
-      .nationaleg-text {
+      .ushouse-text {
         order: -1;  // Move text to the left
       }
 

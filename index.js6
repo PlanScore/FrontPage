@@ -248,7 +248,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             // nearest year to our chosen which does have data, favoring more-recent year in event of a tie
             // primarily used when switching district types, as not all district types have the same coverage for every year (e.g. State House 2016)
             if (options.fudgeYearIfNoData) {
-                const yearColumn = CURRENT_VIEW.boundtype === 'nationaleg' ? 'cycle' : 'year';
+                const yearColumn = CURRENT_VIEW.boundtype === 'ushouse' ? 'cycle' : 'year';
                 const hasdata = results.data.filter((datarow) => { return datarow[yearColumn] == CURRENT_VIEW.year; }).length;
                 if (! hasdata) {
                     const wehavetheseyears = results.data.map((datarow) => {
@@ -281,8 +281,8 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             // workaround here: rewrite any odd-numbered years to add 1 (1973 becomes 1974) so we still have even numbers
             // for this visual display having 1974 show the plan enacted in 1973 is sufficiently accurate
             results.data = results.data.map(function (datarow) {
-                // For nationaleg, use 'cycle' column instead of 'year'
-                const yearColumn = CURRENT_VIEW.boundtype === 'nationaleg' ? 'cycle' : 'year';
+                // For ushouse, use 'cycle' column instead of 'year'
+                const yearColumn = CURRENT_VIEW.boundtype === 'ushouse' ? 'cycle' : 'year';
                 const year = parseInt(datarow[yearColumn]);
                 if (year % 2 == 1) datarow[yearColumn] = String(year + 1);
                 return datarow;
@@ -292,8 +292,8 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             // and for each row assign the bias score to the state's row in the above
             // this is loop-within-loop as we match arrays to arrays, but P=50 and Q=20ish so it's affordable
             results = results.data.forEach(function (datarow) {
-                // For nationaleg, use different column names
-                if (CURRENT_VIEW.boundtype === 'nationaleg') {
+                // For ushouse, use different column names
+                if (CURRENT_VIEW.boundtype === 'ushouse') {
                     if (datarow.cycle != CURRENT_VIEW.year) return;  // wrong year; next
                     const chartrow = chartdata.filter((filteringthisonerow) => { return filteringthisonerow.abbr == datarow.stateabrev; })[0];
                     if (!chartrow) return;  // state not found, skip
@@ -340,8 +340,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
         // Update link with current year
         const plan_or_election = 'plan';
         const stateslug = stateInfo.name.toLowerCase().replace(/\W/g, '_');
-        const currview = (CURRENT_VIEW.boundtype == 'nationaleg') ? 'ushouse'
-                        : (CURRENT_VIEW.boundtype == 'oldhouse') ? 'ushouse'
+        const currview = (CURRENT_VIEW.boundtype == 'oldhouse') ? 'ushouse'
                         : CURRENT_VIEW.boundtype;
         const moreinfourl = `/${stateslug}/#!${CURRENT_VIEW.year}-${plan_or_election}-${currview}`;
         const linkText = `(${CURRENT_VIEW.year} Plan)`;
@@ -362,9 +361,9 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
         // see also selectState() which needs to access the compiled data
         $('#map').data('biasdata', data);
 
-        // Calculate scales for National E.G. view
+        // Calculate scales for U.S. House view
         let scaleFactors = {};
-        if (CURRENT_VIEW.boundtype === 'nationaleg') {
+        if (CURRENT_VIEW.boundtype === 'ushouse') {
             // Calculate impact values: abs(bias) * seats
             // We'll normalize these impacts, then convert to scale factors
             const impacts = {};
@@ -410,14 +409,14 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                 });
             }
 
-            // Update content of #nationaleg-legend
+            // Update content of #ushouse-legend
             const lookupBoundtype = (CURRENT_VIEW.boundtype == 'oldhouse') ? 'ushouse' : CURRENT_VIEW.boundtype;
             const biasEval = lookupBias('eg', biasSeats / totalSeats, lookupBoundtype);
             const absBiasPercent = Math.abs(100 * biasSeats / totalSeats).toFixed(1);
             const absBiasSeats = Math.abs(biasSeats).toFixed(1);
-            $('#nationaleg-legend .swatch').css({ 'fill': biasEval.color });
-            $('#nationaleg-legend .caption').text(`Total ${CURRENT_VIEW.year} Bias`);
-            $('#nationaleg-legend .bias').text(`+${absBiasPercent}% ${biasEval.party}, ${absBiasSeats} seats`);
+            $('#ushouse-legend .swatch').css({ 'fill': biasEval.color });
+            $('#ushouse-legend .caption').text(`Total ${CURRENT_VIEW.year} Bias`);
+            $('#ushouse-legend .bias').text(`+${absBiasPercent}% ${biasEval.party}, ${absBiasSeats} seats`);
         }
 
         // loop through each state in the data and update the SVG
@@ -433,7 +432,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
 
             if ($shape.length === 0) return; // skip if state not found
 
-            // Apply scaling for National E.G. or reset to normal
+            // Apply scaling for national bias or reset to normal
             const scaleFactor = scaleFactors[stateAbbr] || 1.0;
 
             // CSS transform is a matrix, we need to extract translate values
@@ -500,8 +499,8 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             }
 
             // add pointer cursors under the same conditions that control clicks in attachMapEventHandlers()
-            if (CURRENT_VIEW.boundtype === 'nationaleg') {
-                // In National E.G. view, all states are clickable (show tooltip)
+            if (CURRENT_VIEW.boundtype === 'ushouse') {
+                // In U.S. House view, all states are clickable (show tooltip)
                 $shape.css('cursor', 'pointer');
                 $offshoreBox.css('cursor', 'pointer');
             } else {
@@ -555,13 +554,12 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                 // compose URL for the selected state + boundary + year
                 const plan_or_election = 'plan';
                 const stateslug = stateInfo.name.toLowerCase().replace(/\W/g, '_');
-                const currview = (CURRENT_VIEW.boundtype == 'nationaleg') ? 'ushouse'
-                                : (CURRENT_VIEW.boundtype == 'oldhouse') ? 'ushouse'
+                const currview = (CURRENT_VIEW.boundtype == 'oldhouse') ? 'ushouse'
                                 : CURRENT_VIEW.boundtype;
                 const moreinfourl = `/${stateslug}/#!${CURRENT_VIEW.year}-${plan_or_election}-${currview}`;
 
-                // For National E.G. tab, show tooltip for ALL states
-                if (CURRENT_VIEW.boundtype === 'nationaleg') {
+                // For U.S. House tab, show tooltip for ALL states
+                if (CURRENT_VIEW.boundtype === 'ushouse') {
                     const $tooltip = $('#state-tooltip');
 
                     // log the selection
@@ -729,8 +727,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             const $link             = $(this);
             const baseurl           = $link.prop('href').replace(/\#.*$/, '');
             const plan_or_election  = 'plan';
-            const currview = (CURRENT_VIEW.boundtype == 'nationaleg') ? 'ushouse'
-                            : (CURRENT_VIEW.boundtype == 'oldhouse') ? 'ushouse'
+            const currview = (CURRENT_VIEW.boundtype == 'oldhouse') ? 'ushouse'
                             : CURRENT_VIEW.boundtype;
             const hashcomponent     = `#!${CURRENT_VIEW.year}-${plan_or_election}-${currview}`;
             const url               = `${baseurl}${hashcomponent}`;
@@ -779,11 +776,11 @@ window.selectBoundaryType = (boundtype, options={}) => {
     // UI update: highlight this button
     $('#boundarypicker div[data-boundary]').removeClass('active').filter(`[data-boundary="${boundtype}"]`).addClass('active');
 
-    // UI update: toggle nationaleg-selected class for conditional legend display
-    if (boundtype === 'nationaleg') {
-        $('body').addClass('nationaleg-selected');
+    // UI update: toggle ushouse-selected class for conditional legend display
+    if (boundtype === 'ushouse') {
+        $('body').addClass('ushouse-selected');
     } else {
-        $('body').removeClass('nationaleg-selected');
+        $('body').removeClass('ushouse-selected');
     }
 
     // save to the state and refresh the map + data
