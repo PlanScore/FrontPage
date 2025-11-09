@@ -156,7 +156,7 @@ window.initYearPickers = () => {
         if (year % 10 === 2) $button.addClass('decplan');
         if (year % 4 === 0)  $button.addClass('presidential');
 
-        $('<span class="currentyear"></span>').text(year === 2026 ? '2026*' : year).appendTo($button);
+        $('<span class="currentyear"></span>').text(year == 2026 ? '2026*' : year).appendTo($button);
         $('<span class="currentyearline"></span>').appendTo($button);
 
         $('<a></a>').appendTo($button); // for styling and as a click magnet
@@ -299,6 +299,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                     chartrow.value = parseFloat(datarow.EG);
                     chartrow.seats = parseInt(datarow.seats);
                     chartrow.percentrank = null;
+                    chartrow.url = datarow.url;
                 } else {
                     if (datarow.year != CURRENT_VIEW.year) return;  // wrong year; next
                     const chartrow = chartdata.filter((filteringthisonerow) => { return filteringthisonerow.abbr == datarow.state; })[0];
@@ -340,15 +341,15 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
         const plan_or_election = 'plan';
         const stateslug = stateInfo.name.toLowerCase().replace(/\W/g, '_');
         const currview = CURRENT_VIEW.boundtype;
-        const moreinfourl = `/${stateslug}/#!${CURRENT_VIEW.year}-${plan_or_election}-${currview}`;
-        const curryear = CURRENT_VIEW.year === '2026' ? '2026*' : CURRENT_VIEW.year;
+        const moreinfourl = stateInfo.url ? stateInfo.url : `/${stateslug}/#!${CURRENT_VIEW.year}-${plan_or_election}-${currview}`;
+        const curryear = CURRENT_VIEW.year == 2026 ? '2026*' : CURRENT_VIEW.year;
         const linkText = `(${curryear} Plan)`;
         $('#state-tooltip .link').text(linkText).attr('href', moreinfourl);
 
         // Show/hide link based on data and seat count
         const hasValue = stateInfo.value !== MAP_NODATA_VALUE && stateInfo.value !== undefined;
         const hasSeats = stateInfo.seats >= MINIMUM_USHOUSE_SEATS || stateInfo.seats == undefined;
-        if (hasValue && hasSeats) {
+        if (hasValue && (hasSeats || stateInfo.url)) {
             $('#state-tooltip .link').css('display', 'inline');
         } else {
             $('#state-tooltip .link').css('display', 'none');
@@ -363,20 +364,24 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
         // Calculate scales for U.S. House view
         let scaleFactors = {};
         if (CURRENT_VIEW.boundtype === 'ushouse') {
-            // Calculate impact values: abs(bias) * seats
-            // We'll normalize these impacts, then convert to scale factors
-            const impacts = {};
-            const dataAreas = {};
+            const seatBiases = {};
+            const stateAreas = {};
+            const rawScales = {};
             let biasSeats = 0;
             let totalSeats = 0;
             data.forEach(function(stateData) {
                 const seats = stateData.seats;
                 if (stateData.value !== MAP_NODATA_VALUE && stateData.value !== undefined && seats) {
-                    const impact = Math.abs(stateData.value) * seats;
-                    impacts[stateData.abbr] = impact;
+                    // Calculate seat bias impact values: abs(bias) * seats
+                    const seatBias = Math.abs(stateData.value) * seats;
+                    seatBiases[stateData.abbr] = seatBias;
 
+                    // Look up raw state areas to normalize scales
                     const $shape = $(`#state-shape-${stateData.abbr}`);
-                    dataAreas[stateData.abbr] = parseFloat($shape.attr('data-area')) || 1;
+                    stateAreas[stateData.abbr] = parseFloat($shape.attr('data-area')) || 1;
+
+                    // Dimensionless raw scale that we'll adjust later
+                    rawScales[stateData.abbr] = 1e11 * seatBias / stateAreas[stateData.abbr];
 
                     // Accumulate bias weighted by seats for national summary
                     biasSeats += stateData.value * seats;
@@ -384,35 +389,41 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                 }
             });
 
-            // Find the maximum and minimum impact values
-            const maxImpact = Math.max(...Object.values(impacts));
-            const minImpact = Math.min(...Object.values(impacts));
+            // Find the P20 and P80 raw scales to guide visual range
+            const scalesList = Object.values(rawScales).sort(function (a, b) { return a - b });
+            const p80RawScale = scalesList[Math.round(scalesList.length * 0.8)];
+            const p20RawScale = scalesList[Math.round(scalesList.length * 0.2)];
+            console.log(scalesList);
+            console.log(`p20RawScale ${p20RawScale.toFixed(2)}, p80RawScale ${p80RawScale.toFixed(2)}`);
 
-            // Calculate average data-area as a reference
-            const avgDataArea = Object.values(dataAreas).reduce((a, b) => a + b, 0) / Object.values(dataAreas).length;
+            // Set bounds for visual scale range
+            const minScaleFactor = 0.25;
+            const maxScaleFactor = 1.25
 
-            // Normalize impacts and convert to scale factors
-            // Target area range: 0.04 (20%^2) to 1.5625 (125%^2) times reference area
-            if (maxImpact > 0 && maxImpact !== minImpact) {
-                Object.keys(impacts).forEach(abbr => {
-                    const normalizedImpact = (impacts[abbr] - minImpact) / (maxImpact - minImpact);
-                    const targetAreaRatio = 0.04 + (normalizedImpact * 1.5225);  // ranges from 0.04 to 1.5625
-                    const targetArea = targetAreaRatio * avgDataArea;
-                    const scale = Math.sqrt(targetArea / dataAreas[abbr]);
+            // Choose a reasonable visual scale
+            Object.keys(seatBiases).forEach(abbr => {
+                // Start with just a raw value
+                let stateScale = rawScales[abbr];
 
-                    // Clamp scale between 0.20 and 1.25
-                    const clampedScale = Math.max(0.20, Math.min(1.25, scale));
-                    scaleFactors[abbr] = clampedScale;
+                // Clamp at P20-P80
+                const clamped = (stateScale < p20RawScale) || (p80RawScale < stateScale);
+                stateScale = Math.min(Math.max(stateScale, p20RawScale), p80RawScale);
 
-                    const clamped = (clampedScale !== scale) ? ' (CLAMPED)' : '';
-                });
-            }
+                // Normalize [P20-P80] to [0..1]
+                stateScale = (stateScale - p20RawScale) / (p80RawScale - p20RawScale);
+
+                // Normalize [0..1] to [minScaleFactor..maxScaleFactor]
+                stateScale = (stateScale * (maxScaleFactor - minScaleFactor)) + minScaleFactor;
+
+                scaleFactors[abbr] = stateScale;
+                console.log(`${abbr}: scaleFactors ${scaleFactors[abbr].toFixed(2)} from rawScales ${rawScales[abbr].toFixed(2)} ${clamped ? '(clamped)' : ''}`);
+            });
 
             // Update content of #ushouse-legend
             const biasEval = lookupBias('eg', biasSeats / totalSeats, CURRENT_VIEW.boundtype);
             const absBiasPercent = Math.abs(100 * biasSeats / totalSeats).toFixed(1);
             const absBiasSeats = Math.abs(biasSeats).toFixed(1);
-            const currYear = CURRENT_VIEW.year === '2026' ? '2026*' : CURRENT_VIEW.year;
+            const currYear = CURRENT_VIEW.year == 2026 ? '2026*' : CURRENT_VIEW.year;
             $('#ushouse-legend .swatch').css({ 'fill': biasEval.color });
             $('#ushouse-legend .caption').text(`Total ${currYear} Bias`);
             $('#ushouse-legend .bias').text(`+${absBiasPercent}% ${biasEval.party}, ${absBiasSeats} seats`);
@@ -720,20 +731,20 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
     function updateStateListingHashes(data) {
         const $swatches = $('.states-listing a');
         $swatches.each(function () {
+            const stateName = $(this).text().trim();
+            const stateInfo = findStateInfoByName(data, stateName);
+
             const $link             = $(this);
-            const baseurl           = $link.prop('href').replace(/\#.*$/, '');
+            const baseurl = ($link.data('href') || $link.prop('href')).replace(/\#.*$/, '');
             const plan_or_election  = 'plan';
             const currview = CURRENT_VIEW.boundtype;
             const hashcomponent     = `#!${CURRENT_VIEW.year}-${plan_or_election}-${currview}`;
-            const url               = `${baseurl}${hashcomponent}`;
+            const url = stateInfo.url ? stateInfo.url : `${baseurl}${hashcomponent}`;
             $link.prop('href', url);
 
-            // find this swatch's state name, and fetch that state info from the raw data
-            const stateName = $(this).text().trim();
-            const stateInfo = findStateInfoByName(data, stateName);
             const hasValue = stateInfo.value !== MAP_NODATA_VALUE && stateInfo.value !== undefined;
             const hasSeats = stateInfo.seats >= MINIMUM_USHOUSE_SEATS || stateInfo.seats == undefined;
-            if (hasValue && hasSeats) {
+            if (hasValue && (hasSeats || stateInfo.url)) {
                 $(this).removeClass('suppress-link');
             } else {
                 $(this).addClass('suppress-link');
