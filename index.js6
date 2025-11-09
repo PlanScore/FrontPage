@@ -156,7 +156,7 @@ window.initYearPickers = () => {
         if (year % 10 === 2) $button.addClass('decplan');
         if (year % 4 === 0)  $button.addClass('presidential');
 
-        $('<span class="currentyear"></span>').text(year === 2026 ? '2026*' : year).appendTo($button);
+        $('<span class="currentyear"></span>').text(year == 2026 ? '2026*' : year).appendTo($button);
         $('<span class="currentyearline"></span>').appendTo($button);
 
         $('<a></a>').appendTo($button); // for styling and as a click magnet
@@ -299,6 +299,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                     chartrow.value = parseFloat(datarow.EG);
                     chartrow.seats = parseInt(datarow.seats);
                     chartrow.percentrank = null;
+                    chartrow.url = datarow.url;
                 } else {
                     if (datarow.year != CURRENT_VIEW.year) return;  // wrong year; next
                     const chartrow = chartdata.filter((filteringthisonerow) => { return filteringthisonerow.abbr == datarow.state; })[0];
@@ -340,15 +341,15 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
         const plan_or_election = 'plan';
         const stateslug = stateInfo.name.toLowerCase().replace(/\W/g, '_');
         const currview = CURRENT_VIEW.boundtype;
-        const moreinfourl = `/${stateslug}/#!${CURRENT_VIEW.year}-${plan_or_election}-${currview}`;
-        const curryear = CURRENT_VIEW.year === '2026' ? '2026*' : CURRENT_VIEW.year;
+        const moreinfourl = stateInfo.url ? stateInfo.url : `/${stateslug}/#!${CURRENT_VIEW.year}-${plan_or_election}-${currview}`;
+        const curryear = CURRENT_VIEW.year == 2026 ? '2026*' : CURRENT_VIEW.year;
         const linkText = `(${curryear} Plan)`;
         $('#state-tooltip .link').text(linkText).attr('href', moreinfourl);
 
         // Show/hide link based on data and seat count
         const hasValue = stateInfo.value !== MAP_NODATA_VALUE && stateInfo.value !== undefined;
         const hasSeats = stateInfo.seats >= MINIMUM_USHOUSE_SEATS || stateInfo.seats == undefined;
-        if (hasValue && hasSeats) {
+        if (hasValue && (hasSeats || stateInfo.url)) {
             $('#state-tooltip .link').css('display', 'inline');
         } else {
             $('#state-tooltip .link').css('display', 'none');
@@ -412,7 +413,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             const biasEval = lookupBias('eg', biasSeats / totalSeats, CURRENT_VIEW.boundtype);
             const absBiasPercent = Math.abs(100 * biasSeats / totalSeats).toFixed(1);
             const absBiasSeats = Math.abs(biasSeats).toFixed(1);
-            const currYear = CURRENT_VIEW.year === '2026' ? '2026*' : CURRENT_VIEW.year;
+            const currYear = CURRENT_VIEW.year == 2026 ? '2026*' : CURRENT_VIEW.year;
             $('#ushouse-legend .swatch').css({ 'fill': biasEval.color });
             $('#ushouse-legend .caption').text(`Total ${currYear} Bias`);
             $('#ushouse-legend .bias').text(`+${absBiasPercent}% ${biasEval.party}, ${absBiasSeats} seats`);
@@ -720,20 +721,20 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
     function updateStateListingHashes(data) {
         const $swatches = $('.states-listing a');
         $swatches.each(function () {
+            const stateName = $(this).text().trim();
+            const stateInfo = findStateInfoByName(data, stateName);
+
             const $link             = $(this);
-            const baseurl           = $link.prop('href').replace(/\#.*$/, '');
+            const baseurl = ($link.data('href') || $link.prop('href')).replace(/\#.*$/, '');
             const plan_or_election  = 'plan';
             const currview = CURRENT_VIEW.boundtype;
             const hashcomponent     = `#!${CURRENT_VIEW.year}-${plan_or_election}-${currview}`;
-            const url               = `${baseurl}${hashcomponent}`;
+            const url = stateInfo.url ? stateInfo.url : `${baseurl}${hashcomponent}`;
             $link.prop('href', url);
 
-            // find this swatch's state name, and fetch that state info from the raw data
-            const stateName = $(this).text().trim();
-            const stateInfo = findStateInfoByName(data, stateName);
             const hasValue = stateInfo.value !== MAP_NODATA_VALUE && stateInfo.value !== undefined;
             const hasSeats = stateInfo.seats >= MINIMUM_USHOUSE_SEATS || stateInfo.seats == undefined;
-            if (hasValue && hasSeats) {
+            if (hasValue && (hasSeats || stateInfo.url)) {
                 $(this).removeClass('suppress-link');
             } else {
                 $(this).addClass('suppress-link');
