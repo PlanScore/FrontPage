@@ -381,7 +381,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                     stateAreas[stateData.abbr] = parseFloat($shape.attr('data-area')) || 1;
 
                     // Dimensionless raw scale that we'll adjust later
-                    rawScales[stateData.abbr] = 1e11 * seatBias / stateAreas[stateData.abbr];
+                    rawScales[stateData.abbr] = Math.sqrt(seatBias * 1e11 / stateAreas[stateData.abbr]);
 
                     // Accumulate bias weighted by seats for national summary
                     biasSeats += stateData.value * seats;
@@ -397,8 +397,8 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             console.log(`p20RawScale ${p20RawScale.toFixed(2)}, p80RawScale ${p80RawScale.toFixed(2)}`);
 
             // Set bounds for visual scale range
-            const minScaleFactor = 0.25;
-            const maxScaleFactor = 1.25
+            const minScaleFactor = 0.3;
+            const maxScaleFactor = 1.2;
 
             // Choose a reasonable visual scale
             Object.keys(seatBiases).forEach(abbr => {
