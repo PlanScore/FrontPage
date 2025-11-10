@@ -129,7 +129,7 @@ window.initYearPickers = () => {
     const $picker_small = $('#yearpicker-small');
     const $year_listing = $picker_small.find('div.readout');
     PLAN_YEARS.forEach((year) => {
-        $(`<span data-year="${year}">${year}</span>`).appendTo($year_listing).hide();
+        $(`<span data-year="${year}">${year == 2026 ? '2026*' : year}</span>`).appendTo($year_listing).hide();
     });
 
     $picker_small.on('click', 'div.nextprev.right', function () {
