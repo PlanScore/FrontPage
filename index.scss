@@ -118,16 +118,47 @@ h3,
     }
   }
   
-  .ushouse-text {
-    display: none;
-    max-width: 300px;
-    line-height: 1rem;
-    font-size: 11px;
-    flex-shrink: 1;
+  #ushouse-legend {
+  
+    span.swatch {  /* see also updateStateListingSwatches() which dynamically recolors these */
+      display: inline-block;
+      height: 18px;
+      width: 18px;
+      padding: 0;
+      margin-right: 4px;
+      border: 1px solid rgb(149, 152, 154);
+      position: relative;
+      top: 5px;
+    }
+    
+    // Default display for narrow screens
+    div.content
+    {
+      display: inline-block;
+      line-height: 1.2em;
 
-    @media (max-width: 650px) {
-      max-width: 100%;
-      text-align: center;
+      .caption, .bias { display: inline }
+    }
+
+    // Block-style display for wide screens
+    @media (min-width: 651px) {
+      width: 240px;
+
+      span.swatch { top: -5px }
+
+      div.content {
+        .caption, .bias { display: block }
+      }
+    }
+  }
+
+  // Reverse order of legend items on wide screens
+  @media (min-width: 651px) {
+    #ushouse-legend {
+      order: -1;  // Move legend to the left
+    }
+    .maplegend-colors {
+      order: 0;   // Keep colors on the right (default)
     }
   }
 }
@@ -152,30 +183,33 @@ h3,
       filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
     }
   }
-
-  #ushouse-legend {
+  
+  #ushouse-text {
     display: none;
+    max-width: 300px;
+    flex-shrink: 1;
+    
+    p {
+      line-height: 1.4em;
+      font-size: 11px;
+      background: rgba(255, 255, 255, 0.6);
+      color: #999;
+    }
+
+    /*
+    @media (max-width: 650px) {
+      max-width: 100%;
+      text-align: center;
+    }
+    */
   }
 }
 
 /* Special cases for when the U.S. House view is active */
 body.ushouse-selected {
   // Two elements only visible in this view
-  #map #ushouse-legend, #maplegend .ushouse-text {
+  #maplegend #ushouse-legend, #map #ushouse-text {
     display: block !important;
-  }
-
-  // Reverse order of legend items on wide screens when U.S. House is selected
-  #maplegend {
-    @media (min-width: 651px) {
-      .ushouse-text {
-        order: -1;  // Move text to the left
-      }
-
-      .maplegend-colors {
-        order: 0;   // Keep colors on the right (default)
-      }
-    }
   }
 }
 

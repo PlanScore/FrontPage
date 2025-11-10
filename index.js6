@@ -129,7 +129,7 @@ window.initYearPickers = () => {
     const $picker_small = $('#yearpicker-small');
     const $year_listing = $picker_small.find('div.readout');
     PLAN_YEARS.forEach((year) => {
-        $(`<span data-year="${year}">${year}</span>`).appendTo($year_listing).hide();
+        $(`<span data-year="${year}">${year == 2026 ? '2026*' : year}</span>`).appendTo($year_listing).hide();
     });
 
     $picker_small.on('click', 'div.nextprev.right', function () {
@@ -424,9 +424,9 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             const absBiasPercent = Math.abs(100 * biasSeats / totalSeats).toFixed(1);
             const absBiasSeats = Math.abs(biasSeats).toFixed(1);
             const currYear = CURRENT_VIEW.year == 2026 ? '2026*' : CURRENT_VIEW.year;
-            $('#ushouse-legend .swatch').css({ 'fill': biasEval.color });
-            $('#ushouse-legend .caption').text(`Total ${currYear} Bias`);
-            $('#ushouse-legend .bias').text(`+${absBiasPercent}% ${biasEval.party}, ${absBiasSeats} seats`);
+            $('#ushouse-legend .swatch').css({ 'background': biasEval.color });
+            $('#ushouse-legend .caption').text(`Total ${currYear} Bias:`);
+            $('#ushouse-legend .bias').text(`${absBiasPercent}% (${absBiasSeats} seats) pro-${biasEval.party}`);
         }
 
         // loop through each state in the data and update the SVG
