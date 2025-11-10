@@ -424,7 +424,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             const absBiasPercent = Math.abs(100 * biasSeats / totalSeats).toFixed(1);
             const absBiasSeats = Math.abs(biasSeats).toFixed(1);
             const currYear = CURRENT_VIEW.year == 2026 ? '2026*' : CURRENT_VIEW.year;
-            $('#ushouse-legend .swatch').css({ 'fill': biasEval.color });
+            $('#ushouse-legend .swatch').css({ 'background': biasEval.color });
             $('#ushouse-legend .caption').text(`Total ${currYear} Bias`);
             $('#ushouse-legend .bias').text(`+${absBiasPercent}% ${biasEval.party}, ${absBiasSeats} seats`);
         }
