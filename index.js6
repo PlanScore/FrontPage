@@ -389,28 +389,28 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                 }
             });
 
-            // Find the P20 and P80 raw scales to guide visual range
+            // Find the P10 and P90 raw scales to guide visual range
             const scalesList = Object.values(rawScales).sort(function (a, b) { return a - b });
-            const p80RawScale = scalesList[Math.round(scalesList.length * 0.8)];
-            const p20RawScale = scalesList[Math.round(scalesList.length * 0.2)];
+            const p90RawScale = scalesList[Math.round(scalesList.length * 0.8)];
+            const p10RawScale = scalesList[Math.round(scalesList.length * 0.2)];
             console.log(scalesList);
-            console.log(`p20RawScale ${p20RawScale.toFixed(2)}, p80RawScale ${p80RawScale.toFixed(2)}`);
+            console.log(`p10RawScale ${p10RawScale.toFixed(2)}, p90RawScale ${p90RawScale.toFixed(2)}`);
 
             // Set bounds for visual scale range
-            const minScaleFactor = 0.3;
-            const maxScaleFactor = 1.2;
+            const minScaleFactor = 0.25;
+            const maxScaleFactor = 1.25;
 
             // Choose a reasonable visual scale
             Object.keys(seatBiases).forEach(abbr => {
                 // Start with just a raw value
                 let stateScale = rawScales[abbr];
 
-                // Clamp at P20-P80
-                const clamped = (stateScale < p20RawScale) || (p80RawScale < stateScale);
-                stateScale = Math.min(Math.max(stateScale, p20RawScale), p80RawScale);
+                // Clamp at P10-P90
+                const clamped = (stateScale < p10RawScale) || (p90RawScale < stateScale);
+                stateScale = Math.min(Math.max(stateScale, p10RawScale), p90RawScale);
 
-                // Normalize [P20-P80] to [0..1]
-                stateScale = (stateScale - p20RawScale) / (p80RawScale - p20RawScale);
+                // Normalize [P10..P90] to [0..1]
+                stateScale = (stateScale - p10RawScale) / (p90RawScale - p10RawScale);
 
                 // Normalize [0..1] to [minScaleFactor..maxScaleFactor]
                 stateScale = (stateScale * (maxScaleFactor - minScaleFactor)) + minScaleFactor;
