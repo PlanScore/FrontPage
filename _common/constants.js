@@ -10,7 +10,7 @@ export const PLAN_YEARS = [
     1992, 1994, 1996, 1998, 2000,
     2002, 2004, 2006, 2008, 2010,
     2012, 2014, 2016, 2018, 2020,
-    2022, 2024
+    2022, 2024, 2026
 ];
 
 // the color gradient from Republican red to Democrat blue

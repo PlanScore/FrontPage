@@ -5,6 +5,13 @@
 import { BIAS_BALANCED_THRESHOLD, COLOR_GRADIENT, BELLCURVE_SPREAD, BELLCURVE_METRIC_TO_FILENAME_SLUG, STATIC_CONTENT_ORIGIN } from './constants';
 
 /*
+ * round a number to two-ish significant digits
+ */
+export const twoDigits = (value) => {
+    return value < 9.5 ? value.toFixed(1) : value.toFixed(0);
+};
+
+/*
  * return a structure of information about the given EG bias score:
  * whether it's strong or weak, D or R, etc.
  */
