@@ -442,7 +442,8 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                 let seatShare = 0;
                 let voteShare = 0;
                 districtValues.forEach(function(districtValue) {
-                        seatShare += districtValue[0] * districtValue[2] / totalVotes;
+                        // vote share is turnout-weighted, seat share is not
+                        seatShare += districtValue[0] * 1 / districtValues.length;
                         voteShare += districtValue[1] * districtValue[2] / totalVotes;
                     }
                 );
