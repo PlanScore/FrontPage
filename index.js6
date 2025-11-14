@@ -129,7 +129,7 @@ window.initYearPickers = () => {
     const $picker_small = $('#yearpicker-small');
     const $year_listing = $picker_small.find('div.readout');
     PLAN_YEARS.forEach((year) => {
-        $(`<span data-year="${year}">${year == 2026 ? '2026*' : year}</span>`).appendTo($year_listing).hide();
+        $(`<span data-year="${year}">${year == 2026 ? '2026-2030*' : year}</span>`).appendTo($year_listing).hide();
     });
 
     $picker_small.on('click', 'div.nextprev.right', function () {
@@ -156,7 +156,11 @@ window.initYearPickers = () => {
         if (year % 10 === 2) $button.addClass('decplan');
         if (year % 4 === 0)  $button.addClass('presidential');
 
-        $('<span class="currentyear"></span>').text(year == 2026 ? '2026*' : year).appendTo($button);
+        if (year == 2026) {
+            $('<span class="currentyear wide-prediction">2026-2030*</span>').appendTo($button);
+        } else {
+            $('<span class="currentyear"></span>').text(year).appendTo($button);
+        }
         $('<span class="currentyearline"></span>').appendTo($button);
 
         $('<a></a>').appendTo($button); // for styling and as a click magnet
@@ -300,6 +304,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                     chartrow.seats = parseInt(datarow.seats);
                     chartrow.percentrank = null;
                     chartrow.url = datarow.url;
+                    chartrow.districts = datarow.districts ? JSON.parse(datarow.districts) : undefined;
                 } else {
                     if (datarow.year != CURRENT_VIEW.year) return;  // wrong year; next
                     const chartrow = chartdata.filter((filteringthisonerow) => { return filteringthisonerow.abbr == datarow.state; })[0];
@@ -342,7 +347,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
         const stateslug = stateInfo.name.toLowerCase().replace(/\W/g, '_');
         const currview = CURRENT_VIEW.boundtype;
         const moreinfourl = stateInfo.url ? stateInfo.url : `/${stateslug}/#!${CURRENT_VIEW.year}-${plan_or_election}-${currview}`;
-        const curryear = CURRENT_VIEW.year == 2026 ? '2026*' : CURRENT_VIEW.year;
+        const curryear = CURRENT_VIEW.year == 2026 ? '2026-2030*' : CURRENT_VIEW.year;
         const linkText = `(${curryear} Plan)`;
         $('#state-tooltip .link').text(linkText).attr('href', moreinfourl);
 
@@ -367,8 +372,10 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             const seatBiases = {};
             const stateAreas = {};
             const rawScales = {};
+            const districtValues = [];
             let biasSeats = 0;
             let totalSeats = 0;
+            let totalVotes = 0;
             data.forEach(function(stateData) {
                 const seats = stateData.seats;
                 if (stateData.value !== MAP_NODATA_VALUE && stateData.value !== undefined && seats) {
@@ -384,8 +391,17 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                     rawScales[stateData.abbr] = Math.sqrt(seatBias * 1e11 / stateAreas[stateData.abbr]);
 
                     // Accumulate bias weighted by seats for national summary
-                    biasSeats += stateData.value * seats;
-                    totalSeats += seats;
+                    if (stateData.districts !== undefined) {
+                        stateData.districts.forEach(function(districtData) {
+                                districtValues.push(districtData);
+                                totalVotes += districtData[2];
+                                totalSeats += 1;
+                            }
+                        );
+                    } else {
+                        biasSeats += stateData.value * seats;
+                        totalSeats += seats;
+                    }
                 }
             });
 
@@ -420,10 +436,26 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             });
 
             // Update content of #ushouse-legend
-            const biasEval = lookupBias('eg', biasSeats / totalSeats, CURRENT_VIEW.boundtype);
-            const absBiasPercent = twoDigits(Math.abs(100 * biasSeats / totalSeats));
-            const absBiasSeats = twoDigits(Math.abs(biasSeats));
-            const currYear = CURRENT_VIEW.year == 2026 ? '2026*' : CURRENT_VIEW.year;
+            var nationalEG;
+            if (districtValues.length == totalSeats) {
+                let seatShare = 0;
+                let voteShare = 0;
+                districtValues.forEach(function(districtValue) {
+                        seatShare += districtValue[0] * districtValue[2] / totalVotes;
+                        voteShare += districtValue[1] * districtValue[2] / totalVotes;
+                    }
+                );
+                // Simplified EG with turnout-weighted shares
+                nationalEG = (seatShare - 0.5) - 2 * (voteShare - 0.5);
+            } else {
+                // Nationwide EG average
+                nationalEG = biasSeats / totalSeats;
+            }
+
+            const biasEval = lookupBias('eg', nationalEG, CURRENT_VIEW.boundtype);
+            const absBiasPercent = twoDigits(Math.abs(100 * nationalEG));
+            const absBiasSeats = twoDigits(Math.abs(nationalEG * totalSeats));
+            const currYear = CURRENT_VIEW.year == 2026 ? '2026-2030*' : CURRENT_VIEW.year;
             $('#ushouse-legend .swatch').css({ 'background': biasEval.color });
             $('#ushouse-legend .caption').text(`Total ${currYear} Bias:`);
             $('#ushouse-legend .bias').text(`${absBiasPercent}% (${absBiasSeats} seats) pro-${biasEval.party}`);
@@ -596,7 +628,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
 
                         // Position tooltip so tip (at 100, 59.5 in tooltip coordinates) points to shape center
                         // Adjust Y to keep label visible below the tip
-                        const tooltipX = centerX - 110;
+                        const tooltipX = centerX - 120;
                         const tooltipY = centerY - 59.5 - 10;  // Extra 10px above to keep label visible
 
 

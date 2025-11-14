@@ -285,6 +285,12 @@ body.ushouse-selected {
         opacity: 0;  /* see div.active subclass below */
       }
 
+      span.currentyear.wide-prediction {
+        width: 78px;
+        position: relative;
+        left: -40px;
+      }
+
       span.currentyearline {
         background-color: $navy;
         display: inline-block;
