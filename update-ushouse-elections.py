@@ -48,7 +48,8 @@ def main(filename):
         state_votes = sum(d.total_votes for d in districts)
         district_weights = [d.total_votes / state_votes for d in districts]
         
-        seat_share = sum(d.dem_wins * d.total_votes / state_votes for d in districts)
+        # vote share is turnout-weighted, seat share is not
+        seat_share = sum(d.dem_wins * 1 / len(districts) for d in districts)
         vote_share = sum(d.dem_share * d.total_votes / state_votes for d in districts)
         district_values = [(d.dem_wins, d.dem_share, round(d.total_votes)) for d in districts]
         efficiency_gap = (seat_share - .5) - 2 * (vote_share - .5)

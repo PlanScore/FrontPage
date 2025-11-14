@@ -182,6 +182,12 @@ h3,
     .shape {
       filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
     }
+    
+    sup {
+      // Safari doesn't handle the superscript correctly in this case
+      position: static;
+    }
+    
   }
   
   #ushouse-text {

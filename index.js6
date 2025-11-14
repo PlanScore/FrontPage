@@ -129,7 +129,7 @@ window.initYearPickers = () => {
     const $picker_small = $('#yearpicker-small');
     const $year_listing = $picker_small.find('div.readout');
     PLAN_YEARS.forEach((year) => {
-        $(`<span data-year="${year}">${year == 2026 ? '2026-2030*' : year}</span>`).appendTo($year_listing).hide();
+        $(`<span data-year="${year}">${year == 2026 ? '2026-2030<sup>*</sup>' : year}</span>`).appendTo($year_listing).hide();
     });
 
     $picker_small.on('click', 'div.nextprev.right', function () {
@@ -157,7 +157,7 @@ window.initYearPickers = () => {
         if (year % 4 === 0)  $button.addClass('presidential');
 
         if (year == 2026) {
-            $('<span class="currentyear wide-prediction">2026-2030*</span>').appendTo($button);
+            $('<span class="currentyear wide-prediction">2026-2030<sup>*</sup></span>').appendTo($button);
         } else {
             $('<span class="currentyear"></span>').text(year).appendTo($button);
         }
@@ -337,7 +337,8 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             const biasPercent = twoDigits(Math.abs(stateInfo.value * 100));
             const biasSeats = twoDigits(Math.abs(stateInfo.value * stateInfo.seats));
             const party = stateInfo.value >= 0 ? 'Democratic' : 'Republican';
-            $('#state-tooltip .bias').text(`${biasPercent}% (${biasSeats} seats) pro-${party}`);
+            const turnoutNote = CURRENT_VIEW.year == 2026 ? '<sup>†</sup>' : '';
+            $('#state-tooltip .bias').html(`${biasPercent}% (${biasSeats} seats)${turnoutNote} pro-${party}`);
         } else {
             $('#state-tooltip .bias').text('No data');
         }
@@ -347,9 +348,9 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
         const stateslug = stateInfo.name.toLowerCase().replace(/\W/g, '_');
         const currview = CURRENT_VIEW.boundtype;
         const moreinfourl = stateInfo.url ? stateInfo.url : `/${stateslug}/#!${CURRENT_VIEW.year}-${plan_or_election}-${currview}`;
-        const curryear = CURRENT_VIEW.year == 2026 ? '2026-2030*' : CURRENT_VIEW.year;
-        const linkText = `(${curryear} Plan)`;
-        $('#state-tooltip .link').text(linkText).attr('href', moreinfourl);
+        const curryear = CURRENT_VIEW.year == 2026 ? '2026-2030<sup>*</sup>' : CURRENT_VIEW.year;
+        const linkHtml = `(${curryear} Plan)`;
+        $('#state-tooltip .link').attr('href', moreinfourl).html(linkHtml);
 
         // Show/hide link based on data and seat count
         const hasValue = stateInfo.value !== MAP_NODATA_VALUE && stateInfo.value !== undefined;
@@ -441,7 +442,8 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                 let seatShare = 0;
                 let voteShare = 0;
                 districtValues.forEach(function(districtValue) {
-                        seatShare += districtValue[0] * districtValue[2] / totalVotes;
+                        // vote share is turnout-weighted, seat share is not
+                        seatShare += districtValue[0] * 1 / districtValues.length;
                         voteShare += districtValue[1] * districtValue[2] / totalVotes;
                     }
                 );
@@ -455,10 +457,11 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             const biasEval = lookupBias('eg', nationalEG, CURRENT_VIEW.boundtype);
             const absBiasPercent = twoDigits(Math.abs(100 * nationalEG));
             const absBiasSeats = twoDigits(Math.abs(nationalEG * totalSeats));
-            const currYear = CURRENT_VIEW.year == 2026 ? '2026-2030*' : CURRENT_VIEW.year;
+            const currYear = CURRENT_VIEW.year == 2026 ? '2026-2030<sup>*</sup>' : CURRENT_VIEW.year;
+            const turnoutNote = CURRENT_VIEW.year == 2026 ? '<sup>†</sup>' : '';
             $('#ushouse-legend .swatch').css({ 'background': biasEval.color });
-            $('#ushouse-legend .caption').text(`Total ${currYear} Bias:`);
-            $('#ushouse-legend .bias').text(`${absBiasPercent}% (${absBiasSeats} seats) pro-${biasEval.party}`);
+            $('#ushouse-legend .caption').html(`Total ${currYear} Bias:`);
+            $('#ushouse-legend .bias').html(`${absBiasPercent}% (${absBiasSeats} seats)${turnoutNote} pro-${biasEval.party}`);
         }
 
         // loop through each state in the data and update the SVG
