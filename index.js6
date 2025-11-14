@@ -129,7 +129,7 @@ window.initYearPickers = () => {
     const $picker_small = $('#yearpicker-small');
     const $year_listing = $picker_small.find('div.readout');
     PLAN_YEARS.forEach((year) => {
-        $(`<span data-year="${year}">${year == 2026 ? '2026*' : year}</span>`).appendTo($year_listing).hide();
+        $(`<span data-year="${year}">${year == 2026 ? '2026-2030*' : year}</span>`).appendTo($year_listing).hide();
     });
 
     $picker_small.on('click', 'div.nextprev.right', function () {
@@ -156,7 +156,11 @@ window.initYearPickers = () => {
         if (year % 10 === 2) $button.addClass('decplan');
         if (year % 4 === 0)  $button.addClass('presidential');
 
-        $('<span class="currentyear"></span>').text(year == 2026 ? '2026*' : year).appendTo($button);
+        if (year == 2026) {
+            $('<span class="currentyear wide-prediction">2026-2030*</span>').appendTo($button);
+        } else {
+            $('<span class="currentyear"></span>').text(year).appendTo($button);
+        }
         $('<span class="currentyearline"></span>').appendTo($button);
 
         $('<a></a>').appendTo($button); // for styling and as a click magnet
@@ -343,7 +347,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
         const stateslug = stateInfo.name.toLowerCase().replace(/\W/g, '_');
         const currview = CURRENT_VIEW.boundtype;
         const moreinfourl = stateInfo.url ? stateInfo.url : `/${stateslug}/#!${CURRENT_VIEW.year}-${plan_or_election}-${currview}`;
-        const curryear = CURRENT_VIEW.year == 2026 ? '2026*' : CURRENT_VIEW.year;
+        const curryear = CURRENT_VIEW.year == 2026 ? '2026-2030*' : CURRENT_VIEW.year;
         const linkText = `(${curryear} Plan)`;
         $('#state-tooltip .link').text(linkText).attr('href', moreinfourl);
 
@@ -451,7 +455,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             const biasEval = lookupBias('eg', nationalEG, CURRENT_VIEW.boundtype);
             const absBiasPercent = twoDigits(Math.abs(100 * nationalEG));
             const absBiasSeats = twoDigits(Math.abs(nationalEG * totalSeats));
-            const currYear = CURRENT_VIEW.year == 2026 ? '2026*' : CURRENT_VIEW.year;
+            const currYear = CURRENT_VIEW.year == 2026 ? '2026-2030*' : CURRENT_VIEW.year;
             $('#ushouse-legend .swatch').css({ 'background': biasEval.color });
             $('#ushouse-legend .caption').text(`Total ${currYear} Bias:`);
             $('#ushouse-legend .bias').text(`${absBiasPercent}% (${absBiasSeats} seats) pro-${biasEval.party}`);
