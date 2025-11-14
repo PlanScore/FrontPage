@@ -628,7 +628,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
 
                         // Position tooltip so tip (at 100, 59.5 in tooltip coordinates) points to shape center
                         // Adjust Y to keep label visible below the tip
-                        const tooltipX = centerX - 110;
+                        const tooltipX = centerX - 120;
                         const tooltipY = centerY - 59.5 - 10;  // Extra 10px above to keep label visible
 
 
