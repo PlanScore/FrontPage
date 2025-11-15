@@ -329,6 +329,8 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
     });
 
     function updateTooltipContent(stateInfo) {
+        const isPrediction = (CURRENT_VIEW.year == 2026) && stateInfo.url;
+
         // Update tooltip content with state data
         $('#state-tooltip .state-name').text(stateInfo.name);
 
@@ -337,7 +339,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             const biasPercent = twoDigits(Math.abs(stateInfo.value * 100));
             const biasSeats = twoDigits(Math.abs(stateInfo.value * stateInfo.seats));
             const party = stateInfo.value >= 0 ? 'Democratic' : 'Republican';
-            const turnoutNote = CURRENT_VIEW.year == 2026 ? '<sup>†</sup>' : '';
+            const turnoutNote = isPrediction ? '<sup>†</sup>' : '';
             $('#state-tooltip .bias').html(`${biasPercent}% (${biasSeats} seats)${turnoutNote} pro-${party}`);
         } else {
             $('#state-tooltip .bias').text('No data');
@@ -348,7 +350,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
         const stateslug = stateInfo.name.toLowerCase().replace(/\W/g, '_');
         const currview = CURRENT_VIEW.boundtype;
         const moreinfourl = stateInfo.url ? stateInfo.url : `/${stateslug}/#!${CURRENT_VIEW.year}-${plan_or_election}-${currview}`;
-        const curryear = CURRENT_VIEW.year == 2026 ? '2026-2030<sup>*</sup>' : CURRENT_VIEW.year;
+        const curryear = isPrediction ? '2026-2030<sup>*</sup>' : CURRENT_VIEW.year;
         const linkHtml = `(${curryear} Plan)`;
         $('#state-tooltip .link').attr('href', moreinfourl).html(linkHtml);
 
@@ -392,16 +394,16 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                     rawScales[stateData.abbr] = Math.sqrt(seatBias * 1e11 / stateAreas[stateData.abbr]);
 
                     // Accumulate bias weighted by seats for national summary
+                    biasSeats += stateData.value * seats;
+                    totalSeats += seats;
+
+                    // Also accumulate districtValues to be used if they cover *all* states
                     if (stateData.districts !== undefined) {
                         stateData.districts.forEach(function(districtData) {
                                 districtValues.push(districtData);
                                 totalVotes += districtData[2];
-                                totalSeats += 1;
                             }
                         );
-                    } else {
-                        biasSeats += stateData.value * seats;
-                        totalSeats += seats;
                     }
                 }
             });
