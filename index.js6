@@ -294,10 +294,69 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                 return datarow;
             });
 
+            console.log("results.data", results.data);
+
+            if (CURRENT_VIEW.boundtype === 'ushouse') {
+                const seatBiases = {};
+                const stateAreas = {};
+                const rawScales = {};
+                results.data.forEach(function (datarow) {
+                        const value = parseFloat(datarow.EG);
+                        const seats = parseInt(datarow.seats);
+
+                        if (value === MAP_NODATA_VALUE || value === undefined || !seats) return;
+
+                        // Calculate seat bias impact values: abs(bias) * seats
+                        const seatBias = Math.abs(value) * seats;
+
+                        // Look up raw state areas to normalize scales
+                        const $shape = $(`#state-shape-${datarow.stateabrev}`);
+                        const stateArea = parseFloat($shape.attr('data-area')) || 1;
+
+                        // Dimensionless raw scale that we'll adjust later
+                        rawScales[`${datarow.stateabrev}-${datarow.cycle}`] = Math.sqrt(seatBias * 1e11 / stateArea);
+                    }
+                );
+                console.log("rawScales", rawScales);
+
+                // Find the P10 and P90 raw scales to guide visual range
+                const scalesList = Object.values(rawScales).sort(function (a, b) { return a - b });
+                const p90RawScale = scalesList[Math.round(scalesList.length * 0.9)];
+                const p10RawScale = scalesList[Math.round(scalesList.length * 0.1)];
+                console.log(scalesList);
+                console.log(`p10RawScale ${p10RawScale.toFixed(2)}, p90RawScale ${p90RawScale.toFixed(2)}`);
+
+                // Set bounds for visual scale range
+                const minScaleFactor = 0.25;
+                const maxScaleFactor = 1.25;
+
+                // Choose a reasonable visual scale
+                results.data.forEach(function (datarow) {
+                        // Start with just a raw value
+                        let stateScale = rawScales[`${datarow.stateabrev}-${datarow.cycle}`];
+                        if (stateScale === undefined) return;
+
+                        // Clamp at P10-P90
+                        const clamped = (stateScale < p10RawScale) || (p90RawScale < stateScale);
+                        stateScale = Math.min(Math.max(stateScale, p10RawScale), p90RawScale);
+
+                        // Normalize [P10..P90] to [0..1]
+                        stateScale = (stateScale - p10RawScale) / (p90RawScale - p10RawScale);
+
+                        // Normalize [0..1] to [minScaleFactor..maxScaleFactor]
+                        stateScale = (stateScale * (maxScaleFactor - minScaleFactor)) + minScaleFactor;
+
+                        datarow.stateScale = stateScale;
+                        const rawScale = rawScales[`${datarow.stateabrev}-${datarow.cycle}`];
+                        console.log(`${datarow.stateabrev}-${datarow.cycle}: stateScale ${stateScale.toFixed(2)} from rawScales ${rawScale.toFixed(2)} ${clamped ? '(clamped)' : ''}`);
+                    }
+                );
+            }
+
             // filter by the year (geography is implicit by which CSV was fetched)
             // and for each row assign the bias score to the state's row in the above
             // this is loop-within-loop as we match arrays to arrays, but P=50 and Q=20ish so it's affordable
-            results = results.data.forEach(function (datarow) {
+            results.data.forEach(function (datarow) {
                 // For ushouse, use different column names
                 if (CURRENT_VIEW.boundtype === 'ushouse') {
                     if (datarow.cycle != CURRENT_VIEW.year) return;  // wrong year; next
@@ -308,6 +367,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                     chartrow.percentrank = null;
                     chartrow.url = datarow.url;
                     chartrow.districts = datarow.districts ? JSON.parse(datarow.districts) : undefined;
+                    chartrow.stateScale = datarow.stateScale;
                 } else {
                     if (datarow.year != CURRENT_VIEW.year) return;  // wrong year; next
                     const chartrow = chartdata.filter((filteringthisonerow) => { return filteringthisonerow.abbr == datarow.state; })[0];
@@ -411,6 +471,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                 }
             });
 
+            /*
             // Find the P10 and P90 raw scales to guide visual range
             const scalesList = Object.values(rawScales).sort(function (a, b) { return a - b });
             const p90RawScale = scalesList[Math.round(scalesList.length * 0.8)];
@@ -440,6 +501,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                 scaleFactors[abbr] = stateScale;
                 console.log(`${abbr}: scaleFactors ${scaleFactors[abbr].toFixed(2)} from rawScales ${rawScales[abbr].toFixed(2)} ${clamped ? '(clamped)' : ''}`);
             });
+            */
 
             // Update content of #ushouse-legend
             var nationalEG;
@@ -482,8 +544,11 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
 
             if ($shape.length === 0) return; // skip if state not found
 
+            /*
             // Apply scaling for national bias or reset to normal
             const scaleFactor = scaleFactors[stateAbbr] || 1.0;
+            */
+            const scaleFactor = stateData.stateScale;
 
             // CSS transform is a matrix, we need to extract translate values
             // Matrix format: matrix(scaleX, skewY, skewX, scaleY, translateX, translateY)
