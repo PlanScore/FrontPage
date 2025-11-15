@@ -51,6 +51,9 @@ const KEYCODE_ESC = 27;
 // Minimum seats required for clickable states in U.S. House view
 const MINIMUM_USHOUSE_SEATS = 7;
 
+// Regular expression for "matrix(scaleX, _, _, _, translateX, translateY)"
+const MATRIX_PAT = /matrix\(([^)]+), [^)]+, [^)]+, [^)]+, ([^)]+), ([^)]+)\)/
+
 
 //
 // PAGE STARTUP / INIT FUNCTIONS
@@ -487,11 +490,10 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             try {
                 const cssTransform = window.getComputedStyle($shape[0]).transform;
                 if (cssTransform && cssTransform !== 'none') {
-                    const matrixMatch = cssTransform.match(/matrix\(([^)]+)\)/);
+                    const matrixMatch = cssTransform.match(MATRIX_PAT);
                     if (matrixMatch) {
-                        const values = matrixMatch[1].split(',').map(v => parseFloat(v.trim()));
-                        const translateX = values[4];
-                        const translateY = values[5];
+                        const translateX = parseFloat(matrixMatch[2]);
+                        const translateY = parseFloat(matrixMatch[3]);
                         const newTransform = `translate(${translateX}px, ${translateY}px) scale(${scaleFactor}, ${scaleFactor})`;
                         $shape.css('transform', newTransform);
                     }
@@ -666,11 +668,13 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             $('.state-shape').on('mouseenter', function() {
                 const stateAbbr = $(this).attr('id').replace('state-shape-', '');
                 const $offshoreBox = $(`#offshore-box-${stateAbbr}`);
+                const cssTransform = window.getComputedStyle($(this)[0]).transform;
+                const cssScale = parseFloat(cssTransform.match(MATRIX_PAT)[1]);
 
                 $(this).data('hovering', true);
                 $(this).css({
                     'stroke': MAP_MOUSEOVER_COLOR,
-                    'stroke-width': MAP_MOUSEOVER_WIDTH
+                    'stroke-width': MAP_MOUSEOVER_WIDTH / cssScale
                 });
                 if ($offshoreBox.length > 0) {
                     $offshoreBox.css({
@@ -702,6 +706,8 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             $('.offshore-box').on('mouseenter', function() {
                 const stateAbbr = $(this).attr('id').replace('offshore-box-', '');
                 const $shape = $(`#state-shape-${stateAbbr}`);
+                const cssTransform = window.getComputedStyle($shape[0]).transform;
+                const cssScale = parseFloat(cssTransform.match(MATRIX_PAT)[1]);
 
                 $(this).data('hovering', true);
                 $(this).css({
@@ -711,7 +717,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                 if ($shape.length > 0) {
                     $shape.css({
                         'stroke': MAP_MOUSEOVER_COLOR,
-                        'stroke-width': MAP_MOUSEOVER_WIDTH
+                        'stroke-width': MAP_MOUSEOVER_WIDTH / cssScale
                     });
                 }
             }).on('mouseleave', function() {
