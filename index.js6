@@ -294,8 +294,6 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                 return datarow;
             });
 
-            console.log("results.data", results.data);
-
             if (CURRENT_VIEW.boundtype === 'ushouse') {
                 const seatBiases = {};
                 const stateAreas = {};
@@ -317,13 +315,11 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                         rawScales[`${datarow.stateabrev}-${datarow.cycle}`] = Math.sqrt(seatBias * 1e11 / stateArea);
                     }
                 );
-                console.log("rawScales", rawScales);
 
                 // Find the P10 and P90 raw scales to guide visual range
                 const scalesList = Object.values(rawScales).sort(function (a, b) { return a - b });
                 const p90RawScale = scalesList[Math.round(scalesList.length * 0.9)];
                 const p10RawScale = scalesList[Math.round(scalesList.length * 0.1)];
-                console.log(scalesList);
                 console.log(`p10RawScale ${p10RawScale.toFixed(2)}, p90RawScale ${p90RawScale.toFixed(2)}`);
 
                 // Set bounds for visual scale range
@@ -347,8 +343,9 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                         stateScale = (stateScale * (maxScaleFactor - minScaleFactor)) + minScaleFactor;
 
                         datarow.stateScale = stateScale;
-                        const rawScale = rawScales[`${datarow.stateabrev}-${datarow.cycle}`];
-                        console.log(`${datarow.stateabrev}-${datarow.cycle}: stateScale ${stateScale.toFixed(2)} from rawScales ${rawScale.toFixed(2)} ${clamped ? '(clamped)' : ''}`);
+
+                        // const key = `${datarow.stateabrev}-${datarow.cycle}`;
+                        // console.log(`${key}: stateScale ${stateScale.toFixed(2)} from rawScales ${rawScales[key].toFixed(2)} ${clamped ? '(clamped)' : ''}`);
                     }
                 );
             }
