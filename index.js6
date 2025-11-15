@@ -294,10 +294,66 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                 return datarow;
             });
 
+            if (CURRENT_VIEW.boundtype === 'ushouse') {
+                const seatBiases = {};
+                const stateAreas = {};
+                const rawScales = {};
+                results.data.forEach(function (datarow) {
+                        const value = parseFloat(datarow.EG);
+                        const seats = parseInt(datarow.seats);
+
+                        if (value === MAP_NODATA_VALUE || value === undefined || !seats) return;
+
+                        // Calculate seat bias impact values: abs(bias) * seats
+                        const seatBias = Math.abs(value) * seats;
+
+                        // Look up raw state areas to normalize scales
+                        const $shape = $(`#state-shape-${datarow.stateabrev}`);
+                        const stateArea = parseFloat($shape.attr('data-area')) || 1;
+
+                        // Dimensionless raw scale that we'll adjust later
+                        rawScales[`${datarow.stateabrev}-${datarow.cycle}`] = Math.sqrt(seatBias * 1e11 / stateArea);
+                    }
+                );
+
+                // Find the P10 and P90 raw scales to guide visual range
+                const scalesList = Object.values(rawScales).sort(function (a, b) { return a - b });
+                const p90RawScale = scalesList[Math.round(scalesList.length * 0.9)];
+                const p10RawScale = scalesList[Math.round(scalesList.length * 0.1)];
+                console.log(`p10RawScale ${p10RawScale.toFixed(2)}, p90RawScale ${p90RawScale.toFixed(2)}`);
+
+                // Set bounds for visual scale range
+                const minScaleFactor = 0.25;
+                const maxScaleFactor = 1.25;
+
+                // Choose a reasonable visual scale
+                results.data.forEach(function (datarow) {
+                        // Start with just a raw value
+                        let stateScale = rawScales[`${datarow.stateabrev}-${datarow.cycle}`];
+                        if (stateScale === undefined) return;
+
+                        // Clamp at P10-P90
+                        const clamped = (stateScale < p10RawScale) || (p90RawScale < stateScale);
+                        stateScale = Math.min(Math.max(stateScale, p10RawScale), p90RawScale);
+
+                        // Normalize [P10..P90] to [0..1]
+                        stateScale = (stateScale - p10RawScale) / (p90RawScale - p10RawScale);
+
+                        // Normalize [0..1] to [minScaleFactor..maxScaleFactor]
+                        stateScale = (stateScale * (maxScaleFactor - minScaleFactor)) + minScaleFactor;
+
+                        datarow.stateScale = stateScale;
+
+                        // const key = `${datarow.stateabrev}-${datarow.cycle}`;
+                        // console.log(`${key}: stateScale ${stateScale.toFixed(2)} from rawScales ${rawScales[key].toFixed(2)} ${clamped ? '(clamped)' : ''}`);
+                    }
+                );
+            }
+
             // filter by the year (geography is implicit by which CSV was fetched)
             // and for each row assign the bias score to the state's row in the above
             // this is loop-within-loop as we match arrays to arrays, but P=50 and Q=20ish so it's affordable
-            results = results.data.forEach(function (datarow) {
+            results.data.forEach(function (datarow) {
                 // For ushouse, use different column names
                 if (CURRENT_VIEW.boundtype === 'ushouse') {
                     if (datarow.cycle != CURRENT_VIEW.year) return;  // wrong year; next
@@ -308,6 +364,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                     chartrow.percentrank = null;
                     chartrow.url = datarow.url;
                     chartrow.districts = datarow.districts ? JSON.parse(datarow.districts) : undefined;
+                    chartrow.stateScale = datarow.stateScale;
                 } else {
                     if (datarow.year != CURRENT_VIEW.year) return;  // wrong year; next
                     const chartrow = chartdata.filter((filteringthisonerow) => { return filteringthisonerow.abbr == datarow.state; })[0];
@@ -375,89 +432,19 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
         // Calculate scales for U.S. House view
         let scaleFactors = {};
         if (CURRENT_VIEW.boundtype === 'ushouse') {
-            const seatBiases = {};
-            const stateAreas = {};
-            const rawScales = {};
-            const districtValues = [];
             let biasSeats = 0;
             let totalSeats = 0;
-            let totalVotes = 0;
             data.forEach(function(stateData) {
                 const seats = stateData.seats;
                 if (stateData.value !== MAP_NODATA_VALUE && stateData.value !== undefined && seats) {
-                    // Calculate seat bias impact values: abs(bias) * seats
-                    const seatBias = Math.abs(stateData.value) * seats;
-                    seatBiases[stateData.abbr] = seatBias;
-
-                    // Look up raw state areas to normalize scales
-                    const $shape = $(`#state-shape-${stateData.abbr}`);
-                    stateAreas[stateData.abbr] = parseFloat($shape.attr('data-area')) || 1;
-
-                    // Dimensionless raw scale that we'll adjust later
-                    rawScales[stateData.abbr] = Math.sqrt(seatBias * 1e11 / stateAreas[stateData.abbr]);
-
                     // Accumulate bias weighted by seats for national summary
                     biasSeats += stateData.value * seats;
                     totalSeats += seats;
-
-                    // Also accumulate districtValues to be used if they cover *all* states
-                    if (stateData.districts !== undefined) {
-                        stateData.districts.forEach(function(districtData) {
-                                districtValues.push(districtData);
-                                totalVotes += districtData[2];
-                            }
-                        );
-                    }
                 }
             });
 
-            // Find the P10 and P90 raw scales to guide visual range
-            const scalesList = Object.values(rawScales).sort(function (a, b) { return a - b });
-            const p90RawScale = scalesList[Math.round(scalesList.length * 0.8)];
-            const p10RawScale = scalesList[Math.round(scalesList.length * 0.2)];
-            console.log(scalesList);
-            console.log(`p10RawScale ${p10RawScale.toFixed(2)}, p90RawScale ${p90RawScale.toFixed(2)}`);
-
-            // Set bounds for visual scale range
-            const minScaleFactor = 0.25;
-            const maxScaleFactor = 1.25;
-
-            // Choose a reasonable visual scale
-            Object.keys(seatBiases).forEach(abbr => {
-                // Start with just a raw value
-                let stateScale = rawScales[abbr];
-
-                // Clamp at P10-P90
-                const clamped = (stateScale < p10RawScale) || (p90RawScale < stateScale);
-                stateScale = Math.min(Math.max(stateScale, p10RawScale), p90RawScale);
-
-                // Normalize [P10..P90] to [0..1]
-                stateScale = (stateScale - p10RawScale) / (p90RawScale - p10RawScale);
-
-                // Normalize [0..1] to [minScaleFactor..maxScaleFactor]
-                stateScale = (stateScale * (maxScaleFactor - minScaleFactor)) + minScaleFactor;
-
-                scaleFactors[abbr] = stateScale;
-                console.log(`${abbr}: scaleFactors ${scaleFactors[abbr].toFixed(2)} from rawScales ${rawScales[abbr].toFixed(2)} ${clamped ? '(clamped)' : ''}`);
-            });
-
-            // Update content of #ushouse-legend
-            var nationalEG;
-            if (districtValues.length == totalSeats) {
-                let seatShare = 0;
-                let voteShare = 0;
-                districtValues.forEach(function(districtValue) {
-                        // vote share is turnout-weighted, seat share is not
-                        seatShare += districtValue[0] * 1 / districtValues.length;
-                        voteShare += districtValue[1] * districtValue[2] / totalVotes;
-                    }
-                );
-                // Simplified EG with turnout-weighted shares
-                nationalEG = (seatShare - 0.5) - 2 * (voteShare - 0.5);
-            } else {
-                // Nationwide EG average
-                nationalEG = biasSeats / totalSeats;
-            }
+            // Nationwide EG average
+            const nationalEG = biasSeats / totalSeats;
 
             const biasEval = lookupBias('eg', nationalEG, CURRENT_VIEW.boundtype);
             const absBiasPercent = twoDigits(Math.abs(100 * nationalEG));
@@ -482,8 +469,11 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
 
             if ($shape.length === 0) return; // skip if state not found
 
+            /*
             // Apply scaling for national bias or reset to normal
             const scaleFactor = scaleFactors[stateAbbr] || 1.0;
+            */
+            const scaleFactor = stateData.stateScale;
 
             // CSS transform is a matrix, we need to extract translate values
             // Matrix format: matrix(scaleX, skewY, skewX, scaleY, translateX, translateY)
