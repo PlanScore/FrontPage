@@ -14,6 +14,7 @@ import subprocess
 import sys
 import tempfile
 import time
+import typing
 import urllib.parse
 import urllib.request
 import zipfile
@@ -36,13 +37,17 @@ class District:
     dem_share: float
     total_votes: int
 
+@dataclasses.dataclass
+class GdocsStates:
+    states: dict
+    service: typing.Any
+
 PLAN_URL_PAT = re.compile(r"^https://(?P<stack>dev.)?planscore.org/plan.html\?(?P<id>[\.\w]+)$")
 INDEX_URL_FMT = "https://{bucket}.s3.amazonaws.com/uploads/{id}/index.json"
 STACK_BUCKETS = {None: "planscore", "dev.": "planscore--dev"}
 ELECTION_FIELDS = tuple(f.name for f in dataclasses.fields(Election))
 
 SPREADSHEET_ID = '1rcYOxrr_bqkQWggCeP8W6eYkofl9_Zk0deHv62ilE8Y'
-UPLOAD_SCRIPT = '/Users/migurski/Sites/PlanScore/upload-2026-library-plan.sh'
 
 STATE_ABBREVS = {
     'Alabama': 'AL', 'Alaska': 'AK', 'Arizona': 'AZ', 'Arkansas': 'AR', 'California': 'CA',
@@ -60,7 +65,7 @@ STATE_ABBREVS = {
 
 logging.basicConfig(level=logging.DEBUG, stream=sys.stderr)
 
-def load_google_states(credentials_file: str):
+def load_google_states(credentials_file: str) -> GdocsStates:
     """Load states data from Google Sheets"""
     scope = ['https://www.googleapis.com/auth/spreadsheets']
     credentials = oauth2client.service_account.ServiceAccountCredentials.from_json_keyfile_name(
@@ -87,9 +92,9 @@ def load_google_states(credentials_file: str):
             state_data['_row_index'] = row_idx
             states[abbrev] = state_data
 
-    return states, service
+    return GdocsStates(states, service)
 
-def update_google_sheet_plan_url(service, state_abbrev: str, google_state: dict, new_plan_url: str):
+def update_google_sheet_plan_url(gdocs: GdocsStates, state_abbrev: str, google_state: dict, new_plan_url: str):
     """Update the PlanScore URL in Google Sheets for a given state"""
     row_index = google_state['_row_index']
 
@@ -102,7 +107,7 @@ def update_google_sheet_plan_url(service, state_abbrev: str, google_state: dict,
         'values': [[new_plan_url]]
     }
 
-    service.spreadsheets().values().update(
+    gdocs.service.spreadsheets().values().update(
         spreadsheetId=SPREADSHEET_ID,
         range=cell_range,
         valueInputOption='RAW',
@@ -380,7 +385,7 @@ def upload_new_plan(api_key, plan_name, auth_url, shapefile_url, incumbents):
     finally:
         os.unlink(local_shapefile)
 
-def row2election(api_key: str, service, row: dict, google_states: dict) -> Election:
+def row2election(api_key: str, gdocs: GdocsStates, row: dict) -> Election:
     """
     Process a 2026 election row, checking if it needs to be updated based on Google Sheet data.
     """
@@ -388,7 +393,7 @@ def row2election(api_key: str, service, row: dict, google_states: dict) -> Elect
     plan_url = row.get("url")
 
     # Look up the state in Google Sheets by abbreviation
-    google_state = google_states.get(stateabrev)
+    google_state = gdocs.states.get(stateabrev)
 
     if not google_state:
         logging.debug(f"No Google state found for {stateabrev}, returning as-is")
@@ -446,7 +451,7 @@ def row2election(api_key: str, service, row: dict, google_states: dict) -> Elect
 
     if new_plan_url:
         # Update Google Sheet with the new plan URL
-        update_google_sheet_plan_url(service, stateabrev, google_state, new_plan_url)
+        update_google_sheet_plan_url(gdocs, stateabrev, google_state, new_plan_url)
 
         # Update the row dict to use the new URL
         row = dict(row)
@@ -501,8 +506,8 @@ def planscore2election(plan_url: str, row: dict) -> Election:
 def main(api_key: str, credentials_file: str, filename: str):
     # Load Google Sheets states data
     logging.debug("Loading Google Sheets states data...")
-    google_states, service = load_google_states(credentials_file)
-    logging.debug(f"Loaded {len(google_states)} states from Google Sheets")
+    gdocs = load_google_states(credentials_file)
+    logging.debug(f"Loaded {len(gdocs.states)} states from Google Sheets")
 
     with open(filename, "r") as file1:
         rows = list(csv.DictReader(file1))
@@ -515,7 +520,7 @@ def main(api_key: str, credentials_file: str, filename: str):
     ]
 
     elections += [
-        row2election(api_key, service, row, google_states)
+        row2election(api_key, gdocs, row)
         for row in rows if row.get("cycle") == "2026"
     ]
 
