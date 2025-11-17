@@ -299,22 +299,21 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                 const stateAreas = {};
                 const rawScales = {};
                 results.data.forEach(function (datarow) {
-                        const value = parseFloat(datarow.EG);
-                        const seats = parseInt(datarow.seats);
+                    const value = parseFloat(datarow.EG);
+                    const seats = parseInt(datarow.seats);
 
-                        if (value === MAP_NODATA_VALUE || value === undefined || !seats) return;
+                    if (value === MAP_NODATA_VALUE || value === undefined || !seats) return;
 
-                        // Calculate seat bias impact values: abs(bias) * seats
-                        const seatBias = Math.abs(value) * seats;
+                    // Calculate seat bias impact values: abs(bias) * seats
+                    const seatBias = Math.abs(value) * seats;
 
-                        // Look up raw state areas to normalize scales
-                        const $shape = $(`#state-shape-${datarow.stateabrev}`);
-                        const stateArea = parseFloat($shape.attr('data-area')) || 1;
+                    // Look up raw state areas to normalize scales
+                    const $shape = $(`#state-shape-${datarow.stateabrev}`);
+                    const stateArea = parseFloat($shape.attr('data-area')) || 1;
 
-                        // Dimensionless raw scale that we'll adjust later
-                        rawScales[`${datarow.stateabrev}-${datarow.cycle}`] = Math.sqrt(seatBias * 1e11 / stateArea);
-                    }
-                );
+                    // Dimensionless raw scale that we'll adjust later
+                    rawScales[`${datarow.stateabrev}-${datarow.cycle}`] = Math.sqrt(seatBias * 1e11 / stateArea);
+                });
 
                 // Find the P10 and P90 raw scales to guide visual range
                 const scalesList = Object.values(rawScales).sort(function (a, b) { return a - b });
@@ -328,26 +327,25 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
 
                 // Choose a reasonable visual scale
                 results.data.forEach(function (datarow) {
-                        // Start with just a raw value
-                        let stateScale = rawScales[`${datarow.stateabrev}-${datarow.cycle}`];
-                        if (stateScale === undefined) return;
+                    // Start with just a raw value
+                    let stateScale = rawScales[`${datarow.stateabrev}-${datarow.cycle}`];
+                    if (stateScale === undefined) return;
 
-                        // Clamp at P10-P90
-                        const clamped = (stateScale < p10RawScale) || (p90RawScale < stateScale);
-                        stateScale = Math.min(Math.max(stateScale, p10RawScale), p90RawScale);
+                    // Clamp at P10-P90
+                    const clamped = (stateScale < p10RawScale) || (p90RawScale < stateScale);
+                    stateScale = Math.min(Math.max(stateScale, p10RawScale), p90RawScale);
 
-                        // Normalize [P10..P90] to [0..1]
-                        stateScale = (stateScale - p10RawScale) / (p90RawScale - p10RawScale);
+                    // Normalize [P10..P90] to [0..1]
+                    stateScale = (stateScale - p10RawScale) / (p90RawScale - p10RawScale);
 
-                        // Normalize [0..1] to [minScaleFactor..maxScaleFactor]
-                        stateScale = (stateScale * (maxScaleFactor - minScaleFactor)) + minScaleFactor;
+                    // Normalize [0..1] to [minScaleFactor..maxScaleFactor]
+                    stateScale = (stateScale * (maxScaleFactor - minScaleFactor)) + minScaleFactor;
 
-                        datarow.stateScale = stateScale;
+                    datarow.stateScale = stateScale;
 
-                        // const key = `${datarow.stateabrev}-${datarow.cycle}`;
-                        // console.log(`${key}: stateScale ${stateScale.toFixed(2)} from rawScales ${rawScales[key].toFixed(2)} ${clamped ? '(clamped)' : ''}`);
-                    }
-                );
+                    // const key = `${datarow.stateabrev}-${datarow.cycle}`;
+                    // console.log(`${key}: stateScale ${stateScale.toFixed(2)} from rawScales ${rawScales[key].toFixed(2)} ${clamped ? '(clamped)' : ''}`);
+                });
             }
 
             // filter by the year (geography is implicit by which CSV was fetched)
