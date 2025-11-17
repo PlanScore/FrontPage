@@ -510,8 +510,13 @@ def main(api_key: str, credentials_file: str, filename: str):
     logging.info(f"{rows[:3]}, {rows[-3:]}")
 
     elections = [
-        row2election(api_key, service, row, google_states) if row.get("cycle") == "2026" else Election(*(row.get(f) for f in ELECTION_FIELDS))
-        for row in rows
+        Election(*(row.get(f) for f in ELECTION_FIELDS))
+        for row in rows if row.get("cycle") != "2026"
+    ]
+
+    elections += [
+        row2election(api_key, service, row, google_states)
+        for row in rows if row.get("cycle") == "2026"
     ]
 
     logging.info(f"{elections[:3]}, {elections[-3:]}")
