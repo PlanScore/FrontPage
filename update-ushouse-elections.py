@@ -62,7 +62,7 @@ logging.basicConfig(level=logging.DEBUG, stream=sys.stderr)
 
 def load_google_states(credentials_file: str):
     """Load states data from Google Sheets"""
-    scope = ['https://www.googleapis.com/auth/spreadsheets.readonly']
+    scope = ['https://www.googleapis.com/auth/spreadsheets']
     credentials = oauth2client.service_account.ServiceAccountCredentials.from_json_keyfile_name(
         credentials_file, scope
     )
@@ -77,16 +77,39 @@ def load_google_states(credentials_file: str):
     headers = values[0]
 
     states = {}
-    for row in values[1:]:
+    for row_idx, row in enumerate(values[1:], start=2):  # start=2 because row 1 is headers
         row_padded = row + [''] * (len(headers) - len(row))
         state_data = dict(zip(headers, row_padded))
         state_name = state_data['State Name']
-        # Store by abbreviation for easy lookup
+        # Store by abbreviation for easy lookup, also store row index for updates
         abbrev = STATE_ABBREVS.get(state_name)
         if abbrev:
+            state_data['_row_index'] = row_idx
             states[abbrev] = state_data
 
-    return states
+    return states, service
+
+def update_google_sheet_plan_url(service, state_abbrev: str, google_state: dict, new_plan_url: str):
+    """Update the PlanScore URL in Google Sheets for a given state"""
+    row_index = google_state['_row_index']
+
+    # Column L is the PlanScore URL column (12th column, A=1, B=2, ... L=12)
+    cell_range = f'States!L{row_index}'
+
+    logging.debug(f"Updating Google Sheet {state_abbrev} at {cell_range} with URL: {new_plan_url}")
+
+    body = {
+        'values': [[new_plan_url]]
+    }
+
+    service.spreadsheets().values().update(
+        spreadsheetId=SPREADSHEET_ID,
+        range=cell_range,
+        valueInputOption='RAW',
+        body=body
+    ).execute()
+
+    logging.debug(f"Successfully updated Google Sheet for {state_abbrev}")
 
 def get_plan_incumbents(plan_url):
     """Get incumbents from an existing PlanScore plan"""
@@ -357,7 +380,7 @@ def upload_new_plan(api_key, plan_name, auth_url, shapefile_url, incumbents):
     finally:
         os.unlink(local_shapefile)
 
-def row2election(api_key: str, row: dict, google_states: dict) -> Election:
+def row2election(api_key: str, service, row: dict, google_states: dict) -> Election:
     """
     Process a 2026 election row, checking if it needs to be updated based on Google Sheet data.
     """
@@ -413,7 +436,7 @@ def row2election(api_key: str, row: dict, google_states: dict) -> Election:
     logging.debug(f"  Plan Name: {google_state['Plan Name']}")
     logging.debug(f"  Authoritative URL: {google_state['Authoritative URL']}")
     logging.debug(f"  Shapefile URL: {google_state['Shapefile URL']}")
-    upload_new_plan(
+    new_plan_url = upload_new_plan(
         api_key,
         google_state['Plan Name'],
         google_state['Authoritative URL'],
@@ -421,11 +444,21 @@ def row2election(api_key: str, row: dict, google_states: dict) -> Election:
         new_incumbents
     )
 
-    # For now, return the existing data without the new URL
-    # Later we'll update this to use the new plan
-    if not plan_url:
-        return Election(*(row.get(f) for f in ELECTION_FIELDS))
-    return planscore2election(plan_url, row)
+    if new_plan_url:
+        # Update Google Sheet with the new plan URL
+        update_google_sheet_plan_url(service, stateabrev, google_state, new_plan_url)
+
+        # Update the row dict to use the new URL
+        row = dict(row)
+        row['url'] = new_plan_url
+
+        # Process the new plan to get election data
+        return planscore2election(new_plan_url, row)
+    else:
+        logging.debug(f"{google_state['State Name']} - plan upload failed, using existing data")
+        if not plan_url:
+            return Election(*(row.get(f) for f in ELECTION_FIELDS))
+        return planscore2election(plan_url, row)
 
 def planscore2election(plan_url: str, row: dict) -> Election:
     """Process an existing plan URL to calculate election data"""
@@ -468,7 +501,7 @@ def planscore2election(plan_url: str, row: dict) -> Election:
 def main(api_key: str, credentials_file: str, filename: str):
     # Load Google Sheets states data
     logging.debug("Loading Google Sheets states data...")
-    google_states = load_google_states(credentials_file)
+    google_states, service = load_google_states(credentials_file)
     logging.debug(f"Loaded {len(google_states)} states from Google Sheets")
 
     with open(filename, "r") as file1:
@@ -477,7 +510,7 @@ def main(api_key: str, credentials_file: str, filename: str):
     logging.info(f"{rows[:3]}, {rows[-3:]}")
 
     elections = [
-        row2election(api_key, row, google_states) if row.get("cycle") == "2026" else Election(*(row.get(f) for f in ELECTION_FIELDS))
+        row2election(api_key, service, row, google_states) if row.get("cycle") == "2026" else Election(*(row.get(f) for f in ELECTION_FIELDS))
         for row in rows
     ]
 
