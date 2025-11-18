@@ -116,8 +116,8 @@ def update_google_sheet_plan_url(gdocs: GdocsStates, state_abbrev: str, google_s
 
     logging.debug(f"Successfully updated Google Sheet for {state_abbrev}")
 
-def get_plan_incumbents(plan_url):
-    """Get incumbents from an existing PlanScore plan"""
+def get_plan_details(plan_url) -> tuple[str, datetime.date]:
+    """Get incumbents and score date from an existing PlanScore plan"""
     if not plan_url:
         return None
 
@@ -129,9 +129,11 @@ def get_plan_incumbents(plan_url):
 
     try:
         index_data = json.load(urllib.request.urlopen(index_url))
-        return ''.join(index_data.get("incumbents", []))
+        incumbents = ''.join(index_data.get("incumbents", []))
+        start_datetime = datetime.date.fromtimestamp(index_data.get("start_time"))
+        return incumbents, start_datetime
     except Exception:
-        return None
+        return None, None
 
 def download_shapefile(url):
     """Download shapefile to a temporary location, filtering out ZZ districts if needed"""
@@ -313,8 +315,7 @@ def upload_new_plan(api_key, plan_name, auth_url, shapefile_url, incumbents):
         conn.close()
 
         if not redirect_url:
-            logging.debug("No redirect URL found in S3 response")
-            return None
+            raise Exception("No redirect URL found in S3 response")
 
         logging.debug(f"File uploaded, redirect URL: {redirect_url}")
 
@@ -372,8 +373,7 @@ def upload_new_plan(api_key, plan_name, auth_url, shapefile_url, incumbents):
 
                 # Check if status is False (failed)
                 if status is False:
-                    logging.debug(f"Plan upload failed! Status: False, message: {message}")
-                    return None
+                    raise Exception(f"Plan upload failed! Status: False, message: {message}")
 
                 # Check if status is True (complete)
                 if status is True:
@@ -385,7 +385,7 @@ def upload_new_plan(api_key, plan_name, auth_url, shapefile_url, incumbents):
     finally:
         os.unlink(local_shapefile)
 
-def row2election(api_key: str, gdocs: GdocsStates, row: dict) -> Election:
+def row2election(api_key: str, gdocs: GdocsStates, row: dict) -> typing.Optional[Election]:
     """
     Process a 2026 election row, checking if it needs to be updated based on Google Sheet data.
     """
@@ -397,10 +397,7 @@ def row2election(api_key: str, gdocs: GdocsStates, row: dict) -> Election:
 
     if not google_state:
         logging.debug(f"No Google state found for {stateabrev}, returning as-is")
-        if not plan_url:
-            return Election(*(row.get(f) for f in ELECTION_FIELDS))
-        # Continue with existing processing
-        return planscore2election(plan_url, row)
+        return planscore2election(plan_url, row) if plan_url else None
 
     # Check if we should skip this state
     has_redraw = google_state.get('2026 Redraw', '').strip().upper() == 'Y'
@@ -418,26 +415,23 @@ def row2election(api_key: str, gdocs: GdocsStates, row: dict) -> Election:
     # Decision logic
     if not has_redraw and not filing_deadline_passed:
         logging.debug(f"{google_state['State Name']} - no redraw and filing deadline not passed, skipping")
-        if not plan_url:
-            return Election(*(row.get(f) for f in ELECTION_FIELDS))
-        return planscore2election(plan_url, row)
+        return planscore2election(plan_url, row) if plan_url else None
 
     # Check if incumbents have changed
-    current_incumbents = get_plan_incumbents(google_state.get('PlanScore URL', ''))
+    current_incumbents, score_date = get_plan_details(google_state.get('PlanScore URL', ''))
     new_incumbents = google_state.get('Incumbents', '').strip()
 
-    logging.debug(f"{google_state['State Name']} - checking incumbents")
-    logging.debug(f"  Current: {current_incumbents}")
-    logging.debug(f"  New:     {new_incumbents}")
+    logging.debug(f"{google_state['State Name']} - checking incumbents and score date")
+    logging.debug(f"  Deadline: {filing_deadline}")
+    logging.debug(f"  Current:  {current_incumbents}")
+    logging.debug(f"  New:      {new_incumbents}")
 
-    if current_incumbents == new_incumbents:
-        logging.debug(f"{google_state['State Name']} - incumbents unchanged, skipping")
-        if not plan_url:
-            return Election(*(row.get(f) for f in ELECTION_FIELDS))
-        return planscore2election(plan_url, row)
+    if current_incumbents == new_incumbents and (score_date > filing_deadline or not filing_deadline_passed):
+        logging.debug(f"{google_state['State Name']} - incumbents unchanged and {score_date} new enough or filing deadline not passed, skipping")
+        return planscore2election(plan_url, row) if plan_url else None
 
     # Incumbents have changed, need to upload new plan
-    logging.debug(f"{google_state['State Name']} - incumbents changed, uploading new plan")
+    logging.debug(f"{google_state['State Name']} - incumbents changed or {score_date} too old, uploading new plan")
     logging.debug(f"  Plan Name: {google_state['Plan Name']}")
     logging.debug(f"  Authoritative URL: {google_state['Authoritative URL']}")
     logging.debug(f"  Shapefile URL: {google_state['Shapefile URL']}")
@@ -449,23 +443,17 @@ def row2election(api_key: str, gdocs: GdocsStates, row: dict) -> Election:
         new_incumbents
     )
 
-    if new_plan_url:
-        # Update Google Sheet with the new plan URL
-        update_google_sheet_plan_url(gdocs, stateabrev, google_state, new_plan_url)
+    # Update Google Sheet with the new plan URL
+    update_google_sheet_plan_url(gdocs, stateabrev, google_state, new_plan_url)
 
-        # Update the row dict to use the new URL
-        row = dict(row)
-        row['url'] = new_plan_url
+    # Update the row dict to use the new URL
+    row = dict(row)
+    row['url'] = new_plan_url
 
-        # Process the new plan to get election data
-        return planscore2election(new_plan_url, row)
-    else:
-        logging.debug(f"{google_state['State Name']} - plan upload failed, using existing data")
-        if not plan_url:
-            return Election(*(row.get(f) for f in ELECTION_FIELDS))
-        return planscore2election(plan_url, row)
+    # Process the new plan to get election data
+    return planscore2election(new_plan_url, row)
 
-def planscore2election(plan_url: str, row: dict) -> Election:
+def planscore2election(plan_url: str, row: dict) -> typing.Optional[Election]:
     """Process an existing plan URL to calculate election data"""
     if not (plan_match := PLAN_URL_PAT.match(plan_url)):
         raise ValueError(plan_url)
@@ -520,7 +508,7 @@ def main(api_key: str, credentials_file: str, filename: str):
     ]
 
     elections += [
-        row2election(api_key, gdocs, row)
+        row2election(api_key, gdocs, row) or Election(*(row.get(f) for f in ELECTION_FIELDS))
         for row in rows if row.get("cycle") == "2026"
     ]
 
