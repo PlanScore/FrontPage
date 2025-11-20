@@ -467,11 +467,8 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
 
             if ($shape.length === 0) return; // skip if state not found
 
-            /*
             // Apply scaling for national bias or reset to normal
-            const scaleFactor = scaleFactors[stateAbbr] || 1.0;
-            */
-            const scaleFactor = stateData.stateScale;
+            const scaleFactor = stateData.stateScale || 1.0;
 
             // CSS transform is a matrix, we need to extract translate values
             // Matrix format: matrix(scaleX, skewY, skewX, scaleY, translateX, translateY)
