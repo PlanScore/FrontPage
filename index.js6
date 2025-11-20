@@ -408,7 +408,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
         const stateslug = stateInfo.name.toLowerCase().replace(/\W/g, '_');
         const currview = CURRENT_VIEW.boundtype;
         const moreinfourl = stateInfo.url ? stateInfo.url : `/${stateslug}/#!${CURRENT_VIEW.year}-${plan_or_election}-${currview}`;
-        const curryear = isPrediction ? '2024+<sup>*</sup>' : CURRENT_VIEW.year;
+        const curryear = isPrediction ? '2024+<sup>*</sup>' : (CURRENT_VIEW.year == 2026 ? 2024 : CURRENT_VIEW.year);
         const linkHtml = `(${curryear} Plan)`;
         $('#state-tooltip .link').attr('href', moreinfourl).html(linkHtml);
 
