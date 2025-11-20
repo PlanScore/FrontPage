@@ -119,10 +119,10 @@ def update_google_sheet_plan_url(gdocs: GdocsStates, state_abbrev: str, google_s
 def get_plan_details(plan_url) -> tuple[str, datetime.date]:
     """Get incumbents and score date from an existing PlanScore plan"""
     if not plan_url:
-        return None
+        return None, None
 
     if not (plan_match := PLAN_URL_PAT.match(plan_url)):
-        return None
+        return None, None
 
     plan_bucket = STACK_BUCKETS[plan_match.group("stack")]
     index_url = INDEX_URL_FMT.format(bucket=plan_bucket, id=plan_match.group("id"))
