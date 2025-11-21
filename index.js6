@@ -154,7 +154,8 @@ window.initYearPickers = () => {
     PLAN_YEARS.forEach((year) => {
         // each button has some utility classes so we can call out certain landmark years
         // see also handleResize() which adjusts the full-width spacing behavior
-        const $button = $('<div></div>').attr('data-year', year).prop('title', `Show efficiency gap analysis for ${year}`).appendTo($picker_big);
+        const currYear = year == 2026 ? '2024 (with remaps)' : year;
+        const $button = $('<div></div>').attr('data-year', year).prop('title', `Show efficiency gap analysis for ${currYear}`).appendTo($picker_big);
         if (year % 10 === 0) $button.addClass('decade');
         if (year % 10 === 2) $button.addClass('decplan');
         if (year % 4 === 0)  $button.addClass('presidential');
