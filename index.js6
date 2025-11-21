@@ -132,7 +132,7 @@ window.initYearPickers = () => {
     const $picker_small = $('#yearpicker-small');
     const $year_listing = $picker_small.find('div.readout');
     PLAN_YEARS.forEach((year) => {
-        $(`<span data-year="${year}">${year == 2026 ? '2024+<sup>*</sup>' : year}</span>`).appendTo($year_listing).hide();
+        $(`<span data-year="${year}">${year == 2026 ? '2024+Remaps<sup>*</sup>' : year}</span>`).appendTo($year_listing).hide();
     });
 
     $picker_small.on('click', 'div.nextprev.right', function () {
@@ -154,13 +154,14 @@ window.initYearPickers = () => {
     PLAN_YEARS.forEach((year) => {
         // each button has some utility classes so we can call out certain landmark years
         // see also handleResize() which adjusts the full-width spacing behavior
-        const $button = $('<div></div>').attr('data-year', year).prop('title', `Show efficiency gap analysis for ${year}`).appendTo($picker_big);
+        const currYear = year == 2026 ? '2024 (with remaps)' : year;
+        const $button = $('<div></div>').attr('data-year', year).prop('title', `Show efficiency gap analysis for ${currYear}`).appendTo($picker_big);
         if (year % 10 === 0) $button.addClass('decade');
         if (year % 10 === 2) $button.addClass('decplan');
         if (year % 4 === 0)  $button.addClass('presidential');
 
         if (year == 2026) {
-            $('<span class="currentyear wide-prediction">2024+<sup>*</sup></span>').appendTo($button);
+            $('<span class="currentyear wide-prediction">2024+Remaps<sup>*</sup></span>').appendTo($button);
         } else {
             $('<span class="currentyear"></span>').text(year).appendTo($button);
         }
@@ -408,7 +409,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
         const stateslug = stateInfo.name.toLowerCase().replace(/\W/g, '_');
         const currview = CURRENT_VIEW.boundtype;
         const moreinfourl = stateInfo.url ? stateInfo.url : `/${stateslug}/#!${CURRENT_VIEW.year}-${plan_or_election}-${currview}`;
-        const curryear = isPrediction ? '2024+<sup>*</sup>' : (CURRENT_VIEW.year == 2026 ? 2024 : CURRENT_VIEW.year);
+        const curryear = isPrediction ? '2024+Remaps<sup>*</sup>' : (CURRENT_VIEW.year == 2026 ? 2024 : CURRENT_VIEW.year);
         const linkHtml = `(${curryear} Plan)`;
         $('#state-tooltip .link').attr('href', moreinfourl).html(linkHtml);
 
@@ -447,7 +448,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             const biasEval = lookupBias('eg', nationalEG, CURRENT_VIEW.boundtype);
             const absBiasPercent = twoDigits(Math.abs(100 * nationalEG));
             const absBiasSeats = twoDigits(Math.abs(nationalEG * totalSeats));
-            const currYear = CURRENT_VIEW.year == 2026 ? '2024+<sup>*</sup>' : CURRENT_VIEW.year;
+            const currYear = CURRENT_VIEW.year == 2026 ? '2024+Remaps<sup>*</sup>' : CURRENT_VIEW.year;
             const turnoutNote = CURRENT_VIEW.year == 2026 ? '<sup>†</sup>' : '';
             $('#ushouse-legend .swatch').css({ 'background': biasEval.color });
             $('#ushouse-legend .caption').html(`Total ${currYear} Bias:`);
@@ -620,7 +621,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
 
                         // Position tooltip so tip (at 100, 59.5 in tooltip coordinates) points to shape center
                         // Adjust Y to keep label visible below the tip
-                        const tooltipX = centerX - 120;
+                        const tooltipX = centerX - 130;
                         const tooltipY = centerY - 59.5 - 10;  // Extra 10px above to keep label visible
 
 
