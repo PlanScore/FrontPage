@@ -20,8 +20,7 @@ h1.title {
 
 h2,
 h3,
-.nav-tabs,
-#footnotes {
+.nav-tabs {
   margin-top: 72px;
 }
 
@@ -292,9 +291,9 @@ body.ushouse-selected {
       }
 
       span.currentyear.wide-prediction {
-        width: 48px;
+        width: 98px;
         position: relative;
-        left: -5px;
+        left: -50px;
       }
 
       span.currentyearline {
@@ -370,6 +369,11 @@ body.ushouse-selected {
     position: absolute; top: 0; left: 0;
     width: 100%;
   }
+}
+
+#map-footnotes {
+  font-size: 14px;
+  line-height: 1.4em;
 }
 
 .states-listing {
