@@ -75,7 +75,7 @@ def load_google_states(credentials_file: str) -> GdocsStates:
 
     result = service.spreadsheets().values().get(
         spreadsheetId=SPREADSHEET_ID,
-        range='States!A:L'
+        range='States!A:M'
     ).execute()
 
     values = result.get('values', [])
@@ -98,8 +98,8 @@ def update_google_sheet_plan_url(gdocs: GdocsStates, state_abbrev: str, google_s
     """Update the PlanScore URL in Google Sheets for a given state"""
     row_index = google_state['_row_index']
 
-    # Column L is the PlanScore URL column (12th column, A=1, B=2, ... L=12)
-    cell_range = f'States!L{row_index}'
+    # Column M is the PlanScore URL column (12th column, A=1, B=2, ... M=13)
+    cell_range = f'States!M{row_index}'
 
     logging.debug(f"Updating Google Sheet {state_abbrev} at {cell_range} with URL: {new_plan_url}")
 
