@@ -42,6 +42,8 @@ class GdocsStates:
     states: dict
     service: typing.Any
 
+UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.1 Safari/605.1.15'
+
 PLAN_URL_PAT = re.compile(r"^https://(?P<stack>dev.)?planscore.org/plan.html\?(?P<id>[\.\w]+)$")
 INDEX_URL_FMT = "https://{bucket}.s3.amazonaws.com/uploads/{id}/index.json"
 STACK_BUCKETS = {None: "planscore", "dev.": "planscore--dev"}
@@ -138,7 +140,8 @@ def get_plan_details(plan_url) -> tuple[str, datetime.date]:
 def download_shapefile(url):
     """Download shapefile to a temporary location, filtering out ZZ districts if needed"""
     # Download original shapefile
-    response = urllib.request.urlopen(url)
+    req = urllib.request.Request(url, headers={'User-Agent': UA})
+    response = urllib.request.urlopen(req)
     original_zip = tempfile.NamedTemporaryFile(delete=False, suffix='.zip')
     original_zip.write(response.read())
     original_zip.close()
@@ -253,6 +256,8 @@ def upload_new_plan(api_key, plan_name, auth_url, shapefile_url, incumbents):
     # Download the shapefile
     local_shapefile = download_shapefile(shapefile_url)
     shapefile_filename = shapefile_url.split('/')[-1]
+    if not shapefile_filename.lower().endswith(".zip"):
+        shapefile_filename += ".zip"
 
     try:
         # Step 1: Prepare upload
