@@ -435,8 +435,11 @@ def row2election(api_key: str, gdocs: GdocsStates, row: dict) -> typing.Optional
     logging.debug(f"  Current:  {current_incumbents}")
     logging.debug(f"  New:      {new_incumbents}")
 
-    if current_incumbents == new_incumbents and (score_date > filing_deadline or not filing_deadline_passed):
-        logging.debug(f"{google_state['State Name']} - incumbents unchanged and {score_date} new enough or filing deadline not passed, skipping")
+    if current_incumbents == new_incumbents and score_date > filing_deadline:
+        logging.debug(f"{google_state['State Name']} - incumbents unchanged and {score_date} new enough, skipping")
+        return planscore2election(plan_url, row) if plan_url else None
+    elif current_incumbents == new_incumbents and not filing_deadline_passed:
+        logging.debug(f"{google_state['State Name']} - incumbents unchanged and {score_date} filing deadline not passed, skipping")
         return planscore2election(plan_url, row) if plan_url else None
 
     # Incumbents have changed, need to upload new plan
