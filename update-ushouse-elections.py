@@ -418,9 +418,10 @@ def row2election(api_key: str, gdocs: GdocsStates, row: dict) -> typing.Optional
             logging.debug(f"Could not parse filing deadline: {filing_deadline_str}")
 
     # Decision logic
-    if not has_redraw:
-        logging.debug(f"{google_state['State Name']} - no redraw and we don't care about filing deadline, skipping")
-        return planscore2election(plan_url, row) if plan_url else None
+
+    # if not has_redraw:
+    #     logging.debug(f"{google_state['State Name']} - no redraw and we don't care about filing deadline, skipping")
+    #     return planscore2election(plan_url, row) if plan_url else None
     # if not has_redraw and not filing_deadline_passed:
     #     logging.debug(f"{google_state['State Name']} - no redraw and filing deadline not passed, skipping")
     #     return planscore2election(plan_url, row) if plan_url else None
