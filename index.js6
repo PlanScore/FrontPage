@@ -364,6 +364,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                     chartrow.url = datarow.url;
                     chartrow.districts = datarow.districts ? JSON.parse(datarow.districts) : undefined;
                     chartrow.stateScale = datarow.stateScale;
+                    chartrow.newPlan = datarow.newplan == "yes";
                 } else {
                     if (datarow.year != CURRENT_VIEW.year) return;  // wrong year; next
                     const chartrow = chartdata.filter((filteringthisonerow) => { return filteringthisonerow.abbr == datarow.state; })[0];
