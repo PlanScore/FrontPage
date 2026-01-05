@@ -347,6 +347,13 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                     // const key = `${datarow.stateabrev}-${datarow.cycle}`;
                     // console.log(`${key}: stateScale ${stateScale.toFixed(2)} from rawScales ${rawScales[key].toFixed(2)} ${clamped ? '(clamped)' : ''}`);
                 });
+            } else {
+                // Detect if a plan is new for this state + election, relies on sorting by state
+                var last_plan;
+                for (var datarow of results.data) {
+                    datarow.newplan = datarow.plan != last_plan ? "yes" : "no";
+                    last_plan = datarow.plan;
+                }
             }
 
             // filter by the year (geography is implicit by which CSV was fetched)
@@ -371,6 +378,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                     if (!chartrow) return;  // state not found, skip
                     chartrow.value = parseFloat(datarow.eg_adj_avg);
                     chartrow.percentrank = Math.round(100 * datarow.eg_avg_percentrank).toFixed(0);
+                    chartrow.newPlan = datarow.newplan == "yes";
                 }
             });
             renderMapWithNewData(chartdata);
