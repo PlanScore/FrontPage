@@ -65,6 +65,7 @@ $(document).ready(function () {
     $('.state-shape').addClass('suppress-transition');
     $('.offshore-box').addClass('suppress-transition');
     $('.state-label').addClass('suppress-transition');
+    $('.state-underline').addClass('suppress-transition');
 
     initYearPickers();
     initBoundaryPicker();
@@ -575,6 +576,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                 $('.state-shape').removeClass('suppress-transition');
                 $('.offshore-box').removeClass('suppress-transition');
                 $('.state-label').removeClass('suppress-transition');
+                $('.state-underline').removeClass('suppress-transition');
             }, 100);
         }
 
