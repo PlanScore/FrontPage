@@ -350,9 +350,9 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                     // console.log(`${key}: stateScale ${stateScale.toFixed(2)} from rawScales ${rawScales[key].toFixed(2)} ${clamped ? '(clamped)' : ''}`);
                 });
             } else {
-                // Detect if a plan is new for this state + election, relies on sorting by state
+                // Detect if a plan is new for this state + election
                 var last_plan;
-                for (var datarow of results.data) {
+                for (var datarow of results.data.sort((dr1, dr2) => dr1.code > dr2.code)) {
                     datarow.newplan = datarow.plan != last_plan ? "yes" : "no";
                     last_plan = datarow.plan;
                 }
