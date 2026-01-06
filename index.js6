@@ -532,7 +532,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                 // Use white text for extreme values (beyond ±0.15)
                 // to improve readability over dark backgrounds
                 let labelColor = 'white';
-                if (Math.abs(stateValue) < 0.15 || hasOffshoreBox) {
+                if (Math.abs(stateValue) < 0.12 || hasOffshoreBox) {
                     // Use standard label color for non-extreme values and offshore boxes
                     labelColor = MAP_LABELCOLOR;
                 }
