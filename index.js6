@@ -383,7 +383,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                     if (!chartrow) return;  // state not found, skip
                     chartrow.value = parseFloat(datarow.eg_adj_avg);
                     chartrow.percentrank = Math.round(100 * datarow.eg_avg_percentrank).toFixed(0);
-                    chartrow.midcyclePlan = midCycleplan;
+                    chartrow.midcyclePlan = false; // midCycleplan; // not feeling confident we know state lege midcycle flags
                 }
             });
             renderMapWithNewData(chartdata);
