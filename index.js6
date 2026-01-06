@@ -36,6 +36,7 @@ const MAP_NODATA_VALUE = 999999;
 const MAP_NODATA_FILLCOLOR = '#ffffff';
 const MAP_NODATA_LABELCOLOR = '#cccccc';
 const MAP_BORDER_COLOR = '#6E6E6E';
+const MAP_TRANSPARENT = 'rgba(0, 0, 0, 0)';
 
 // the color of the state labels on the map
 const MAP_LABELSIZE = '9px';
@@ -360,6 +361,9 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             // and for each row assign the bias score to the state's row in the above
             // this is loop-within-loop as we match arrays to arrays, but P=50 and Q=20ish so it's affordable
             results.data.forEach(function (datarow) {
+                // Boolean flag for mid-cycle redistricting on this plan
+                const midCycleplan = (datarow.newplan == "yes") && (CURRENT_VIEW.year % 10 != 2);
+
                 // For ushouse, use different column names
                 if (CURRENT_VIEW.boundtype === 'ushouse') {
                     if (datarow.cycle != CURRENT_VIEW.year) return;  // wrong year; next
@@ -371,14 +375,14 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                     chartrow.url = datarow.url;
                     chartrow.districts = datarow.districts ? JSON.parse(datarow.districts) : undefined;
                     chartrow.stateScale = datarow.stateScale;
-                    chartrow.newPlan = datarow.newplan == "yes";
+                    chartrow.midcyclePlan = midCycleplan;
                 } else {
                     if (datarow.year != CURRENT_VIEW.year) return;  // wrong year; next
                     const chartrow = chartdata.filter((filteringthisonerow) => { return filteringthisonerow.abbr == datarow.state; })[0];
                     if (!chartrow) return;  // state not found, skip
                     chartrow.value = parseFloat(datarow.eg_adj_avg);
                     chartrow.percentrank = Math.round(100 * datarow.eg_avg_percentrank).toFixed(0);
-                    chartrow.newPlan = datarow.newplan == "yes";
+                    chartrow.midcyclePlan = midCycleplan;
                 }
             });
             renderMapWithNewData(chartdata);
@@ -472,6 +476,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             // find the SVG elements for this state
             const $shape = $(`#state-shape-${stateAbbr}`);
             const $label = $(`#state-label-${stateAbbr}`);
+            const $underline = $(`#state-underline-${stateAbbr}`);
             const $offshoreBox = $(`#offshore-box-${stateAbbr}`);
             const hasOffshoreBox = ($offshoreBox.length > 0);
 
@@ -506,6 +511,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                     'stroke-width': '1.0'
                 });
                 $label.css('fill', MAP_NODATA_LABELCOLOR);
+                $underline.css('fill', stateData.midcyclePlan ? MAP_NODATA_LABELCOLOR : MAP_TRANSPARENT);
                 if (hasOffshoreBox) {
                     $offshoreBox.css({
                         'fill': MAP_NODATA_FILLCOLOR,
@@ -530,6 +536,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                     labelColor = MAP_LABELCOLOR;
                 }
                 $label.css('fill', labelColor);
+                $underline.css('fill', stateData.midcyclePlan ? labelColor : MAP_TRANSPARENT);
 
                 if (hasOffshoreBox) {
                     $offshoreBox.css({
