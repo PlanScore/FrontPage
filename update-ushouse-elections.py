@@ -26,6 +26,7 @@ import googleapiclient.discovery
 class Election:
     cycle: str
     stateabrev: str
+    newplan: str
     EG: float
     seats: int
     url: str
@@ -168,7 +169,7 @@ def download_shapefile(url):
                     break
 
         if not layer_name:
-            logging.debug("Could not find layer in zip, using original")
+            logging.debug(f"Could not find layer in zip, using original {repr(original_zip.name)}")
             return original_zip.name
 
         shp_path = f"{vsizip_path}/{layer_name}.shp"
@@ -494,6 +495,7 @@ def planscore2election(plan_url: str, row: dict) -> typing.Optional[Election]:
     return Election(
         row.get("cycle"),
         row.get("stateabrev"),
+        row.get("newplan"),
         round(efficiency_gap, 3),
         row.get("seats"),
         row.get("url"),
