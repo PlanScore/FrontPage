@@ -4,11 +4,13 @@ import datetime
 import json
 import logging
 import sys
-import typing
 import urllib.request
 
 import oauth2client.service_account
 import googleapiclient.discovery
+import numpy as np
+from scipy.special import expit
+from scipy.optimize import root_scalar
 
 SPREADSHEET_ID = '1rcYOxrr_bqkQWggCeP8W6eYkofl9_Zk0deHv62ilE8Y'
 PLAN_URL_PAT_STR = r"^https://(?P<stack>dev.)?planscore.org/plan.html\?(?P<id>[\.\w]+)$"
@@ -30,6 +32,48 @@ STATE_ABBREVS = {
 }
 
 logging.basicConfig(level=logging.DEBUG, stream=sys.stderr)
+
+def calculate_district_shifts(districts: list, target_share: float) -> list:
+    """
+    Calculate per-district vote shifts needed to achieve a target nationwide vote share.
+
+    Args:
+        districts: List of district dicts with 'dem_votes' and 'rep_votes'
+        target_share: Target nationwide Democratic vote share (e.g., 0.50 for 50%)
+
+    Returns:
+        List of shift values (in percentage points) for each district
+    """
+    # Extract arrays of votes
+    ndv = np.array([d['dem_votes'] for d in districts])
+    nrv = np.array([d['rep_votes'] for d in districts])
+    turnout = ndv + nrv
+
+    # Compute log-odds where turnout > 0
+    log_odds = np.where(turnout > 0, np.log(ndv) - np.log(nrv), 0)
+
+    # Find the shift value that achieves the target
+    def objective(shift):
+        return np.average(expit(log_odds + shift), weights=turnout) - target_share
+
+    try:
+        result = root_scalar(objective, bracket=[-5, 5], method='brentq')
+        shift = result.root
+    except ValueError:
+        # If bracket doesn't work, try a wider range
+        result = root_scalar(objective, bracket=[-10, 10], method='brentq')
+        shift = result.root
+
+    # Calculate per-district shifts as decimal values
+    # Original vote share
+    original_shares = np.where(turnout > 0, ndv / turnout, 0.5)
+    # New vote share after shift
+    new_shares = expit(log_odds + shift)
+    # Difference as decimal (not percentage points)
+    # e.g., 0.05 instead of 5.0 for a 5 percentage point shift
+    shifts = (new_shares - original_shares)
+
+    return shifts.tolist()
 
 def load_google_service(credentials_file: str):
     """Load Google Sheets service"""
@@ -264,9 +308,35 @@ def create_worksheet(service, worksheet_name: str, row_count: int, column_count:
 
         logging.debug("Applied header formatting")
 
+        # Set column widths for shift columns (H-AF) to 54px
+        width_body = {
+            'requests': [{
+                'updateDimensionProperties': {
+                    'range': {
+                        'sheetId': sheet_id,
+                        'dimension': 'COLUMNS',
+                        'startIndex': 7,  # Column H
+                        'endIndex': 32  # Through column AF
+                    },
+                    'properties': {
+                        'pixelSize': 54
+                    },
+                    'fields': 'pixelSize'
+                }
+            }]
+        }
+
+        service.spreadsheets().batchUpdate(
+            spreadsheetId=SPREADSHEET_ID,
+            body=width_body
+        ).execute()
+
+        logging.debug("Applied column widths to H-AF")
+
         # Apply number formatting to data columns
         # Columns E & F (indices 4, 5): Predicted Dem/Rep Votes - comma separated, no decimals
         # Column G (index 6): Predicted Dem Wins - three decimal places
+        # Columns H-AF (indices 7-31): Shift columns - percentage with 2 decimal places
         number_format_body = {
             'requests': [
                 {
@@ -308,6 +378,27 @@ def create_worksheet(service, worksheet_name: str, row_count: int, column_count:
                         },
                         'fields': 'userEnteredFormat.numberFormat'
                     }
+                },
+                {
+                    # Format columns H-AF (shift columns) as numbers with 3 decimal places
+                    # Values are decimal fractions (e.g., 0.050 for 5% shift)
+                    'repeatCell': {
+                        'range': {
+                            'sheetId': sheet_id,
+                            'startRowIndex': 1,  # Skip header
+                            'startColumnIndex': 7,  # Column H
+                            'endColumnIndex': 32  # Through column AF
+                        },
+                        'cell': {
+                            'userEnteredFormat': {
+                                'numberFormat': {
+                                    'type': 'NUMBER',
+                                    'pattern': '#,##0.000'
+                                }
+                            }
+                        },
+                        'fields': 'userEnteredFormat.numberFormat'
+                    }
                 }
             ]
         }
@@ -317,7 +408,7 @@ def create_worksheet(service, worksheet_name: str, row_count: int, column_count:
             body=number_format_body
         ).execute()
 
-        logging.debug("Applied number formatting to columns E, F, G")
+        logging.debug("Applied number formatting to columns E, F, G, and H-AF")
         return True
 
     except Exception as e:
@@ -329,14 +420,33 @@ def write_predictions_worksheet(service, rows: list, vote_swings_structure: dict
     logging.debug("Writing predictions to Google Sheets...")
 
     # Build headers matching Vote Swings: State Name, Postal Code, FIPS Code, District
-    # Plus our 3 prediction columns
+    # Plus our 3 prediction columns plus 25 shift columns
+    shift_headers = ['R+12', 'R+11', 'R+10', 'R+9', 'R+8', 'R+7', 'R+6', 'R+5', 'R+4', 'R+3', 'R+2', 'R+1',
+                     'Zero',
+                     'D+1', 'D+2', 'D+3', 'D+4', 'D+5', 'D+6', 'D+7', 'D+8', 'D+9', 'D+10', 'D+11', 'D+12']
     headers = ['State Name', 'Postal Code', 'FIPS Code', 'District',
-               'Predicted Dem Votes', 'Predicted Rep Votes', 'Predicted Dem Wins']
+               'Predicted Dem Votes', 'Predicted Rep Votes', 'Predicted Dem Wins'] + shift_headers
+
+    # Calculate all 25 shift columns
+    # Target shares range from 38% (R+12) to 62% (D+12)
+    # R+12 = 50% - 12% = 38%, ..., Zero = 50%, ..., D+12 = 50% + 12% = 62%
+    logging.debug("Calculating logit shifts for 25 scenarios...")
+    shift_columns = {}
+    for i in range(-12, 13):  # -12 to +12 inclusive
+        target_share = 0.50 + (i / 100.0)  # Convert percentage points to decimal
+        if i == 0:
+            # Zero shift - all zeros
+            shift_columns['Zero'] = [0.0] * len(rows)
+        else:
+            header = f'D+{i}' if i > 0 else f'R+{abs(i)}'
+            shifts = calculate_district_shifts(rows, target_share)
+            shift_columns[header] = shifts
+            logging.debug(f"Calculated shifts for {header} (target={target_share:.2%})")
 
     output_rows = [headers]
 
-    for row in rows:
-        output_rows.append([
+    for idx, row in enumerate(rows):
+        output_row = [
             row['state_name'],
             row['state_abbrev'],
             row['fips_code'],
@@ -344,7 +454,11 @@ def write_predictions_worksheet(service, rows: list, vote_swings_structure: dict
             row['dem_votes'],
             row['rep_votes'],
             row['dem_wins']
-        ])
+        ]
+        # Add the 25 shift values for this district
+        for shift_header in shift_headers:
+            output_row.append(shift_columns[shift_header][idx])
+        output_rows.append(output_row)
 
     # Create worksheet name with today's date: "Vote Swings YYYY-MM-DD"
     today = datetime.date.today()
@@ -354,8 +468,8 @@ def write_predictions_worksheet(service, rows: list, vote_swings_structure: dict
     delete_worksheet_if_exists(service, worksheet_name)
 
     # Create the worksheet with exact dimensions and formatting
-    # 436 rows (1 header + 435 districts), 7 columns (4 base + 3 predictions)
-    create_worksheet(service, worksheet_name, row_count=436, column_count=7)
+    # 436 rows (1 header + 435 districts), 32 columns (4 base + 3 predictions + 25 shifts)
+    create_worksheet(service, worksheet_name, row_count=436, column_count=32)
 
     # Write data to the worksheet
     range_name = f"{worksheet_name}!A1"
