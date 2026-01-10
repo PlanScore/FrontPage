@@ -33,7 +33,7 @@ STATE_ABBREVS = {
 
 logging.basicConfig(level=logging.DEBUG, stream=sys.stderr)
 
-def calculate_district_shifts(districts: list, target_share: float) -> list:
+def calculate_district_shifts(districts: list, target_diff: float) -> list:
     """
     Calculate per-district vote shifts needed to achieve a target nationwide vote share.
 
@@ -47,6 +47,8 @@ def calculate_district_shifts(districts: list, target_share: float) -> list:
     # Extract arrays of votes
     ndv = np.array([d['dem_votes'] for d in districts])
     nrv = np.array([d['rep_votes'] for d in districts])
+
+    target_share = ndv.sum() / (ndv.sum() + nrv.sum()) + target_diff
     turnout = ndv + nrv
 
     # Compute log-odds where turnout > 0
@@ -56,13 +58,8 @@ def calculate_district_shifts(districts: list, target_share: float) -> list:
     def objective(shift):
         return np.average(expit(log_odds + shift), weights=turnout) - target_share
 
-    try:
-        result = root_scalar(objective, bracket=[-5, 5], method='brentq')
-        shift = result.root
-    except ValueError:
-        # If bracket doesn't work, try a wider range
-        result = root_scalar(objective, bracket=[-10, 10], method='brentq')
-        shift = result.root
+    result = root_scalar(objective, bracket=[-1, 1], method='brentq')
+    shift = result.root
 
     # Calculate per-district shifts as decimal values
     # Original vote share
@@ -393,7 +390,7 @@ def create_worksheet(service, worksheet_name: str, row_count: int, column_count:
                             'userEnteredFormat': {
                                 'numberFormat': {
                                     'type': 'NUMBER',
-                                    'pattern': '#,##0.000'
+                                    'pattern': '0.0%'
                                 }
                             }
                         },
@@ -433,15 +430,15 @@ def write_predictions_worksheet(service, rows: list, vote_swings_structure: dict
     logging.debug("Calculating logit shifts for 25 scenarios...")
     shift_columns = {}
     for i in range(-12, 13):  # -12 to +12 inclusive
-        target_share = 0.50 + (i / 100.0)  # Convert percentage points to decimal
+        target_diff = (i / 100.0)  # Convert percentage points to decimal
         if i == 0:
             # Zero shift - all zeros
             shift_columns['Zero'] = [0.0] * len(rows)
         else:
             header = f'D+{i}' if i > 0 else f'R+{abs(i)}'
-            shifts = calculate_district_shifts(rows, target_share)
+            shifts = calculate_district_shifts(rows, target_diff)
             shift_columns[header] = shifts
-            logging.debug(f"Calculated shifts for {header} (target={target_share:.2%})")
+            logging.debug(f"Calculated shifts for {header} (target={target_diff:.1%})")
 
     output_rows = [headers]
 
