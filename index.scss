@@ -291,13 +291,7 @@ body.ushouse-selected {
       }
       a.unavailable
       {
-          cursor: not-allowed;
-          path, circle {
-            stroke: #999;
-          }
-          text {
-            fill: #999;
-          }
+          display: none;
       }
       a .hitarea {
           fill: rgba(0, 0, 0, 0);
