@@ -153,8 +153,9 @@ window.initYearPickers = () => {
     });
 
     // yearpicker-big: add click handlers for year selection
+    const $picker_big = $('#yearpicker-big');
     // attach to all year elements in both timeline and future
-    $('#yearpicker-timeline a[id^="yearpicker-"], #yearpicker-future a[id^="yearpicker-"]').on('click', function () {
+    $('#yearpicker-timeline a[id^="yearpicker-"], #yearpicker-future a[id^="yearpicker-"]', $picker_big).on('click', function () {
         const elementId = $(this).attr('id');
         const year = elementId.replace('yearpicker-', '');
         selectYear(year);
@@ -162,7 +163,7 @@ window.initYearPickers = () => {
     });
 
     // yearpicker-big: add click handler for play button
-    $('#yearpicker-playbutton a').click(function () {
+    $('#yearpicker-playbutton a', $picker_big).click(function () {
         yearAnimationToggle();
     });
 };
@@ -794,13 +795,14 @@ window.selectYear = (year, options={}) => {
 
     // UI update: yearpicker-big
     // remove active class from all years and add to the selected one
-    $('#yearpicker-timeline a[id^="yearpicker-"], #yearpicker-future a[id^="yearpicker-"]').removeClass('active');
-    $(`#yearpicker-${year}`).addClass('active');
+    const $picker_big = $('#yearpicker-big');
+    $('#yearpicker-timeline a[id^="yearpicker-"], #yearpicker-future a[id^="yearpicker-"]', $picker_big).removeClass('active');
+    $(`#yearpicker-${year}`, $picker_big).addClass('active');
 
     // UI update: yearpicker-current indicator position and text
     // move the current year indicator to match the selected year's position
     // but hide it if year 2026 is selected (which is in the yearpicker-future SVG)
-    const $current = $('#yearpicker-current');
+    const $current = $('#yearpicker-current', $picker_big);
 
     if (year == 2026) {
         // year 2026 is in yearpicker-future, so hide the current indicator
@@ -808,7 +810,7 @@ window.selectYear = (year, options={}) => {
     } else {
         // show the indicator and position it at the selected year
         $current.show();
-        const $activeYear = $(`#yearpicker-${year}`);
+        const $activeYear = $(`#yearpicker-${year}`, $picker_big);
         if ($activeYear.length > 0) {
             // extract the X position from the active year's circle cx attribute
             const $circle = $activeYear.find('circle');
@@ -925,12 +927,14 @@ window.selectState = (stateabbr, options={}) => {
 };
 
 window.yearAnimationToggle = () => {
+    const $picker_big = $('#yearpicker-big');
+
     if (ANIMATION.timer) {
         clearInterval(ANIMATION.timer);
         ANIMATION.timer = undefined;
 
         // show paused state (play button)
-        $('#yearpicker-playbutton a[data-status="paused"]').removeClass('hidden').siblings().addClass('hidden');
+        $('#yearpicker-playbutton a[data-status="paused"]', $picker_big).removeClass('hidden').siblings().addClass('hidden');
 
         updateAddressHash();  // per 135 #! update explicitly suppressed and explicitly requested on pause
     }
@@ -943,7 +947,7 @@ window.yearAnimationToggle = () => {
         }, 1000 * ANIMATION.delayseconds);
 
         // show playing state (pause button)
-        $('#yearpicker-playbutton a[data-status="playing"]').removeClass('hidden').siblings().addClass('hidden');
+        $('#yearpicker-playbutton a[data-status="playing"]', $picker_big).removeClass('hidden').siblings().addClass('hidden');
     }
 };
 

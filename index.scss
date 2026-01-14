@@ -254,6 +254,8 @@ body.ushouse-selected {
 }
 
 #yearpicker-big {
+    margin-top: 36px;
+    margin-bottom: 36px;
     display: grid;
     grid-template-columns: 35px 1fr 150px;
     grid-template-rows: 65px;
@@ -297,7 +299,7 @@ body.ushouse-selected {
             fill: #999;
           }
       }
-      a rect {
+      a .hitarea {
           fill: rgba(0, 0, 0, 0);
       }
       a.active circle {
@@ -320,6 +322,18 @@ body.ushouse-selected {
       }
       text.below {
           font-size: 16px;
+      }
+    }
+
+    #yearpicker-future {
+      a.active text {
+        fill: white;
+      }
+      a .background {
+        visibility: hidden;
+      }
+      a.active .background {
+        visibility: visible;
       }
     }
 }
