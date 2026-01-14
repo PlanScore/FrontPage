@@ -406,7 +406,7 @@ body.ushouse-selected {
       a rect {
           fill: rgba(0, 0, 0, 0);
       }
-      a:hover circle {
+      a.active circle, a:hover circle {
           fill: #006C90;
       }
     }

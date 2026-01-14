@@ -185,6 +185,9 @@ window.initYearPickers = () => {
     $('#yearpicker-big-playbutton a').click(function () {
         yearAnimationToggle();
     });
+
+    const $picker_new = $('#yearpicker-new');
+    // TODO: hook this all up
 };
 
 window.initBoundaryPicker = () => {
