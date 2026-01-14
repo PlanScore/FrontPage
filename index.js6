@@ -187,7 +187,20 @@ window.initYearPickers = () => {
     });
 
     const $picker_new = $('#yearpicker-new');
-    // TODO: hook this all up
+
+    // yearpicker-new: add click handlers for year selection
+    // attach to all year elements in both timeline-new and thefuture-new
+    $('#timeline-new a[id^="yearpicker-new-"], #thefuture-new a[id^="yearpicker-new-"]').on('click', function () {
+        const elementId = $(this).attr('id');
+        const year = elementId.replace('yearpicker-new-', '');
+        selectYear(year);
+        logToGoogleAnalytics('yearselected', year);
+    });
+
+    // yearpicker-new: add click handler for play button
+    $('#playbutton-new a').click(function () {
+        yearAnimationToggle();
+    });
 };
 
 window.initBoundaryPicker = () => {
@@ -819,6 +832,40 @@ window.selectYear = (year, options={}) => {
     if ($small_button.is(':last-child'))  $nextbutton.addClass('disabled');
     else                                  $nextbutton.removeClass('disabled');
 
+    // UI update: yearpicker-new
+    // remove active class from all years and add to the selected one
+    $('#timeline-new a[id^="yearpicker-new-"], #thefuture-new a[id^="yearpicker-new-"]').removeClass('active');
+    $(`#yearpicker-new-${year}`).addClass('active');
+
+    // UI update: yearpicker-new-current indicator position and text
+    // move the current year indicator to match the selected year's position
+    // but hide it if year 2026 is selected (which is in the thefuture-new SVG)
+    const $current = $('#yearpicker-new-current');
+
+    if (year == 2026) {
+        // year 2026 is in thefuture-new, so hide the current indicator
+        $current.hide();
+    } else {
+        // show the indicator and position it at the selected year
+        $current.show();
+        const $activeYear = $(`#yearpicker-new-${year}`);
+        if ($activeYear.length > 0) {
+            // extract the X position from the active year's circle cx attribute
+            const $circle = $activeYear.find('circle');
+            const cx = $circle.attr('cx');
+
+            if (cx) {
+                // update the current year indicator elements
+                $current.find('line').attr('x1', cx).attr('x2', cx);
+                $current.find('text').attr('x', cx).text(year);
+
+                // position the rect: center it at cx minus half its width (38px / 2 = 19px)
+                // use calc() to handle percentage-based cx values
+                $current.find('rect').attr('x', `calc(${cx} - 19px)`);
+            }
+        }
+    }
+
     // save to the state and refresh the map + data
     CURRENT_VIEW.year = year;
 
@@ -922,7 +969,9 @@ window.yearAnimationToggle = () => {
         clearInterval(ANIMATION.timer);
         ANIMATION.timer = undefined;
 
+        // show paused state (play button) for both play buttons
         $('#yearpicker-big-playbutton a[data-status="paused"]').removeClass('hidden').siblings().addClass('hidden');
+        $('#playbutton-new a[data-status="paused"]').removeClass('hidden').siblings().addClass('hidden');
 
         updateAddressHash();  // per 135 #! update explicitly suppressed and explicitly requested on pause
     }
@@ -934,7 +983,9 @@ window.yearAnimationToggle = () => {
             selectYear(PLAN_YEARS[n], { noHashUpdate: true});
         }, 1000 * ANIMATION.delayseconds);
 
+        // show playing state (pause button) for both play buttons
         $('#yearpicker-big-playbutton a[data-status="playing"]').removeClass('hidden').siblings().addClass('hidden');
+        $('#playbutton-new a[data-status="playing"]').removeClass('hidden').siblings().addClass('hidden');
     }
 };
 
