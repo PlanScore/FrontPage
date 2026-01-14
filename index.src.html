@@ -424,7 +424,16 @@
     {
         display: grid;
         grid-template-columns: 35px 1fr 150px;
-        grid-template-rows: 50px;
+        grid-template-rows: 65px;
+    }
+    #timeline-new line
+    {
+        stroke: black;
+        stroke-width: 1;
+    }
+    #timeline-new g line
+    {
+        stroke-width: 2;
     }
     #timeline-new circle
     {
@@ -435,11 +444,21 @@
     #timeline-new text
     {
         text-anchor: middle;
+        font-family: "AvenirLTPro-Medium", sans-serif;
+    }
+    #timeline-new text.above
+    {
+        fill: white;
+        font-size: 13px;
+    }
+    #timeline-new text.below
+    {
+        font-size: 16px;
     }
     #playbutton-new
     {
         font-size: 30px;
-        line-height: 62px;
+        line-height: 77px;
     }
     #thefuture-new
     {
@@ -451,42 +470,46 @@
     <div id="playbutton-new">
         <i class="glyphicon glyphicon-play"></i>
     </div>
-      <svg id="timeline-new" version="1.1" xmlns="http://www.w3.org/2000/svg" width="100%" height="50">
-        <line x1="0" y1="25" x2="100%" y2="25" style="stroke:black" />
-        <circle cx=" 2.32%" cy="25" r="9" />
-        <text x="2.32%" y="50">1972</text>
-        <circle cx=" 5.89%" cy="25" r="4" />
-        <circle cx=" 9.46%" cy="25" r="4" />
-        <circle cx="13.04%" cy="25" r="4" />
-        <circle cx="16.61%" cy="25" r="4" />
-        <circle cx="20.18%" cy="25" r="9" />
-        <text x="20.18%" y="50">1982</text>
-        <circle cx="23.75%" cy="25" r="4" />
-        <circle cx="27.32%" cy="25" r="4" />
-        <circle cx="30.89%" cy="25" r="4" />
-        <circle cx="34.46%" cy="25" r="4" />
-        <circle cx="38.04%" cy="25" r="9" />
-        <text x="38.04%" y="50">1992</text>
-        <circle cx="41.61%" cy="25" r="4" />
-        <circle cx="45.18%" cy="25" r="4" />
-        <circle cx="48.75%" cy="25" r="4" />
-        <circle cx="52.32%" cy="25" r="4" />
-        <circle cx="55.89%" cy="25" r="9" />
-        <text x="55.89%" y="50">2002</text>
-        <circle cx="59.46%" cy="25" r="4" />
-        <circle cx="63.04%" cy="25" r="4" />
-        <circle cx="66.61%" cy="25" r="4" />
-        <circle cx="70.18%" cy="25" r="4" />
-        <circle cx="73.75%" cy="25" r="9" />
-        <text x="73.75%" y="50">2012</text>
-        <circle cx="77.32%" cy="25" r="4" />
-        <circle cx="80.89%" cy="25" r="4" />
-        <circle cx="84.46%" cy="25" r="4" />
-        <circle cx="88.04%" cy="25" r="4" />
-        <circle cx="91.61%" cy="25" r="9" />
-        <text x="91.61%" y="50">2022</text>
-        <circle cx="95.18%" cy="25" r="4" />
-        <circle cx="98.75%" cy="25" r="4" />
+      <svg id="timeline-new" version="1.1" xmlns="http://www.w3.org/2000/svg" width="100%" height="60">
+        <line x1="0" y1="52%" x2="100%" y2="52%" />
+        <circle cx=" 2.41%" cy="52%" r="9" />
+        <text x="2.41%" y="100%" class="below">1972</text>
+        <circle cx=" 6.11%" cy="52%" r="4" />
+        <circle cx=" 9.81%" cy="52%" r="4" />
+        <circle cx="13.52%" cy="52%" r="4" />
+        <circle cx="17.22%" cy="52%" r="4" />
+        <circle cx="20.93%" cy="52%" r="9" />
+        <text x="20.93%" y="100%" class="below">1982</text>
+        <circle cx="24.63%" cy="52%" r="4" />
+        <circle cx="28.33%" cy="52%" r="4" />
+        <circle cx="32.04%" cy="52%" r="4" />
+        <circle cx="35.74%" cy="52%" r="4" />
+        <circle cx="39.44%" cy="52%" r="9" />
+        <g>
+            <line x1="39.44%" y1="16" x2="39.44%" y2="22" />
+            <rect x="calc(39.44% - 18px)" y="0" width="36" height="16" rx="2" />
+            <text x="39.44%" y="12" class="above">1992</text>
+        </g>
+        <text x="39.44%" y="100%" class="below">1992</text>
+        <circle cx="43.15%" cy="52%" r="4" />
+        <circle cx="46.85%" cy="52%" r="4" />
+        <circle cx="50.56%" cy="52%" r="4" />
+        <circle cx="54.26%" cy="52%" r="4" />
+        <circle cx="57.96%" cy="52%" r="9" />
+        <text x="57.96%" y="100%" class="below">2002</text>
+        <circle cx="61.67%" cy="52%" r="4" />
+        <circle cx="65.37%" cy="52%" r="4" />
+        <circle cx="69.07%" cy="52%" r="4" />
+        <circle cx="72.78%" cy="52%" r="4" />
+        <circle cx="76.48%" cy="52%" r="9" />
+        <text x="76.48%" y="100%" class="below">2012</text>
+        <circle cx="80.19%" cy="52%" r="4" />
+        <circle cx="83.89%" cy="52%" r="4" />
+        <circle cx="87.59%" cy="52%" r="4" />
+        <circle cx="91.30%" cy="52%" r="4" />
+        <circle cx="95.00%" cy="52%" r="9" />
+        <text x="95.00%" y="100%" class="below">2022</text>
+        <circle cx="98.70%" cy="52%" r="4" />
       </svg>
     <div id="thefuture-new">
         2026
