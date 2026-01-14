@@ -426,43 +426,48 @@
         grid-template-columns: 35px 1fr 150px;
         grid-template-rows: 65px;
     }
-    #timeline-new line
+    #yearpicker-new svg line, #yearpicker-new svg path
     {
         stroke: black;
         stroke-width: 1;
+        fill: none;
     }
     #timeline-new g line
     {
         stroke-width: 2;
     }
-    #timeline-new circle
+    #yearpicker-new svg circle
     {
         fill: white;
         stroke: black;
         stroke-width: 2;
         transition: fill 0.1s ease-in-out;
     }
-    #timeline-new a
+    #yearpicker-new svg a
     {
         cursor: pointer;
+        text-decoration: none;
     }
-    #timeline-new a rect
+    #yearpicker-new svg a rect
     {
         fill: rgba(0, 0, 0, 0);
     }
-    #timeline-new a:hover circle
+    #yearpicker-new svg text
+    {
+        font-family: "AvenirLTPro-Medium", sans-serif;
+        font-size: 13px;
+    }
+    #yearpicker-new svg a:hover circle
     {
         fill: #006C90;
     }
     #timeline-new text
     {
         text-anchor: middle;
-        font-family: "AvenirLTPro-Medium", sans-serif;
     }
     #timeline-new text.above
     {
         fill: white;
-        font-size: 13px;
     }
     #timeline-new text.below
     {
@@ -473,11 +478,6 @@
         font-size: 30px;
         line-height: 77px;
         cursor: pointer;
-    }
-    #thefuture-new
-    {
-        background-color: #f90;
-        height: 100px;
     }
   </style>
   <div id="yearpicker-new">
@@ -548,9 +548,23 @@
         </a>
         <a><rect x="96.85%" y="20" width="3.70%" height="24" /><circle cx="98.70%" cy="32" r="4" /></a>
       </svg>
-    <div id="thefuture-new">
-        2026
-    </div>
+      <svg id="thefuture-new" version="1.1" xmlns="http://www.w3.org/2000/svg" width="100%" height="100">
+        <!-- Top path -->
+        <a>
+            <path d="M 0 32 C 16 32, 16 16, 32 16 L 36 16" />
+            <rect x="20" y="8" width="130" height="20" />
+            <circle cx="36" cy="16" r="4" />
+            <text x="46" y="20">2024 + Remaps</text>
+        </a>
+
+        <!-- Bottom path -->
+        <a>
+            <path d="M 0 32 C 16 32, 16 36, 32 36 L 36 36" />
+            <rect x="20" y="28" width="130" height="50" />
+            <circle cx="36" cy="36" r="4" />
+            <text x="46" y="40">2026 Predictions</text>
+        </a>
+      </svg>
   </div>
   <!----------------------------------------------------------------------------------->
   <div class="row hidden-xs" id="yearpicker-big-wrapper">
