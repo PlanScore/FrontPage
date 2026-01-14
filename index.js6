@@ -105,7 +105,7 @@ window.initStatePopup = () => {
     $('#stateinfo-popup').click(function (event) {
         event.stopPropagation();
     });
-    $('#yearpicker-big-wrapper').click(function (event) {  // the yearpicker line AND the play/pause button
+    $('#yearpicker-big').click(function (event) {  // the yearpicker timeline AND the play/pause button
         event.stopPropagation();
     });
     $('#yearpicker-small').click(function (event) {
@@ -152,53 +152,17 @@ window.initYearPickers = () => {
         logToGoogleAnalytics('yearselected', year);
     });
 
-    const $picker_big = $('#yearpicker-big');
-    PLAN_YEARS.forEach((year) => {
-        // each button has some utility classes so we can call out certain landmark years
-        // see also handleResize() which adjusts the full-width spacing behavior
-        const currYear = year == 2026 ? '2024 (with remaps)' : year;
-        const $button = $('<div></div>').attr('data-year', year).prop('title', `Show efficiency gap analysis for ${currYear}`).appendTo($picker_big);
-        if (year % 10 === 0) $button.addClass('decade');
-        if (year % 10 === 2) $button.addClass('decplan');
-        if (year % 4 === 0)  $button.addClass('presidential');
-
-        if (year == 2026) {
-            $('<span class="currentyear wide-prediction">2024+Remaps<sup>*</sup></span>').appendTo($button);
-        } else {
-            $('<span class="currentyear"></span>').text(year).appendTo($button);
-        }
-        $('<span class="currentyearline"></span>').appendTo($button);
-
-        $('<a></a>').appendTo($button); // for styling and as a click magnet
-
-        if (year % 10 === 2) {  // per 151 decennial plans come out the next cycle
-            $('<span class="yearlabel"></span>').text(year).appendTo($button);
-        }
-    });
-    $picker_big.on('click', 'div', function () {
-        const year = $(this).attr('data-year');
-        selectYear(year);
-        logToGoogleAnalytics('yearselected', year);
-    });
-
-    // the big year picker also has a play/pause button to toggle the playing/paused status
-    $('#yearpicker-big-playbutton a').click(function () {
-        yearAnimationToggle();
-    });
-
-    const $picker_new = $('#yearpicker-new');
-
-    // yearpicker-new: add click handlers for year selection
-    // attach to all year elements in both timeline-new and thefuture-new
-    $('#timeline-new a[id^="yearpicker-new-"], #thefuture-new a[id^="yearpicker-new-"]').on('click', function () {
+    // yearpicker-big: add click handlers for year selection
+    // attach to all year elements in both timeline and future
+    $('#yearpicker-timeline a[id^="yearpicker-"], #yearpicker-future a[id^="yearpicker-"]').on('click', function () {
         const elementId = $(this).attr('id');
-        const year = elementId.replace('yearpicker-new-', '');
+        const year = elementId.replace('yearpicker-', '');
         selectYear(year);
         logToGoogleAnalytics('yearselected', year);
     });
 
-    // yearpicker-new: add click handler for play button
-    $('#playbutton-new a').click(function () {
+    // yearpicker-big: add click handler for play button
+    $('#yearpicker-playbutton a').click(function () {
         yearAnimationToggle();
     });
 };
@@ -817,10 +781,6 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
 };
 
 window.selectYear = (year, options={}) => {
-    // UI update: big/desktop yearpicker
-    // add class to the DIV so as to style elements: colored fill, visible label, ...
-    $('#yearpicker-big div').removeClass('active').filter(`[data-year="${year}"]`).addClass('active');
-
     // UI update: small/mobile yearpicker
     // if the selected year is the first/last then show/hide the prev/next buttons
     const $small_button = $('#yearpicker-small span').hide().filter(`[data-year="${year}"]`).show();
@@ -832,23 +792,23 @@ window.selectYear = (year, options={}) => {
     if ($small_button.is(':last-child'))  $nextbutton.addClass('disabled');
     else                                  $nextbutton.removeClass('disabled');
 
-    // UI update: yearpicker-new
+    // UI update: yearpicker-big
     // remove active class from all years and add to the selected one
-    $('#timeline-new a[id^="yearpicker-new-"], #thefuture-new a[id^="yearpicker-new-"]').removeClass('active');
-    $(`#yearpicker-new-${year}`).addClass('active');
+    $('#yearpicker-timeline a[id^="yearpicker-"], #yearpicker-future a[id^="yearpicker-"]').removeClass('active');
+    $(`#yearpicker-${year}`).addClass('active');
 
-    // UI update: yearpicker-new-current indicator position and text
+    // UI update: yearpicker-current indicator position and text
     // move the current year indicator to match the selected year's position
-    // but hide it if year 2026 is selected (which is in the thefuture-new SVG)
-    const $current = $('#yearpicker-new-current');
+    // but hide it if year 2026 is selected (which is in the yearpicker-future SVG)
+    const $current = $('#yearpicker-current');
 
     if (year == 2026) {
-        // year 2026 is in thefuture-new, so hide the current indicator
+        // year 2026 is in yearpicker-future, so hide the current indicator
         $current.hide();
     } else {
         // show the indicator and position it at the selected year
         $current.show();
-        const $activeYear = $(`#yearpicker-new-${year}`);
+        const $activeYear = $(`#yearpicker-${year}`);
         if ($activeYear.length > 0) {
             // extract the X position from the active year's circle cx attribute
             const $circle = $activeYear.find('circle');
@@ -969,9 +929,8 @@ window.yearAnimationToggle = () => {
         clearInterval(ANIMATION.timer);
         ANIMATION.timer = undefined;
 
-        // show paused state (play button) for both play buttons
-        $('#yearpicker-big-playbutton a[data-status="paused"]').removeClass('hidden').siblings().addClass('hidden');
-        $('#playbutton-new a[data-status="paused"]').removeClass('hidden').siblings().addClass('hidden');
+        // show paused state (play button)
+        $('#yearpicker-playbutton a[data-status="paused"]').removeClass('hidden').siblings().addClass('hidden');
 
         updateAddressHash();  // per 135 #! update explicitly suppressed and explicitly requested on pause
     }
@@ -983,9 +942,8 @@ window.yearAnimationToggle = () => {
             selectYear(PLAN_YEARS[n], { noHashUpdate: true});
         }, 1000 * ANIMATION.delayseconds);
 
-        // show playing state (pause button) for both play buttons
-        $('#yearpicker-big-playbutton a[data-status="playing"]').removeClass('hidden').siblings().addClass('hidden');
-        $('#playbutton-new a[data-status="playing"]').removeClass('hidden').siblings().addClass('hidden');
+        // show playing state (pause button)
+        $('#yearpicker-playbutton a[data-status="playing"]').removeClass('hidden').siblings().addClass('hidden');
     }
 };
 

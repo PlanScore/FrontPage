@@ -218,124 +218,6 @@ body.ushouse-selected {
   }
 }
 
-#yearpicker-big-wrapper {
-  font-size: 14px;
-  line-height: 20px;
-  margin-bottom: 36px;
-  margin-top: 36px;
-
-  #yearpicker-big-playbutton {
-    padding-right: 0; /* in a row, but here we want the left and right sides as close as feasible */
-    line-height: 67px;
-    width: 50px;  /* we want responsive row, but to force width; see also #yearpicker-big width */
-    top: 7px;
-
-    a {
-      font-size: 30px;
-      text-decoration: none;
-      color: $navy;
-    }
-  }
-
-  #yearpicker-big {
-    position: relative;
-    height: 35px;
-    top: 3px;
-    z-index: 1;
-    padding-left: 0; /* in a row, but here we want the left and right sides as close as feasible */
-    width: calc(100% - 50px);  /* we want responsive row, but to force width; see also #yearpicker-big-playbutton width */
-
-    div {  /* structure is a series of rectangular DIVs, each one containing a A for the visible circle */
-      cursor: pointer;
-      display: inline;
-      float:left;
-      position: relative; /* so we can absolutely position the .currentyearline */
-      top: 1px;
-      text-align: center;
-
-      a {
-        background-color: white;
-        border: 2px solid $navy;
-        border-radius: 50%;
-        display: inline-block;
-        height: 10px;
-        vertical-align: middle;
-        width: 10px;
-
-        &:hover {
-          background-color: $blue-clc;
-        }
-
-        @media screen and (-webkit-min-device-pixel-ratio:0) { /* Chrome and Safari only: the year-beads are off-vertical by 1px */
-          margin-top: 1px;
-        }
-      }
-
-      span.yearlabel {  /* year labels */
-        display: block;
-        color: $navy;
-        font-size: 16px;
-        margin-top: 2px;
-      }
-
-      span.currentyear {
-        display: inline-block;
-        width: 38px;
-        font-size: 13px;
-        height: 17px;  /* contrived to fit font size */
-        background-color: $navy;
-        color: white;
-        border-radius: 3px;
-        text-align: center;
-        opacity: 0;  /* see div.active subclass below */
-      }
-
-      span.currentyear.wide-prediction {
-        width: 98px;
-        position: relative;
-        left: -50px;
-      }
-
-      span.currentyearline {
-        background-color: $navy;
-        display: inline-block;
-        height: 20px;
-        width: 2px;
-        position: absolute;
-        left: 50%;
-        top: 10px;
-        margin-left: -1px; /* half of width */
-        z-index: -1;
-        opacity: 0;  /* see div.active subclass below */
-      }
-    }
-
-    div.decplan a { /* larger dots for decennial plans */
-      width: 20px;
-      height: 20px;
-    }
-
-    div.active {  /* the currently-selected year */
-      a {
-        background-color: $navy;
-      }
-      span.currentyear, span.currentyearline {
-        opacity: 1; /* show/hide for visibility, breaks spacing since we expect these labels to occupy space even when not visible */
-      }
-    }
-
-    &:after {
-      content: "";
-      border-top: solid 1px $navy;
-      display: block;
-      height: 1px;
-      position: relative;
-      top: 31px;
-      width: 100%;
-      z-index:-1;
-    }
-  }
-}
 
 #yearpicker-small {
   position: relative;  /* readout is overlaid atop a 6/6 split, to maximize hit area on both halves */
@@ -371,18 +253,20 @@ body.ushouse-selected {
   }
 }
 
-#yearpicker-new {
+#yearpicker-big {
     display: grid;
     grid-template-columns: 35px 1fr 150px;
     grid-template-rows: 65px;
 
-    #playbutton-new {
+    #yearpicker-playbutton {
         font-size: 30px;
         line-height: 77px;
         cursor: pointer;
     }
 
-    #timeline-new, #thefuture-new {
+    #yearpicker-timeline, #yearpicker-future {
+      overflow: visible;
+
       line, path {
           stroke: black;
           stroke-width: 1;
@@ -403,15 +287,28 @@ body.ushouse-selected {
           cursor: pointer;
           text-decoration: none;
       }
+      a.unavailable
+      {
+          cursor: not-allowed;
+          path, circle {
+            stroke: #999;
+          }
+          text {
+            fill: #999;
+          }
+      }
       a rect {
           fill: rgba(0, 0, 0, 0);
       }
-      a.active circle, a:hover circle {
+      a.active circle {
+          fill: black;
+      }
+      a:hover circle {
           fill: #006C90;
       }
     }
 
-    #timeline-new {
+    #yearpicker-timeline {
       g line {
           stroke-width: 2;
       }
