@@ -371,6 +371,62 @@ body.ushouse-selected {
   }
 }
 
+#yearpicker-new {
+    display: grid;
+    grid-template-columns: 35px 1fr 150px;
+    grid-template-rows: 65px;
+
+    #playbutton-new {
+        font-size: 30px;
+        line-height: 77px;
+        cursor: pointer;
+    }
+
+    #timeline-new, #thefuture-new {
+      line, path {
+          stroke: black;
+          stroke-width: 1;
+          fill: none;
+      }
+      circle {
+          fill: white;
+          stroke: black;
+          stroke-width: 2;
+          transition: fill 0.1s ease-in-out;
+      }
+      text {
+          font-family: "AvenirLTPro-Medium", sans-serif;
+          font-size: 13px;
+      }
+
+      a {
+          cursor: pointer;
+          text-decoration: none;
+      }
+      a rect {
+          fill: rgba(0, 0, 0, 0);
+      }
+      a:hover circle {
+          fill: #006C90;
+      }
+    }
+
+    #timeline-new {
+      g line {
+          stroke-width: 2;
+      }
+      text {
+          text-anchor: middle;
+      }
+      text.above {
+          fill: white;
+      }
+      text.below {
+          font-size: 16px;
+      }
+    }
+}
+
 #map-footnotes {
   font-size: 14px;
   line-height: 1.4em;

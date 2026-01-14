@@ -418,68 +418,7 @@
       </foreignObject>
     </g>
   </svg>
-  <!----------------------------------------------------------------------------------->
-  <style>
-    #yearpicker-new
-    {
-        display: grid;
-        grid-template-columns: 35px 1fr 150px;
-        grid-template-rows: 65px;
-    }
-    #yearpicker-new svg line, #yearpicker-new svg path
-    {
-        stroke: black;
-        stroke-width: 1;
-        fill: none;
-    }
-    #timeline-new g line
-    {
-        stroke-width: 2;
-    }
-    #yearpicker-new svg circle
-    {
-        fill: white;
-        stroke: black;
-        stroke-width: 2;
-        transition: fill 0.1s ease-in-out;
-    }
-    #yearpicker-new svg a
-    {
-        cursor: pointer;
-        text-decoration: none;
-    }
-    #yearpicker-new svg a rect
-    {
-        fill: rgba(0, 0, 0, 0);
-    }
-    #yearpicker-new svg text
-    {
-        font-family: "AvenirLTPro-Medium", sans-serif;
-        font-size: 13px;
-    }
-    #yearpicker-new svg a:hover circle
-    {
-        fill: #006C90;
-    }
-    #timeline-new text
-    {
-        text-anchor: middle;
-    }
-    #timeline-new text.above
-    {
-        fill: white;
-    }
-    #timeline-new text.below
-    {
-        font-size: 16px;
-    }
-    #playbutton-new
-    {
-        font-size: 30px;
-        line-height: 77px;
-        cursor: pointer;
-    }
-  </style>
+
   <div id="yearpicker-new">
     <a id="playbutton-new">
         <i class="glyphicon glyphicon-play"></i>
@@ -566,7 +505,7 @@
         </a>
       </svg>
   </div>
-  <!----------------------------------------------------------------------------------->
+
   <div class="row hidden-xs" id="yearpicker-big-wrapper">
     <div class="col-xs-1" id="yearpicker-big-playbutton">
       <a data-status="paused" href="javascript:void(0);" title="Play an animation showing change in plan skew over time"><i class="glyphicon glyphicon-play"></i></a>
