@@ -418,7 +418,81 @@
       </foreignObject>
     </g>
   </svg>
-
+  <!----------------------------------------------------------------------------------->
+  <style>
+    #yearpicker-new
+    {
+        display: grid;
+        grid-template-columns: 35px 1fr 150px;
+        grid-template-rows: 50px;
+    }
+    #timeline-new circle
+    {
+        fill: white;
+        stroke: black;
+        stroke-width: 2;
+    }
+    #timeline-new text
+    {
+        text-anchor: middle;
+    }
+    #playbutton-new
+    {
+        font-size: 30px;
+        line-height: 62px;
+    }
+    #thefuture-new
+    {
+        background-color: #f90;
+        height: 100px;
+    }
+  </style>
+  <div id="yearpicker-new">
+    <div id="playbutton-new">
+        <i class="glyphicon glyphicon-play"></i>
+    </div>
+      <svg id="timeline-new" version="1.1" xmlns="http://www.w3.org/2000/svg" width="100%" height="50">
+        <line x1="0" y1="25" x2="100%" y2="25" style="stroke:black" />
+        <circle cx=" 2.32%" cy="25" r="9" />
+        <text x="2.32%" y="50">1972</text>
+        <circle cx=" 5.89%" cy="25" r="4" />
+        <circle cx=" 9.46%" cy="25" r="4" />
+        <circle cx="13.04%" cy="25" r="4" />
+        <circle cx="16.61%" cy="25" r="4" />
+        <circle cx="20.18%" cy="25" r="9" />
+        <text x="20.18%" y="50">1982</text>
+        <circle cx="23.75%" cy="25" r="4" />
+        <circle cx="27.32%" cy="25" r="4" />
+        <circle cx="30.89%" cy="25" r="4" />
+        <circle cx="34.46%" cy="25" r="4" />
+        <circle cx="38.04%" cy="25" r="9" />
+        <text x="38.04%" y="50">1992</text>
+        <circle cx="41.61%" cy="25" r="4" />
+        <circle cx="45.18%" cy="25" r="4" />
+        <circle cx="48.75%" cy="25" r="4" />
+        <circle cx="52.32%" cy="25" r="4" />
+        <circle cx="55.89%" cy="25" r="9" />
+        <text x="55.89%" y="50">2002</text>
+        <circle cx="59.46%" cy="25" r="4" />
+        <circle cx="63.04%" cy="25" r="4" />
+        <circle cx="66.61%" cy="25" r="4" />
+        <circle cx="70.18%" cy="25" r="4" />
+        <circle cx="73.75%" cy="25" r="9" />
+        <text x="73.75%" y="50">2012</text>
+        <circle cx="77.32%" cy="25" r="4" />
+        <circle cx="80.89%" cy="25" r="4" />
+        <circle cx="84.46%" cy="25" r="4" />
+        <circle cx="88.04%" cy="25" r="4" />
+        <circle cx="91.61%" cy="25" r="9" />
+        <text x="91.61%" y="50">2022</text>
+        <circle cx="95.18%" cy="25" r="4" />
+        <circle cx="98.75%" cy="25" r="4" />
+      </svg>
+    <div id="thefuture-new">
+        2026
+    </div>
+  </div>
+  <!----------------------------------------------------------------------------------->
   <div class="row hidden-xs" id="yearpicker-big-wrapper">
     <div class="col-xs-1" id="yearpicker-big-playbutton">
       <a data-status="paused" href="javascript:void(0);" title="Play an animation showing change in plan skew over time"><i class="glyphicon glyphicon-play"></i></a>
