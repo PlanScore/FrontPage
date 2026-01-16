@@ -30,6 +30,18 @@ const ANIMATION = {
     timer: undefined,  // if playing, an interval handle from setInterval(); else undefined
 };
 
+// prediction slider state; see initPredictionSlider()
+const PREDICTION_SLIDER = {
+    isDragging: false,
+    initialized: false,
+    minX: null,      // set during initialization from DOM
+    maxX: null,      // set during initialization from DOM
+    centerY: null,   // set during initialization from DOM
+    minValue: -12,   // R+12 (right side)
+    maxValue: 12,    // D+12 (left side)
+    currentValue: 0, // default: Even (center)
+};
+
 // the map uses a choropleth constructed from BELLCURVE_SPREAD
 // but for nodata states, use this NODATA value and this color fill
 const MAP_NODATA_VALUE = 999999;
@@ -166,6 +178,110 @@ window.initYearPickers = () => {
     $('#yearpicker-playbutton a', $picker_big).click(function () {
         yearAnimationToggle();
     });
+};
+
+window.initPredictionSlider = () => {
+    // lazy initialization: only set up once when predict mode is first activated
+    if (PREDICTION_SLIDER.initialized) return;
+    PREDICTION_SLIDER.initialized = true;
+
+    const $thumb = $('#yearpicker-predict-thumb');
+    const $circle = $thumb.find('circle');
+    const $label = $thumb.find('text');
+    const $slider = $('#yearpicker-predict-slider');
+
+    // read slider dimensions from DOM
+    const sliderX = parseFloat($slider.attr('x'));
+    const sliderWidth = parseFloat($slider.attr('width'));
+    const sliderY = parseFloat($slider.attr('y'));
+    const sliderHeight = parseFloat($slider.attr('height'));
+    const circleRadius = parseFloat($circle.attr('r'));
+
+    // calculate bounds with 1px clearance for circle
+    PREDICTION_SLIDER.minX = sliderX + circleRadius + 1;
+    PREDICTION_SLIDER.maxX = sliderX + sliderWidth - circleRadius - 1;
+    PREDICTION_SLIDER.centerY = sliderY + (sliderHeight / 2);
+
+    // original position of thumb in SVG (read from DOM)
+    const originalX = parseFloat($circle.attr('cx'));
+    const originalY = parseFloat($circle.attr('cy'));
+
+    // helper: convert slider position (x coordinate) to prediction value
+    // reversed: left = D (positive), right = R (negative)
+    const positionToValue = (x) => {
+        const fraction = (x - PREDICTION_SLIDER.minX) / (PREDICTION_SLIDER.maxX - PREDICTION_SLIDER.minX);
+        return Math.round(PREDICTION_SLIDER.maxValue - fraction * (PREDICTION_SLIDER.maxValue - PREDICTION_SLIDER.minValue));
+    };
+
+    // helper: convert prediction value to slider position (x coordinate)
+    // reversed: left = D (positive), right = R (negative)
+    const valueToPosition = (value) => {
+        const fraction = (PREDICTION_SLIDER.maxValue - value) / (PREDICTION_SLIDER.maxValue - PREDICTION_SLIDER.minValue);
+        return PREDICTION_SLIDER.minX + fraction * (PREDICTION_SLIDER.maxX - PREDICTION_SLIDER.minX);
+    };
+
+    // helper: format value as label text
+    const formatLabel = (value) => {
+        if (value === 0) return 'Even';
+        return value > 0 ? `D+${value}` : `R+${Math.abs(value)}`;
+    };
+
+    // helper: update thumb position and label using matrix transform
+    const updateThumb = (x) => {
+        // constrain x to slider bounds
+        const constrainedX = Math.max(PREDICTION_SLIDER.minX, Math.min(PREDICTION_SLIDER.maxX, x));
+        const value = positionToValue(constrainedX);
+
+        PREDICTION_SLIDER.currentValue = value;
+
+        // calculate translation offset from original position
+        const translateX = constrainedX - originalX;
+
+        // apply matrix transform to move entire group
+        $thumb.attr('transform', `translate(${translateX}, 0)`);
+
+        // update label text
+        $label.text(formatLabel(value));
+    };
+
+    // prevent thumb click from triggering parent link
+    $thumb.on('click', function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+    });
+
+    // mousedown on thumb: start dragging
+    $thumb.on('mousedown', function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        PREDICTION_SLIDER.isDragging = true;
+        $thumb.css('cursor', 'grabbing');
+    });
+
+    // mousemove on document: update position if dragging
+    $(document).on('mousemove.predictionslider', function (event) {
+        if (!PREDICTION_SLIDER.isDragging) return;
+
+        // get mouse position relative to the SVG
+        const svg = $('#yearpicker-future')[0];
+        const pt = svg.createSVGPoint();
+        pt.x = event.clientX;
+        pt.y = event.clientY;
+        const svgP = pt.matrixTransform(svg.getScreenCTM().inverse());
+
+        updateThumb(svgP.x);
+    });
+
+    // mouseup on document: stop dragging
+    $(document).on('mouseup.predictionslider', function () {
+        if (PREDICTION_SLIDER.isDragging) {
+            PREDICTION_SLIDER.isDragging = false;
+            $thumb.css('cursor', 'pointer');
+        }
+    });
+
+    // initialize thumb to current value
+    updateThumb(valueToPosition(PREDICTION_SLIDER.currentValue));
 };
 
 window.initBoundaryPicker = () => {
@@ -821,6 +937,11 @@ window.selectYear = (year, options={}) => {
     if (year == 2026 || year == "predict") {
         // years past 2024 are in yearpicker-future, so hide the current indicator
         $current.hide();
+
+        // initialize prediction slider when predict mode is activated
+        if (year == "predict") {
+            initPredictionSlider();
+        }
     } else {
         // show the indicator and position it at the selected year
         $current.show();
