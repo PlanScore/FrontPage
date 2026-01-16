@@ -333,28 +333,32 @@ body.ushouse-selected {
         fill: white;
       }
       a {
-        .background, #yearpicker-predict-slider, #yearpicker-predict-thumb {
+        .background, #yearpicker-predict-voteswing {
           visibility: hidden;
         }
       }
       a.active {
-        .background, #yearpicker-predict-slider, #yearpicker-predict-thumb {
+        .background, #yearpicker-predict-voteswing {
           visibility: visible;
         }
       }
-      #yearpicker-predict-slider {
-        fill: white;
-        cursor: pointer;
-      }
-      #yearpicker-predict-thumb {
-        cursor: pointer;
-        circle {
-          fill: black;
-          stroke: none;
-        }
+      #yearpicker-predict-voteswing {
         text {
           font-size: 10px;
-          text-anchor: middle;
+        }
+        #yearpicker-predict-slider {
+          fill: white;
+          cursor: pointer;
+        }
+        #yearpicker-predict-thumb {
+          cursor: pointer;
+          circle {
+            fill: black;
+            stroke: none;
+          }
+          text {
+            text-anchor: middle;
+          }
         }
       }
     }
