@@ -202,8 +202,9 @@ window.initPredictionSlider = () => {
     PREDICTION_SLIDER.maxX = sliderX + sliderWidth - circleRadius - 1;
     PREDICTION_SLIDER.centerY = sliderY + (sliderHeight / 2);
 
-    // original position of thumb in SVG (read from DOM)
-    const originalX = parseFloat($circle.attr('cx'));
+    // original position of thumb in SVG (read from group's transform)
+    const transformMatch = $thumb.attr('transform')?.match(/translate\(([^,]+)/);
+    const originalX = transformMatch ? parseFloat(transformMatch[1]) : 0;
     const originalY = parseFloat($circle.attr('cy'));
 
     // helper: convert slider position (x coordinate) to prediction value
