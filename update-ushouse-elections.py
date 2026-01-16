@@ -30,7 +30,6 @@ class Election:
     EG: float
     seats: int
     url: str
-    districts: str
 
 @dataclasses.dataclass
 class District:
@@ -489,7 +488,6 @@ def planscore2election(plan_url: str, row: dict) -> typing.Optional[Election]:
     # vote share is turnout-weighted, seat share is not
     seat_share = sum(d.dem_wins * 1 / len(districts) for d in districts)
     vote_share = sum(d.dem_share * d.total_votes / state_votes for d in districts)
-    district_values = [(d.dem_wins, d.dem_share, round(d.total_votes)) for d in districts]
     efficiency_gap = (seat_share - .5) - 2 * (vote_share - .5)
 
     return Election(
@@ -499,10 +497,6 @@ def planscore2election(plan_url: str, row: dict) -> typing.Optional[Election]:
         round(efficiency_gap, 3),
         row.get("seats"),
         row.get("url"),
-        json.dumps(
-            [list(map(lambda n: round(n, 3), v)) for v in district_values],
-            separators=(',', ':'),
-        ),
     )
 
 def main(api_key: str, credentials_file: str, filename: str):
@@ -518,12 +512,17 @@ def main(api_key: str, credentials_file: str, filename: str):
 
     elections = [
         Election(*(row.get(f) for f in ELECTION_FIELDS))
-        for row in rows if row.get("cycle") != "2026"
+        for row in rows if row.get("cycle") not in ("2026", "predict")
     ]
 
     elections += [
         row2election(api_key, gdocs, row) or Election(*(row.get(f) for f in ELECTION_FIELDS))
         for row in rows if row.get("cycle") == "2026"
+    ]
+
+    elections += [
+        Election(*(row.get(f) for f in ELECTION_FIELDS))
+        for row in rows if row.get("cycle") == "predict"
     ]
 
     logging.info(f"{elections[:3]}, {elections[-3:]}")

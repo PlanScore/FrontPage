@@ -555,7 +555,6 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                     chartrow.seats = parseInt(datarow.seats);
                     chartrow.percentrank = null;
                     chartrow.url = datarow.url;
-                    chartrow.districts = datarow.districts ? JSON.parse(datarow.districts) : undefined;
                     chartrow.stateScale = datarow.stateScale;
                     chartrow.midcyclePlan = midCycleplan;
                 } else {
