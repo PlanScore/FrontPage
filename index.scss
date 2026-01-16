@@ -326,14 +326,35 @@ body.ushouse-selected {
     }
 
     #yearpicker-future {
+      a.active {
+        cursor: inherit;
+      }
       a.active text {
         fill: white;
       }
-      a .background {
-        visibility: hidden;
+      a {
+        .background, #yearpicker-predict-slider, #yearpicker-predict-thumb {
+          visibility: hidden;
+        }
       }
-      a.active .background {
-        visibility: visible;
+      a.active {
+        .background, #yearpicker-predict-slider, #yearpicker-predict-thumb {
+          visibility: visible;
+        }
+      }
+      #yearpicker-predict-slider {
+        fill: white;
+      }
+      #yearpicker-predict-thumb {
+        cursor: pointer;
+        circle {
+          fill: black;
+          stroke: none;
+        }
+        text {
+          font-size: 10px;
+          text-anchor: middle;
+        }
       }
     }
 }
