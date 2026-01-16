@@ -269,6 +269,21 @@ window.initPredictionSlider = () => {
         event.stopPropagation();
     });
 
+    // click on slider: move thumb to clicked position
+    $slider.on('click', function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        // get mouse position relative to the SVG
+        const svg = $('#yearpicker-future')[0];
+        const pt = svg.createSVGPoint();
+        pt.x = event.clientX;
+        pt.y = event.clientY;
+        const svgP = pt.matrixTransform(svg.getScreenCTM().inverse());
+
+        updateThumb(svgP.x);
+    });
+
     // mousedown on thumb: start dragging
     $thumb.on('mousedown', function (event) {
         event.preventDefault();
