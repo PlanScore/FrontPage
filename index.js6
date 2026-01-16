@@ -231,7 +231,7 @@ window.initPredictionSlider = () => {
     // helper: format value as label text
     const formatLabel = (value) => {
         if (value === 0) return 'Even';
-        return value > 0 ? `D+${value}` : `R+${Math.abs(value)}`;
+        return value > 0 ? `+${value}D` : `+${Math.abs(value)}R`;
     };
 
     // helper: update thumb position and label using matrix transform
@@ -341,8 +341,8 @@ window.initLoadStartingConditions = () => {
     let year = PLAN_YEARS[PLAN_YEARS.length - 1];
     let type = 'ushouse';
 
-    // Match: predict, predict0, predictD12, predictR12, or 4-digit years
-    const year_and_type = /^#!(predict(?:[DR]\d+|\d+)?|\d\d\d\d)\-(\w+)$/.exec(window.location.hash);
+    // Match: predict, predict0, predict12D, predict12R, or 4-digit years
+    const year_and_type = /^#!(predict(?:\d+[DR]|\d+)?|\d\d\d\d)\-(\w+)$/.exec(window.location.hash);
     if (year_and_type) {
         year = year_and_type[1];
         type = year_and_type[2];
@@ -350,10 +350,10 @@ window.initLoadStartingConditions = () => {
 
     // If we have a prediction year from the URL, parse it and set the slider value
     if (isPredictionYear(year)) {
-        const match = year.match(/predict([DR])?(\d+)?/);
+        const match = year.match(/predict(\d+)?([DR])?/);
         if (match) {
-            const party = match[1];  // 'D', 'R', or undefined
-            const value = match[2] ? parseInt(match[2]) : 0;
+            const value = match[1] ? parseInt(match[1]) : 0;
+            const party = match[2];  // 'D', 'R', or undefined
             if (party === 'R') {
                 PREDICTION_SLIDER.currentValue = -value;
             } else if (party === 'D') {
@@ -386,15 +386,15 @@ window.handleResize = () => {
 
 // Helper: Convert prediction slider value to year string
 // value: -12 to +12 (negative = R, positive = D, 0 = Even)
-// returns: "predict0", "predictD12", "predictR12", etc.
+// returns: "predict0", "predict12D", "predict12R", etc.
 window.getPredictionYearString = (value) => {
     if (value === 0) return 'predict0';
-    if (value > 0) return `predictD${value}`;
-    return `predictR${Math.abs(value)}`;
+    if (value > 0) return `predict${value}D`;
+    return `predict${Math.abs(value)}R`;
 };
 
 // Helper: Check if a year string is a prediction year
-// returns: true for "predict", "predict0", "predictD5", "predictR12", etc.
+// returns: true for "predict", "predict0", "predict5D", "predict12R", etc.
 window.isPredictionYear = (year) => {
     return String(year).startsWith('predict');
 };
