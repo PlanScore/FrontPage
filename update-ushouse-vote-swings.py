@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 import argparse
+import concurrent.futures
 import datetime
 import json
 import logging
+import re
 import sys
+import time
 import urllib.request
 
 import oauth2client.service_account
@@ -105,6 +108,142 @@ def load_states_from_google(service) -> dict:
 
     logging.debug(f"Loaded {len(states)} states from Google Sheets")
     return states
+
+def find_latest_district_swings_sheet(service) -> str:
+    """Find the most recent District Swings worksheet by date"""
+    spreadsheet = service.spreadsheets().get(spreadsheetId=SPREADSHEET_ID).execute()
+
+    district_swings_sheets = []
+    for sheet in spreadsheet['sheets']:
+        title = sheet['properties']['title']
+        if title.startswith('District Swings '):
+            # Extract date from "District Swings YYYY-MM-DD"
+            try:
+                date_str = title.replace('District Swings ', '')
+                date_obj = datetime.datetime.strptime(date_str, '%Y-%m-%d').date()
+                district_swings_sheets.append((date_obj, title))
+            except ValueError:
+                continue
+
+    if not district_swings_sheets:
+        raise Exception("No District Swings worksheet found")
+
+    # Sort by date descending and return the most recent
+    district_swings_sheets.sort(reverse=True)
+    latest_sheet = district_swings_sheets[0][1]
+    logging.debug(f"Found latest District Swings sheet: {latest_sheet}")
+    return latest_sheet
+
+def load_district_swings_from_google(service) -> dict:
+    """Load district swings data from the most recent District Swings worksheet"""
+    sheet_name = find_latest_district_swings_sheet(service)
+
+    logging.debug(f"Loading {sheet_name}...")
+    result = service.spreadsheets().values().get(
+        spreadsheetId=SPREADSHEET_ID,
+        range=f'{sheet_name}!A:AF'
+    ).execute()
+
+    values = result.get('values', [])
+    headers = values[0]
+
+    # Columns H-AF are the shift columns (indices 7-31)
+    # Headers are: R+12, R+11, ..., R+1, Zero, D+1, ..., D+11, D+12
+    shift_headers = headers[7:32]  # 25 columns
+
+    # Build mapping of state abbreviation to dict of scenario -> shifts
+    state_swings = {}
+
+    for row in values[1:]:
+        if len(row) < 8:
+            continue
+
+        state_abbrev = row[1]  # Column B: Postal Code
+
+        if state_abbrev not in state_swings:
+            state_swings[state_abbrev] = {header: [] for header in shift_headers}
+
+        # Extract shift values for this district (columns H-AF, indices 7-31)
+        for i, header in enumerate(shift_headers):
+            col_idx = 7 + i
+            if col_idx < len(row) and row[col_idx]:
+                try:
+                    shift_value = float(row[col_idx])
+                    state_swings[state_abbrev][header].append(shift_value)
+                except (ValueError, TypeError):
+                    state_swings[state_abbrev][header].append(0.0)
+            else:
+                state_swings[state_abbrev][header].append(0.0)
+
+    logging.debug(f"Loaded district swings for {len(state_swings)} states")
+    return state_swings
+
+def clone_plan_with_swings(api_key: str, plan_id: str, description: str, vote_swings: list) -> str:
+    """Clone a plan with vote swings via PlanScore API (or dummy mode if no api_key)"""
+    if not api_key:
+        # Dummy mode
+        return "http://example.com/plan.html?dummy"
+
+    api_base = "https://api.planscore.org"
+    clone_url = f"{api_base}/clone"
+
+    payload = {
+        "id": plan_id,
+        "description": description,
+        "vote_swings": vote_swings
+    }
+
+    logging.debug(f"Cloning plan: {description} (ID: {plan_id}) with {len(vote_swings)} vote swings")
+
+    payload_json = json.dumps(payload).encode('utf-8')
+    clone_request = urllib.request.Request(
+        clone_url,
+        data=payload_json,
+        headers={
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json"
+        }
+    )
+
+    try:
+        clone_response = urllib.request.urlopen(clone_request)
+        clone_data = json.load(clone_response)
+
+        plan_url = clone_data.get('plan_url')
+        index_url = clone_data.get('index_url')
+
+        if not plan_url or not index_url:
+            raise Exception(f"Invalid clone response: {clone_data}")
+
+        # Poll until complete
+        logging.debug(f"Waiting for plan to be scored... {plan_url}")
+        poll_count = 0
+        while True:
+            time.sleep(10)
+            poll_count += 1
+
+            index_response = urllib.request.urlopen(index_url)
+            index_data = json.load(index_response)
+            status = index_data.get('status')
+            message = index_data.get('message', '')
+
+            if message:
+                logging.debug(f"Polling ({poll_count})... status: {status}, message: {message}")
+            else:
+                logging.debug(f"Polling ({poll_count})... status: {status}")
+
+            if status is False:
+                raise Exception(f"Plan clone failed! Status: False, message: {message}")
+
+            if status is True:
+                logging.debug(f"Plan scoring complete: {plan_url}")
+                break
+
+        return plan_url
+
+    except Exception as e:
+        logging.error(f"Error cloning plan {description}: {e}")
+        raise
 
 def fetch_district_data(plan_url: str) -> list:
     """Fetch district-level predictions from a PlanScore URL"""
@@ -390,6 +529,286 @@ def create_worksheet(service, worksheet_name: str, row_count: int, column_count:
         logging.error(f"Error creating worksheet: {e}")
         raise
 
+def build_state_swings(service, states: dict, district_swings: dict, api_key: str) -> list:
+    """Build state swings by cloning plans with vote swings, using 10x parallelism"""
+    logging.debug("Building state swings with cloned plans...")
+
+    # Shift headers without "Zero" (24 scenarios)
+    shift_headers = ['R+12', 'R+11', 'R+10', 'R+9', 'R+8', 'R+7', 'R+6', 'R+5', 'R+4', 'R+3', 'R+2', 'R+1',
+                     'D+1', 'D+2', 'D+3', 'D+4', 'D+5', 'D+6', 'D+7', 'D+8', 'D+9', 'D+10', 'D+11', 'D+12']
+
+    # Prepare all clone tasks
+    clone_tasks = []
+    state_rows = []
+
+    for abbrev in sorted(states.keys()):
+        state_data = states[abbrev]
+        plan_url = state_data.get('PlanScore URL', '').strip()
+
+        if not plan_url:
+            logging.debug(f"Skipping {abbrev} - no PlanScore URL")
+            continue
+
+        state_name = state_data.get('State Name', '')
+        plan_name = state_data.get('Plan Name', '')
+
+        # Extract plan ID from URL
+        plan_match = re.match(PLAN_URL_PAT_STR, plan_url)
+        if not plan_match:
+            logging.warning(f"Invalid plan URL for {abbrev}: {plan_url}")
+            continue
+
+        plan_id = plan_match.group("id")
+
+        # Get district swings for this state
+        state_swings = district_swings.get(abbrev)
+        if not state_swings:
+            logging.warning(f"No district swings found for {abbrev}")
+            continue
+
+        # Build row with state info
+        row = {
+            'state_name': state_name,
+            'plan_name': plan_name,
+            'plan_urls': {}
+        }
+
+        # Create clone task for each scenario
+        for header in shift_headers:
+            vote_swings = state_swings.get(header, [])
+            if not vote_swings:
+                logging.warning(f"No vote swings for {abbrev} {header}")
+                continue
+
+            # Format description like "R+12 Illinois 119th Congress Districts"
+            description = f"{header} {plan_name}"
+
+            clone_tasks.append({
+                'api_key': api_key,
+                'plan_id': plan_id,
+                'description': description,
+                'vote_swings': vote_swings,
+                'state_abbrev': abbrev,
+                'header': header
+            })
+
+        state_rows.append(row)
+
+    logging.debug(f"Prepared {len(clone_tasks)} clone tasks for {len(state_rows)} states")
+
+    # Execute clones in parallel with max 10 workers
+    results = {}
+    with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+        future_to_task = {
+            executor.submit(
+                clone_plan_with_swings,
+                task['api_key'],
+                task['plan_id'],
+                task['description'],
+                task['vote_swings']
+            ): task
+            for task in clone_tasks
+        }
+
+        for future in concurrent.futures.as_completed(future_to_task):
+            task = future_to_task[future]
+            try:
+                plan_url = future.result()
+                key = (task['state_abbrev'], task['header'])
+                results[key] = plan_url
+                logging.debug(f"Completed: {task['description']} -> {plan_url}")
+            except Exception as e:
+                logging.error(f"Failed: {task['description']} - {e}")
+                key = (task['state_abbrev'], task['header'])
+                results[key] = ""
+
+    # Fill in the URLs for each state row
+    for row in state_rows:
+        state_name = row['state_name']
+        # Find the state abbreviation
+        abbrev = None
+        for ab, st in states.items():
+            if st.get('State Name') == state_name:
+                abbrev = ab
+                break
+
+        if abbrev:
+            for header in shift_headers:
+                key = (abbrev, header)
+                row['plan_urls'][header] = results.get(key, "")
+
+    logging.debug(f"Built state swings for {len(state_rows)} states")
+    return state_rows
+
+def write_state_swings_worksheet(service, rows: list):
+    """Write state swings to Google Sheets"""
+    logging.debug("Writing state swings to Google Sheets...")
+
+    # Shift headers without "Zero" (24 scenarios)
+    shift_headers = ['R+12', 'R+11', 'R+10', 'R+9', 'R+8', 'R+7', 'R+6', 'R+5', 'R+4', 'R+3', 'R+2', 'R+1',
+                     'D+1', 'D+2', 'D+3', 'D+4', 'D+5', 'D+6', 'D+7', 'D+8', 'D+9', 'D+10', 'D+11', 'D+12']
+
+    # Build headers: State Name, Plan Name, then 24 shift scenarios
+    headers = ['State Name', 'Plan Name'] + [f'{h} PlanScore URL' for h in shift_headers]
+
+    # Build output rows
+    output_rows = [headers]
+
+    for row in rows:
+        output_row = [
+            row['state_name'],
+            row['plan_name']
+        ]
+        # Add the 24 plan URLs
+        for shift_header in shift_headers:
+            output_row.append(row['plan_urls'].get(shift_header, ''))
+        output_rows.append(output_row)
+
+    # Create worksheet name with today's date: "State Swings YYYY-MM-DD"
+    today = datetime.date.today()
+    worksheet_name = f"State Swings {today.strftime('%Y-%m-%d')}"
+
+    # Delete existing worksheet if it exists
+    delete_worksheet_if_exists(service, worksheet_name)
+
+    # Create the worksheet with exact dimensions
+    # 51 rows (1 header + 50 states), 26 columns (2 base + 24 scenarios)
+    logging.debug(f"Creating worksheet: {worksheet_name} (51 rows, 26 columns)")
+
+    body = {
+        'requests': [{
+            'addSheet': {
+                'properties': {
+                    'title': worksheet_name,
+                    'gridProperties': {
+                        'rowCount': 51,
+                        'columnCount': 26,
+                        'frozenRowCount': 1
+                    }
+                }
+            }
+        }]
+    }
+
+    try:
+        result = service.spreadsheets().batchUpdate(
+            spreadsheetId=SPREADSHEET_ID,
+            body=body
+        ).execute()
+
+        sheet_id = result['replies'][0]['addSheet']['properties']['sheetId']
+        logging.debug(f"Successfully created worksheet: {worksheet_name} (ID: {sheet_id})")
+
+        # Apply bold Roboto font to header row
+        format_body = {
+            'requests': [{
+                'repeatCell': {
+                    'range': {
+                        'sheetId': sheet_id,
+                        'startRowIndex': 0,
+                        'endRowIndex': 1
+                    },
+                    'cell': {
+                        'userEnteredFormat': {
+                            'textFormat': {
+                                'fontFamily': 'Roboto',
+                                'bold': True
+                            }
+                        }
+                    },
+                    'fields': 'userEnteredFormat.textFormat'
+                }
+            }]
+        }
+
+        service.spreadsheets().batchUpdate(
+            spreadsheetId=SPREADSHEET_ID,
+            body=format_body
+        ).execute()
+
+        logging.debug("Applied header formatting")
+
+        # Set column widths: A=100px, B=302px, C-Z=138px
+        width_body = {
+            'requests': [
+                {
+                    # Column A: 100px
+                    'updateDimensionProperties': {
+                        'range': {
+                            'sheetId': sheet_id,
+                            'dimension': 'COLUMNS',
+                            'startIndex': 0,
+                            'endIndex': 1
+                        },
+                        'properties': {
+                            'pixelSize': 100
+                        },
+                        'fields': 'pixelSize'
+                    }
+                },
+                {
+                    # Column B: 302px
+                    'updateDimensionProperties': {
+                        'range': {
+                            'sheetId': sheet_id,
+                            'dimension': 'COLUMNS',
+                            'startIndex': 1,
+                            'endIndex': 2
+                        },
+                        'properties': {
+                            'pixelSize': 302
+                        },
+                        'fields': 'pixelSize'
+                    }
+                },
+                {
+                    # Columns C-Z: 138px
+                    'updateDimensionProperties': {
+                        'range': {
+                            'sheetId': sheet_id,
+                            'dimension': 'COLUMNS',
+                            'startIndex': 2,
+                            'endIndex': 26
+                        },
+                        'properties': {
+                            'pixelSize': 138
+                        },
+                        'fields': 'pixelSize'
+                    }
+                }
+            ]
+        }
+
+        service.spreadsheets().batchUpdate(
+            spreadsheetId=SPREADSHEET_ID,
+            body=width_body
+        ).execute()
+
+        logging.debug("Applied column widths: A=100px, B=302px, C-Z=138px")
+
+        # Write data to the worksheet
+        range_name = f"{worksheet_name}!A1"
+
+        body = {
+            'values': output_rows
+        }
+
+        logging.debug(f"Writing {len(output_rows)} rows to {worksheet_name}")
+
+        result = service.spreadsheets().values().update(
+            spreadsheetId=SPREADSHEET_ID,
+            range=range_name,
+            valueInputOption='RAW',
+            body=body
+        ).execute()
+
+        logging.debug(f"Successfully wrote {result.get('updatedCells', 0)} cells")
+        logging.info(f"Data written to worksheet: {worksheet_name}")
+
+    except Exception as e:
+        logging.error(f"Error writing to Google Sheets: {e}")
+        raise
+
 def write_predictions_worksheet(service, rows: list):
     """Write district predictions to Google Sheets"""
     logging.debug("Writing predictions to Google Sheets...")
@@ -469,12 +888,20 @@ def write_predictions_worksheet(service, rows: list):
         logging.error(f"Error writing to Google Sheets: {e}")
         raise
 
-def main(credentials_file: str):
+def main(api_key: str, credentials_file: str):
     # Load Google Sheets service
     service = load_google_service(credentials_file)
 
     # Load states data
     states = load_states_from_google(service)
+
+    # Load district swings data
+    district_swings = load_district_swings_from_google(service)
+
+    # Build and write State Swings worksheet
+    logging.info("Building State Swings worksheet...")
+    state_rows = build_state_swings(service, states, district_swings, api_key)
+    write_state_swings_worksheet(service, state_rows)
 
     # Build district predictions
     rows = build_district_predictions(states)
@@ -487,8 +914,9 @@ def main(credentials_file: str):
     logging.info("Done!")
 
 parser = argparse.ArgumentParser()
+parser.add_argument("api_key", help="PlanScore API key (empty string for dummy mode)")
 parser.add_argument("credentials_file", help="Path to Google service account credentials JSON file")
 
 if __name__ == "__main__":
     args = parser.parse_args()
-    exit(main(args.credentials_file))
+    exit(main(args.api_key, args.credentials_file))
