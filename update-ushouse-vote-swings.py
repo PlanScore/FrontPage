@@ -80,28 +80,6 @@ def load_google_service(credentials_file: str):
     )
     return googleapiclient.discovery.build('sheets', 'v4', credentials=credentials)
 
-def read_vote_swings_worksheet(service) -> dict:
-    """Read the Vote Swings worksheet to understand its structure"""
-    logging.debug("Reading Vote Swings worksheet structure...")
-
-    try:
-        result = service.spreadsheets().values().get(
-            spreadsheetId=SPREADSHEET_ID,
-            range='Vote Swings!A:Z'  # Read all columns
-        ).execute()
-
-        values = result.get('values', [])
-        if values:
-            logging.debug(f"Vote Swings has {len(values)} rows")
-            logging.debug(f"Headers: {values[0] if values else 'None'}")
-            if len(values) > 1:
-                logging.debug(f"Sample row: {values[1]}")
-
-        return {'headers': values[0] if values else [], 'sample_rows': values[1:3] if len(values) > 1 else []}
-    except Exception as e:
-        logging.debug(f"Could not read Vote Swings worksheet: {e}")
-        return {'headers': [], 'sample_rows': []}
-
 def load_states_from_google(service) -> dict:
     """Load states data from Google Sheets"""
     logging.debug("Loading States worksheet...")
@@ -412,11 +390,11 @@ def create_worksheet(service, worksheet_name: str, row_count: int, column_count:
         logging.error(f"Error creating worksheet: {e}")
         raise
 
-def write_predictions_worksheet(service, rows: list, vote_swings_structure: dict):
+def write_predictions_worksheet(service, rows: list):
     """Write district predictions to Google Sheets"""
     logging.debug("Writing predictions to Google Sheets...")
 
-    # Build headers matching Vote Swings: State Name, Postal Code, FIPS Code, District
+    # Build headers for District Swings: State Name, Postal Code, FIPS Code, District
     # Plus our 3 prediction columns plus 25 shift columns
     shift_headers = ['R+12', 'R+11', 'R+10', 'R+9', 'R+8', 'R+7', 'R+6', 'R+5', 'R+4', 'R+3', 'R+2', 'R+1',
                      'Zero',
@@ -457,9 +435,9 @@ def write_predictions_worksheet(service, rows: list, vote_swings_structure: dict
             output_row.append(shift_columns[shift_header][idx])
         output_rows.append(output_row)
 
-    # Create worksheet name with today's date: "Vote Swings YYYY-MM-DD"
+    # Create worksheet name with today's date: "District Swings YYYY-MM-DD"
     today = datetime.date.today()
-    worksheet_name = f"Vote Swings {today.strftime('%Y-%m-%d')}"
+    worksheet_name = f"District Swings {today.strftime('%Y-%m-%d')}"
 
     # Delete existing worksheet if it exists
     delete_worksheet_if_exists(service, worksheet_name)
@@ -495,9 +473,6 @@ def main(credentials_file: str):
     # Load Google Sheets service
     service = load_google_service(credentials_file)
 
-    # Read Vote Swings worksheet structure
-    vote_swings_structure = read_vote_swings_worksheet(service)
-
     # Load states data
     states = load_states_from_google(service)
 
@@ -507,7 +482,7 @@ def main(credentials_file: str):
     logging.info(f"Total districts: {len(rows)}")
 
     # Write to Google Sheets
-    write_predictions_worksheet(service, rows, vote_swings_structure)
+    write_predictions_worksheet(service, rows)
 
     logging.info("Done!")
 
