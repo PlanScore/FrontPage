@@ -5,6 +5,7 @@ import datetime
 import json
 import logging
 import re
+import statistics
 import sys
 import time
 import urllib.request
@@ -285,7 +286,10 @@ def clone_plan_with_swings(api_key: str, plan_id: str, description: str, vote_sw
     payload = {
         "id": plan_id,
         "description": description,
-        "vote_swings": vote_swings
+        "vote_swings": vote_swings,
+        "library_metadata": {
+            "notes": f"This {description} plan simulates a hypothetical national {statistics.mean(vote_swings)} shift using logit shifts for each district."
+        },
     }
 
     # Log statistics about the vote swings being sent
