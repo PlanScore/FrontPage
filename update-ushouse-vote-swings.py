@@ -691,8 +691,8 @@ def build_state_swings(service, states: dict, district_swings: dict, api_key: st
     clone_tasks = []
     state_rows = []
 
-    # TEMPORARY: Hardcode Illinois for Stage 2a testing
-    state_abbrevs = ["IL"]  # Will expand to sorted(states.keys()) in later stages
+    # TEMPORARY: Hardcode Illinois, North Carolina, Utah, and Virginia for Stage 3 testing
+    state_abbrevs = ["IL", "NC", "UT", "VA"]  # Will expand to sorted(states.keys()) in later stages
 
     for abbrev in state_abbrevs:
         state_data = states[abbrev]
