@@ -10,6 +10,7 @@ This is a Javascript project.
 - Always add individual files to git by name, never use general commands like "git add ." or "git add -A"
 - This prevents unwanted files from being committed to the repository
 - Always git add all touched files after making changes
+- In the unlikely event I ask you to commit, include my verbatim prompts in the commit message and always present me with the commit message for approval before doing it
 
 ## Selected Python Scripts
 - Expect a working virtualenv in .venv, use it

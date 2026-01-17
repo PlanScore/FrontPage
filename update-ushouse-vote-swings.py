@@ -6,7 +6,6 @@ import datetime
 import json
 import logging
 import re
-import statistics
 import sys
 import time
 import urllib.request
@@ -300,7 +299,10 @@ def clone_plan_with_swings(api_key: str, plan_id: str, description: str, vote_sw
 
     # Merge base library_metadata with new notes field
     library_metadata = base_library_metadata.copy() if base_library_metadata else {}
-    library_metadata["notes"] = f"This {description} plan simulates a hypothetical national {statistics.mean(vote_swings)} shift using logit shifts for each district."
+    library_metadata["notes"] = f"""
+        This {description} plan is part of a simulated, hypothetical national vote swing using
+        <a href="https://www.cambridge.org/core/journals/political-analysis/article/abs/recalibration-of-predicted-probabilities-using-the-logit-shift-why-does-it-work-and-when-can-it-be-expected-to-work-well/67B3C222EB34BBA376AD730F34038CA4">logit shifts for each district</a>.
+    """
 
     payload = {
         "id": plan_id,
@@ -752,9 +754,9 @@ def build_state_swings(service, states: dict, district_swings: dict, api_key: st
 
     logging.debug(f"Prepared {len(clone_tasks)} clone tasks for {len(state_rows)} states")
 
-    # Execute clones in parallel with max 10 workers
+    # Execute clones in parallel with max 12 workers
     results = {}
-    with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=12) as executor:
         future_to_task = {
             executor.submit(
                 clone_or_reuse_plan,
