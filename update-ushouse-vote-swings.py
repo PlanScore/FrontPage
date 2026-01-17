@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 import concurrent.futures
+import dataclasses
 import datetime
 import json
 import logging
@@ -34,6 +35,18 @@ STATE_ABBREVS = {
     'Texas': 'TX', 'Utah': 'UT', 'Vermont': 'VT', 'Virginia': 'VA', 'Washington': 'WA',
     'West Virginia': 'WV', 'Wisconsin': 'WI', 'Wyoming': 'WY'
 }
+
+@dataclasses.dataclass
+class CloneTask:
+    """Task for cloning or reusing a plan with vote swings"""
+    api_key: str
+    plan_id: str
+    base_plan_url: str
+    existing_url: str
+    description: str
+    vote_swings: list
+    state_abbrev: str
+    header: str
 
 logging.basicConfig(level=logging.DEBUG, stream=sys.stderr)
 
@@ -256,25 +269,27 @@ def load_existing_state_plan_urls(service) -> dict:
     logging.debug(f"Loaded existing plan URLs for {len(state_plan_urls)} states")
     return state_plan_urls
 
-def get_plan_start_time(plan_url: str) -> datetime.date:
-    """Get start_time from plan's index.json"""
+def get_plan_data(plan_url: str) -> dict:
+    """Get start_time and library_metadata from plan's index.json"""
     if not plan_url:
-        return None
+        return {'start_time': None, 'library_metadata': {}}
 
     plan_match = re.match(PLAN_URL_PAT_STR, plan_url)
     if not plan_match:
-        return None
+        return {'start_time': None, 'library_metadata': {}}
 
     plan_bucket = STACK_BUCKETS[plan_match.group("stack")]
     index_url = INDEX_URL_FMT.format(bucket=plan_bucket, id=plan_match.group("id"))
 
     try:
         index_data = json.load(urllib.request.urlopen(index_url))
-        return datetime.date.fromtimestamp(index_data.get("start_time"))
+        start_time = datetime.date.fromtimestamp(index_data.get("start_time")) if index_data.get("start_time") else None
+        library_metadata = index_data.get("library_metadata", {})
+        return {'start_time': start_time, 'library_metadata': library_metadata}
     except Exception:
-        return None
+        return {'start_time': None, 'library_metadata': {}}
 
-def clone_plan_with_swings(api_key: str, plan_id: str, description: str, vote_swings: list) -> str:
+def clone_plan_with_swings(api_key: str, plan_id: str, description: str, vote_swings: list, base_library_metadata: dict = None) -> str:
     """Clone a plan with vote swings via PlanScore API (or dummy mode if no api_key)"""
     if not api_key:
         # Dummy mode
@@ -283,13 +298,15 @@ def clone_plan_with_swings(api_key: str, plan_id: str, description: str, vote_sw
     api_base = "https://api.planscore.org"
     clone_url = f"{api_base}/clone"
 
+    # Merge base library_metadata with new notes field
+    library_metadata = base_library_metadata.copy() if base_library_metadata else {}
+    library_metadata["notes"] = f"This {description} plan simulates a hypothetical national {statistics.mean(vote_swings)} shift using logit shifts for each district."
+
     payload = {
         "id": plan_id,
         "description": description,
         "vote_swings": vote_swings,
-        "library_metadata": {
-            "notes": f"This {description} plan simulates a hypothetical national {statistics.mean(vote_swings)} shift using logit shifts for each district."
-        },
+        "library_metadata": library_metadata,
     }
 
     # Log statistics about the vote swings being sent
@@ -637,6 +654,29 @@ def create_worksheet(service, worksheet_name: str, row_count: int, column_count:
         logging.error(f"Error creating worksheet: {e}")
         raise
 
+def clone_or_reuse_plan(api_key: str, plan_id: str, base_plan_url: str, existing_url: str, description: str, vote_swings: list, state_abbrev: str, header: str) -> str:
+    """Clone a plan or reuse existing if it's new enough. Fetches plan data inside parallel task."""
+    # Get base plan data (start_time and library_metadata)
+    base_data = get_plan_data(base_plan_url)
+    base_plan_date = base_data['start_time']
+    base_library_metadata = base_data['library_metadata']
+
+    logging.debug(f"{state_abbrev} {header} - base plan date: {base_plan_date}")
+
+    # Check if we can reuse existing cloned plan
+    if existing_url:
+        existing_data = get_plan_data(existing_url)
+        existing_date = existing_data['start_time']
+
+        if existing_date and base_plan_date and existing_date >= base_plan_date:
+            logging.debug(f"Reusing {state_abbrev} {header}: {existing_date} >= {base_plan_date}")
+            return existing_url
+        else:
+            logging.debug(f"Re-cloning {state_abbrev} {header}: base plan is newer")
+
+    # Clone the plan with merged metadata
+    return clone_plan_with_swings(api_key, plan_id, description, vote_swings, base_library_metadata)
+
 def build_state_swings(service, states: dict, district_swings: dict, api_key: str, existing_plan_urls: dict = {}) -> list:
     """Build state swings by cloning plans with vote swings, using 10x parallelism. Reuses existing plan URLs if they're new enough."""
     logging.debug("Building state swings with cloned plans...")
@@ -671,10 +711,6 @@ def build_state_swings(service, states: dict, district_swings: dict, api_key: st
 
         plan_id = plan_match.group("id")
 
-        # Get base plan start time for comparison
-        base_plan_date = get_plan_start_time(plan_url)
-        logging.debug(f"{abbrev} base plan date: {base_plan_date}")
-
         # Get district swings for this state
         state_swings = district_swings.get(abbrev)
         if not state_swings:
@@ -688,37 +724,29 @@ def build_state_swings(service, states: dict, district_swings: dict, api_key: st
             'plan_urls': {}
         }
 
-        # Create clone task for each scenario (or reuse existing)
+        # Create clone task for each scenario
         for header in shift_headers:
             vote_swings = state_swings.get(header, [])
             if not vote_swings:
                 logging.warning(f"No vote swings for {abbrev} {header}")
                 continue
 
-            # Check if we can reuse an existing cloned plan
+            # Get existing URL if available
             existing_url = existing_plan_urls.get(abbrev, {}).get(header, '').strip()
-
-            if existing_url:
-                existing_date = get_plan_start_time(existing_url)
-
-                if existing_date and base_plan_date and existing_date >= base_plan_date:
-                    logging.debug(f"Reusing {abbrev} {header}: {existing_date} >= {base_plan_date}")
-                    row['plan_urls'][header] = existing_url
-                    continue
-                else:
-                    logging.debug(f"Re-cloning {abbrev} {header}: base plan is newer")
 
             # Format description like "R+12 Illinois 119th Congress Districts"
             description = f"{header} {plan_name}"
 
-            clone_tasks.append({
-                'api_key': api_key,
-                'plan_id': plan_id,
-                'description': description,
-                'vote_swings': vote_swings,
-                'state_abbrev': abbrev,
-                'header': header
-            })
+            clone_tasks.append(CloneTask(
+                api_key=api_key,
+                plan_id=plan_id,
+                base_plan_url=plan_url,
+                existing_url=existing_url,
+                description=description,
+                vote_swings=vote_swings,
+                state_abbrev=abbrev,
+                header=header
+            ))
 
         state_rows.append(row)
 
@@ -729,11 +757,15 @@ def build_state_swings(service, states: dict, district_swings: dict, api_key: st
     with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
         future_to_task = {
             executor.submit(
-                clone_plan_with_swings,
-                task['api_key'],
-                task['plan_id'],
-                task['description'],
-                task['vote_swings']
+                clone_or_reuse_plan,
+                task.api_key,
+                task.plan_id,
+                task.base_plan_url,
+                task.existing_url,
+                task.description,
+                task.vote_swings,
+                task.state_abbrev,
+                task.header
             ): task
             for task in clone_tasks
         }
@@ -742,15 +774,15 @@ def build_state_swings(service, states: dict, district_swings: dict, api_key: st
             task = future_to_task[future]
             try:
                 plan_url = future.result()
-                key = (task['state_abbrev'], task['header'])
+                key = (task.state_abbrev, task.header)
                 results[key] = plan_url
-                logging.debug(f"Completed: {task['description']} -> {plan_url}")
+                logging.debug(f"Completed: {task.description} -> {plan_url}")
             except Exception as e:
-                logging.error(f"Failed: {task['description']} - {e}")
-                key = (task['state_abbrev'], task['header'])
+                logging.error(f"Failed: {task.description} - {e}")
+                key = (task.state_abbrev, task.header)
                 results[key] = ""
 
-    # Fill in the URLs for each state row (only for newly cloned plans, not reused ones)
+    # Fill in the URLs for each state row from parallel execution results
     for row in state_rows:
         state_name = row['state_name']
         # Find the state abbreviation
@@ -762,10 +794,8 @@ def build_state_swings(service, states: dict, district_swings: dict, api_key: st
 
         if abbrev:
             for header in shift_headers:
-                # Only update if not already set (from reuse)
-                if header not in row['plan_urls'] or not row['plan_urls'][header]:
-                    key = (abbrev, header)
-                    row['plan_urls'][header] = results.get(key, "")
+                key = (abbrev, header)
+                row['plan_urls'][header] = results.get(key, "")
 
     logging.debug(f"Built state swings for {len(state_rows)} states")
     return state_rows
