@@ -203,8 +203,8 @@ def find_latest_state_swings_sheet(service) -> str:
     logging.debug(f"Found latest State Swings sheet: {latest_sheet}")
     return latest_sheet
 
-def load_state_swings_from_google(service) -> dict:
-    """Load state swings data from the most recent State Swings worksheet"""
+def load_existing_state_plan_urls(service) -> dict:
+    """Load existing plan URLs from the most recent State Swings worksheet for potential reuse"""
     sheet_name = find_latest_state_swings_sheet(service)
 
     logging.debug(f"Loading {sheet_name}...")
@@ -221,7 +221,7 @@ def load_state_swings_from_google(service) -> dict:
     scenario_headers = headers[2:26]  # 24 columns
 
     # Build mapping of state abbreviation to dict of scenario -> URL
-    state_swings = {}
+    state_plan_urls = {}
 
     for row in values[1:]:
         if len(row) < 3:
@@ -239,8 +239,8 @@ def load_state_swings_from_google(service) -> dict:
         if not state_abbrev:
             continue
 
-        if state_abbrev not in state_swings:
-            state_swings[state_abbrev] = {}
+        if state_abbrev not in state_plan_urls:
+            state_plan_urls[state_abbrev] = {}
 
         # Extract URLs for this state (columns C-Z, indices 2-25)
         for i, header in enumerate(scenario_headers):
@@ -248,12 +248,12 @@ def load_state_swings_from_google(service) -> dict:
             # Extract scenario name from header like "R+12 PlanScore URL"
             scenario_name = header.replace(' PlanScore URL', '')
             if col_idx < len(row) and row[col_idx]:
-                state_swings[state_abbrev][scenario_name] = row[col_idx]
+                state_plan_urls[state_abbrev][scenario_name] = row[col_idx]
             else:
-                state_swings[state_abbrev][scenario_name] = ""
+                state_plan_urls[state_abbrev][scenario_name] = ""
 
-    logging.debug(f"Loaded state swings for {len(state_swings)} states")
-    return state_swings
+    logging.debug(f"Loaded existing plan URLs for {len(state_plan_urls)} states")
+    return state_plan_urls
 
 def get_plan_start_time(plan_url: str) -> datetime.date:
     """Get start_time from plan's index.json"""
@@ -288,7 +288,16 @@ def clone_plan_with_swings(api_key: str, plan_id: str, description: str, vote_sw
         "vote_swings": vote_swings
     }
 
-    logging.debug(f"Cloning plan: {description} (ID: {plan_id}) with {len(vote_swings)} vote swings")
+    # Log statistics about the vote swings being sent
+    if vote_swings:
+        non_zero_count = sum(1 for v in vote_swings if abs(v) > 0.0001)
+        avg_swing = sum(vote_swings) / len(vote_swings)
+        max_swing = max(vote_swings)
+        min_swing = min(vote_swings)
+        logging.debug(f"Cloning plan: {description} (ID: {plan_id}) with {len(vote_swings)} vote swings")
+        logging.debug(f"  Vote swing stats: {non_zero_count}/{len(vote_swings)} non-zero, avg={avg_swing:.4f}, range=[{min_swing:.4f}, {max_swing:.4f}]")
+    else:
+        logging.debug(f"Cloning plan: {description} (ID: {plan_id}) with {len(vote_swings)} vote swings")
 
     payload_json = json.dumps(payload).encode('utf-8')
     clone_request = urllib.request.Request(
@@ -624,8 +633,8 @@ def create_worksheet(service, worksheet_name: str, row_count: int, column_count:
         logging.error(f"Error creating worksheet: {e}")
         raise
 
-def build_state_swings(service, states: dict, district_swings: dict, api_key: str, existing_state_swings: dict = {}) -> list:
-    """Build state swings by cloning plans with vote swings, using 10x parallelism"""
+def build_state_swings(service, states: dict, district_swings: dict, api_key: str, existing_plan_urls: dict = {}) -> list:
+    """Build state swings by cloning plans with vote swings, using 10x parallelism. Reuses existing plan URLs if they're new enough."""
     logging.debug("Building state swings with cloned plans...")
 
     # Shift headers without "Zero" (24 scenarios)
@@ -683,7 +692,7 @@ def build_state_swings(service, states: dict, district_swings: dict, api_key: st
                 continue
 
             # Check if we can reuse an existing cloned plan
-            existing_url = existing_state_swings.get(abbrev, {}).get(header, '').strip()
+            existing_url = existing_plan_urls.get(abbrev, {}).get(header, '').strip()
 
             if existing_url:
                 existing_date = get_plan_start_time(existing_url)
@@ -942,8 +951,46 @@ def write_state_swings_worksheet(service, rows: list):
         logging.error(f"Error writing to Google Sheets: {e}")
         raise
 
-def write_predictions_worksheet(service, rows: list):
-    """Write district predictions to Google Sheets"""
+def calculate_all_district_shifts(rows: list) -> dict:
+    """
+    Calculate district-level vote shifts for all 24 scenarios (excluding Zero).
+
+    Returns:
+        dict: {state_abbrev: {scenario: [shifts per district]}}
+    """
+    logging.debug("Calculating logit shifts for 24 scenarios...")
+
+    # Shift headers without "Zero" (24 scenarios)
+    shift_headers = ['R+12', 'R+11', 'R+10', 'R+9', 'R+8', 'R+7', 'R+6', 'R+5', 'R+4', 'R+3', 'R+2', 'R+1',
+                     'D+1', 'D+2', 'D+3', 'D+4', 'D+5', 'D+6', 'D+7', 'D+8', 'D+9', 'D+10', 'D+11', 'D+12']
+
+    # Calculate shifts for all districts (flat list indexed by district)
+    all_shifts = {}
+    for i in range(-12, 13):  # -12 to +12 inclusive
+        if i == 0:
+            continue  # Skip zero
+
+        target_diff = (i / 100.0)  # Convert percentage points to decimal
+        header = f'D+{i}' if i > 0 else f'R+{abs(i)}'
+        shifts = calculate_district_shifts(rows, target_diff)
+        all_shifts[header] = shifts
+        logging.debug(f"Calculated shifts for {header} (target={target_diff:.1%})")
+
+    # Organize by state
+    state_shifts = {}
+    for idx, row in enumerate(rows):
+        state_abbrev = row['state_abbrev']
+        if state_abbrev not in state_shifts:
+            state_shifts[state_abbrev] = {header: [] for header in shift_headers}
+
+        for header in shift_headers:
+            state_shifts[state_abbrev][header].append(all_shifts[header][idx])
+
+    logging.debug(f"Calculated district shifts for {len(state_shifts)} states")
+    return state_shifts
+
+def write_predictions_worksheet(service, rows: list, shift_data: dict):
+    """Write district predictions to Google Sheets using pre-calculated shift data"""
     logging.debug("Writing predictions to Google Sheets...")
 
     # Build headers for District Swings: State Name, Postal Code, FIPS Code, District
@@ -954,21 +1001,29 @@ def write_predictions_worksheet(service, rows: list):
     headers = ['State Name', 'Postal Code', 'FIPS Code', 'District',
                'Predicted Dem Votes', 'Predicted Rep Votes', 'Predicted Dem Wins'] + shift_headers
 
-    # Calculate all 25 shift columns
-    # Target shares range from 38% (R+12) to 62% (D+12)
-    # R+12 = 50% - 12% = 38%, ..., Zero = 50%, ..., D+12 = 50% + 12% = 62%
-    logging.debug("Calculating logit shifts for 25 scenarios...")
+    # Build shift_columns from pre-calculated shift_data
+    # shift_data is {state_abbrev: {scenario: [shifts per district]}}
+    # We need to flatten it to match the order of rows
     shift_columns = {}
-    for i in range(-12, 13):  # -12 to +12 inclusive
-        target_diff = (i / 100.0)  # Convert percentage points to decimal
-        if i == 0:
-            # Zero shift - all zeros
+    for header in shift_headers:
+        if header == 'Zero':
             shift_columns['Zero'] = [0.0] * len(rows)
         else:
-            header = f'D+{i}' if i > 0 else f'R+{abs(i)}'
-            shifts = calculate_district_shifts(rows, target_diff)
-            shift_columns[header] = shifts
-            logging.debug(f"Calculated shifts for {header} (target={target_diff:.1%})")
+            shift_columns[header] = []
+
+    for row in rows:
+        state_abbrev = row['state_abbrev']
+        state_data = shift_data.get(state_abbrev, {})
+        for header in shift_headers:
+            if header != 'Zero':
+                # Get the next shift value for this district in this state
+                state_shifts = state_data.get(header, [])
+                # Find which district index this is within the state
+                district_idx = len([r for r in rows[:rows.index(row)] if r['state_abbrev'] == state_abbrev])
+                if district_idx < len(state_shifts):
+                    shift_columns[header].append(state_shifts[district_idx])
+                else:
+                    shift_columns[header].append(0.0)
 
     output_rows = [headers]
 
@@ -1028,29 +1083,29 @@ def main(api_key: str, credentials_file: str):
     # Load states data
     states = load_states_from_google(service)
 
-    # Load district swings data
-    district_swings = load_district_swings_from_google(service)
+    # Build district predictions
+    rows = build_district_predictions(states)
+    logging.info(f"Total districts: {len(rows)}")
 
-    # Try to load existing State Swings for reuse
+    # Calculate district shifts for all scenarios
+    logging.info("Calculating district shifts for all scenarios...")
+    district_swings = calculate_all_district_shifts(rows)
+
+    # Try to load existing plan URLs for reuse
     try:
-        existing_state_swings = load_state_swings_from_google(service)
-        logging.info("Loaded existing State Swings data for potential reuse")
+        existing_plan_urls = load_existing_state_plan_urls(service)
+        logging.info("Loaded existing plan URLs for potential reuse")
     except Exception as e:
-        logging.info(f"No existing State Swings found (first run): {e}")
-        existing_state_swings = {}
+        logging.info(f"No existing State Swings worksheet found (first run): {e}")
+        existing_plan_urls = {}
 
     # Build and write State Swings worksheet
     logging.info("Building State Swings worksheet...")
-    state_rows = build_state_swings(service, states, district_swings, api_key, existing_state_swings)
+    state_rows = build_state_swings(service, states, district_swings, api_key, existing_plan_urls)
     write_state_swings_worksheet(service, state_rows)
 
-    # Build district predictions
-    rows = build_district_predictions(states)
-
-    logging.info(f"Total districts: {len(rows)}")
-
-    # Write to Google Sheets
-    write_predictions_worksheet(service, rows)
+    # Write District Swings worksheet
+    write_predictions_worksheet(service, rows, district_swings)
 
     logging.info("Done!")
 
