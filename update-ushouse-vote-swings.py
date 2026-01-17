@@ -178,6 +178,101 @@ def load_district_swings_from_google(service) -> dict:
     logging.debug(f"Loaded district swings for {len(state_swings)} states")
     return state_swings
 
+def find_latest_state_swings_sheet(service) -> str:
+    """Find the most recent State Swings worksheet by date"""
+    spreadsheet = service.spreadsheets().get(spreadsheetId=SPREADSHEET_ID).execute()
+
+    state_swings_sheets = []
+    for sheet in spreadsheet['sheets']:
+        title = sheet['properties']['title']
+        if title.startswith('State Swings '):
+            # Extract date from "State Swings YYYY-MM-DD"
+            try:
+                date_str = title.replace('State Swings ', '')
+                date_obj = datetime.datetime.strptime(date_str, '%Y-%m-%d').date()
+                state_swings_sheets.append((date_obj, title))
+            except ValueError:
+                continue
+
+    if not state_swings_sheets:
+        raise Exception("No State Swings worksheet found")
+
+    # Sort by date descending and return the most recent
+    state_swings_sheets.sort(reverse=True)
+    latest_sheet = state_swings_sheets[0][1]
+    logging.debug(f"Found latest State Swings sheet: {latest_sheet}")
+    return latest_sheet
+
+def load_state_swings_from_google(service) -> dict:
+    """Load state swings data from the most recent State Swings worksheet"""
+    sheet_name = find_latest_state_swings_sheet(service)
+
+    logging.debug(f"Loading {sheet_name}...")
+    result = service.spreadsheets().values().get(
+        spreadsheetId=SPREADSHEET_ID,
+        range=f'{sheet_name}!A:Z'
+    ).execute()
+
+    values = result.get('values', [])
+    headers = values[0]
+
+    # Columns C-Z are the scenario columns (indices 2-25, 24 columns total)
+    # Headers are: R+12 PlanScore URL, R+11 PlanScore URL, ..., D+11 PlanScore URL, D+12 PlanScore URL
+    scenario_headers = headers[2:26]  # 24 columns
+
+    # Build mapping of state abbreviation to dict of scenario -> URL
+    state_swings = {}
+
+    for row in values[1:]:
+        if len(row) < 3:
+            continue
+
+        state_name = row[0]  # Column A: State Name
+
+        # Find state abbreviation from state name
+        state_abbrev = None
+        for name, abbrev in STATE_ABBREVS.items():
+            if name == state_name:
+                state_abbrev = abbrev
+                break
+
+        if not state_abbrev:
+            continue
+
+        if state_abbrev not in state_swings:
+            state_swings[state_abbrev] = {}
+
+        # Extract URLs for this state (columns C-Z, indices 2-25)
+        for i, header in enumerate(scenario_headers):
+            col_idx = 2 + i
+            # Extract scenario name from header like "R+12 PlanScore URL"
+            scenario_name = header.replace(' PlanScore URL', '')
+            if col_idx < len(row) and row[col_idx]:
+                state_swings[state_abbrev][scenario_name] = row[col_idx]
+            else:
+                state_swings[state_abbrev][scenario_name] = ""
+
+    logging.debug(f"Loaded state swings for {len(state_swings)} states")
+    return state_swings
+
+def get_plan_start_time(plan_url: str) -> datetime.date:
+    """Get start_time from plan's index.json"""
+    if not plan_url:
+        return None
+
+    plan_match = re.match(PLAN_URL_PAT_STR, plan_url)
+    if not plan_match:
+        return None
+
+    plan_bucket = STACK_BUCKETS[plan_match.group("stack")]
+    index_url = INDEX_URL_FMT.format(bucket=plan_bucket, id=plan_match.group("id"))
+
+    try:
+        index_data = json.load(urllib.request.urlopen(index_url))
+        return datetime.date.fromtimestamp(index_data.get("start_time"))
+    except Exception:
+        return None
+
 def clone_plan_with_swings(api_key: str, plan_id: str, description: str, vote_swings: list) -> str:
     """Clone a plan with vote swings via PlanScore API (or dummy mode if no api_key)"""
     if not api_key:
@@ -529,7 +624,7 @@ def create_worksheet(service, worksheet_name: str, row_count: int, column_count:
         logging.error(f"Error creating worksheet: {e}")
         raise
 
-def build_state_swings(service, states: dict, district_swings: dict, api_key: str) -> list:
+def build_state_swings(service, states: dict, district_swings: dict, api_key: str, existing_state_swings: dict = {}) -> list:
     """Build state swings by cloning plans with vote swings, using 10x parallelism"""
     logging.debug("Building state swings with cloned plans...")
 
@@ -541,7 +636,10 @@ def build_state_swings(service, states: dict, district_swings: dict, api_key: st
     clone_tasks = []
     state_rows = []
 
-    for abbrev in sorted(states.keys()):
+    # TEMPORARY: Hardcode Illinois for Stage 2a testing
+    state_abbrevs = ["IL"]  # Will expand to sorted(states.keys()) in later stages
+
+    for abbrev in state_abbrevs:
         state_data = states[abbrev]
         plan_url = state_data.get('PlanScore URL', '').strip()
 
@@ -560,6 +658,10 @@ def build_state_swings(service, states: dict, district_swings: dict, api_key: st
 
         plan_id = plan_match.group("id")
 
+        # Get base plan start time for comparison
+        base_plan_date = get_plan_start_time(plan_url)
+        logging.debug(f"{abbrev} base plan date: {base_plan_date}")
+
         # Get district swings for this state
         state_swings = district_swings.get(abbrev)
         if not state_swings:
@@ -573,12 +675,25 @@ def build_state_swings(service, states: dict, district_swings: dict, api_key: st
             'plan_urls': {}
         }
 
-        # Create clone task for each scenario
+        # Create clone task for each scenario (or reuse existing)
         for header in shift_headers:
             vote_swings = state_swings.get(header, [])
             if not vote_swings:
                 logging.warning(f"No vote swings for {abbrev} {header}")
                 continue
+
+            # Check if we can reuse an existing cloned plan
+            existing_url = existing_state_swings.get(abbrev, {}).get(header, '').strip()
+
+            if existing_url:
+                existing_date = get_plan_start_time(existing_url)
+
+                if existing_date and base_plan_date and existing_date >= base_plan_date:
+                    logging.debug(f"Reusing {abbrev} {header}: {existing_date} >= {base_plan_date}")
+                    row['plan_urls'][header] = existing_url
+                    continue
+                else:
+                    logging.debug(f"Re-cloning {abbrev} {header}: base plan is newer")
 
             # Format description like "R+12 Illinois 119th Congress Districts"
             description = f"{header} {plan_name}"
@@ -622,7 +737,7 @@ def build_state_swings(service, states: dict, district_swings: dict, api_key: st
                 key = (task['state_abbrev'], task['header'])
                 results[key] = ""
 
-    # Fill in the URLs for each state row
+    # Fill in the URLs for each state row (only for newly cloned plans, not reused ones)
     for row in state_rows:
         state_name = row['state_name']
         # Find the state abbreviation
@@ -634,8 +749,10 @@ def build_state_swings(service, states: dict, district_swings: dict, api_key: st
 
         if abbrev:
             for header in shift_headers:
-                key = (abbrev, header)
-                row['plan_urls'][header] = results.get(key, "")
+                # Only update if not already set (from reuse)
+                if header not in row['plan_urls'] or not row['plan_urls'][header]:
+                    key = (abbrev, header)
+                    row['plan_urls'][header] = results.get(key, "")
 
     logging.debug(f"Built state swings for {len(state_rows)} states")
     return state_rows
@@ -898,9 +1015,17 @@ def main(api_key: str, credentials_file: str):
     # Load district swings data
     district_swings = load_district_swings_from_google(service)
 
+    # Try to load existing State Swings for reuse
+    try:
+        existing_state_swings = load_state_swings_from_google(service)
+        logging.info("Loaded existing State Swings data for potential reuse")
+    except Exception as e:
+        logging.info(f"No existing State Swings found (first run): {e}")
+        existing_state_swings = {}
+
     # Build and write State Swings worksheet
     logging.info("Building State Swings worksheet...")
-    state_rows = build_state_swings(service, states, district_swings, api_key)
+    state_rows = build_state_swings(service, states, district_swings, api_key, existing_state_swings)
     write_state_swings_worksheet(service, state_rows)
 
     # Build district predictions
