@@ -879,7 +879,7 @@ def write_state_swings_worksheet(service, rows: list):
                     }
                 },
                 {
-                    # Columns C-Z: 138px
+                    # Columns C-Z: 138px, center-aligned
                     'updateDimensionProperties': {
                         'range': {
                             'sheetId': sheet_id,
@@ -892,6 +892,22 @@ def write_state_swings_worksheet(service, rows: list):
                         },
                         'fields': 'pixelSize'
                     }
+                },
+                {
+                    # Center-align columns C-Z
+                    'repeatCell': {
+                        'range': {
+                            'sheetId': sheet_id,
+                            'startColumnIndex': 2,
+                            'endColumnIndex': 26
+                        },
+                        'cell': {
+                            'userEnteredFormat': {
+                                'horizontalAlignment': 'CENTER'
+                            }
+                        },
+                        'fields': 'userEnteredFormat.horizontalAlignment'
+                    }
                 }
             ]
         }
@@ -901,7 +917,7 @@ def write_state_swings_worksheet(service, rows: list):
             body=width_body
         ).execute()
 
-        logging.debug("Applied column widths: A=100px, B=302px, C-Z=138px")
+        logging.debug("Applied column widths: A=100px, B=302px, C-Z=138px (center-aligned)")
 
         # Write data to the worksheet
         range_name = f"{worksheet_name}!A1"
