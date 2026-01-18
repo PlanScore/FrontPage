@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse
+import concurrent.futures
 import csv
 import dataclasses
 import json
@@ -203,6 +204,56 @@ def planscore2election(plan_url: str, row: dict) -> typing.Optional[Election]:
         row.get("url"),
     )
 
+def process_row(index: int, row: dict, gdocs: GdocsStates, state_swings: dict) -> tuple[int, Election]:
+    """Process a single row and return (index, Election) tuple"""
+    cycle = row.get("cycle")
+
+    if cycle == "2026":
+        # For 2026 rows, check if state has a redraw (column G)
+        stateabrev = row.get("stateabrev")
+        google_state = gdocs.states.get(stateabrev)
+
+        if google_state:
+            has_redraw = google_state.get('2026 Redraw', '').strip().upper() == 'Y'
+            plan_url = google_state.get('PlanScore URL', '').strip()
+
+            if has_redraw and plan_url:
+                # State has a redraw and URL in Google Sheets, process the plan
+                row = dict(row)
+                row['url'] = plan_url
+                election = planscore2election(plan_url, row)
+                return (index, election)
+            else:
+                # No redraw or no URL, keep row as-is without URL
+                return (index, Election(*(row.get(f) for f in ELECTION_FIELDS)))
+        else:
+            # No Google Sheets data for this state, keep row as-is
+            return (index, Election(*(row.get(f) for f in ELECTION_FIELDS)))
+    elif cycle and cycle.startswith("predict"):
+        # For predict* rows, check State Swings worksheet
+        stateabrev = row.get("stateabrev")
+        column_name = get_state_swings_column_name(cycle)
+
+        if column_name and stateabrev in state_swings:
+            # Get the URL for this specific column/cycle
+            plan_url = state_swings[stateabrev].get(column_name, '').strip()
+
+            if plan_url:
+                # State has a URL for this cycle in State Swings, process the plan
+                row = dict(row)
+                row['url'] = plan_url
+                election = planscore2election(plan_url, row)
+                return (index, election)
+            else:
+                # No URL for this cycle, keep row as-is
+                return (index, Election(*(row.get(f) for f in ELECTION_FIELDS)))
+        else:
+            # State not in State Swings or invalid cycle name, keep row as-is
+            return (index, Election(*(row.get(f) for f in ELECTION_FIELDS)))
+    else:
+        # Not a 2026 or predict cycle, keep row as-is
+        return (index, Election(*(row.get(f) for f in ELECTION_FIELDS)))
+
 def main(credentials_file: str, filename: str):
     # Load Google Sheets states data
     logging.debug("Loading Google Sheets states data...")
@@ -219,57 +270,24 @@ def main(credentials_file: str, filename: str):
 
     logging.info(f"{rows[:3]}, {rows[-3:]}")
 
-    elections = []
+    # Process all rows in parallel using ThreadPoolExecutor with 10 workers
+    with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+        # Submit all rows with their indices
+        futures = [
+            executor.submit(process_row, index, row, gdocs, state_swings)
+            for index, row in enumerate(rows)
+        ]
 
-    # Process all rows
-    for row in rows:
-        cycle = row.get("cycle")
+        # Collect results as they complete
+        results = []
+        for future in concurrent.futures.as_completed(futures):
+            results.append(future.result())
 
-        if cycle == "2026":
-            # For 2026 rows, check if state has a redraw (column G)
-            stateabrev = row.get("stateabrev")
-            google_state = gdocs.states.get(stateabrev)
+    # Sort results by original index to maintain ordering
+    results.sort(key=lambda x: x[0])
 
-            if google_state:
-                has_redraw = google_state.get('2026 Redraw', '').strip().upper() == 'Y'
-                plan_url = google_state.get('PlanScore URL', '').strip()
-
-                if has_redraw and plan_url:
-                    # State has a redraw and URL in Google Sheets, process the plan
-                    row = dict(row)
-                    row['url'] = plan_url
-                    election = planscore2election(plan_url, row)
-                    elections.append(election)
-                else:
-                    # No redraw or no URL, keep row as-is without URL
-                    elections.append(Election(*(row.get(f) for f in ELECTION_FIELDS)))
-            else:
-                # No Google Sheets data for this state, keep row as-is
-                elections.append(Election(*(row.get(f) for f in ELECTION_FIELDS)))
-        elif cycle and cycle.startswith("predict"):
-            # For predict* rows, check State Swings worksheet
-            stateabrev = row.get("stateabrev")
-            column_name = get_state_swings_column_name(cycle)
-
-            if column_name and stateabrev in state_swings:
-                # Get the URL for this specific column/cycle
-                plan_url = state_swings[stateabrev].get(column_name, '').strip()
-
-                if plan_url:
-                    # State has a URL for this cycle in State Swings, process the plan
-                    row = dict(row)
-                    row['url'] = plan_url
-                    election = planscore2election(plan_url, row)
-                    elections.append(election)
-                else:
-                    # No URL for this cycle, keep row as-is
-                    elections.append(Election(*(row.get(f) for f in ELECTION_FIELDS)))
-            else:
-                # State not in State Swings or invalid cycle name, keep row as-is
-                elections.append(Election(*(row.get(f) for f in ELECTION_FIELDS)))
-        else:
-            # Not a 2026 or predict cycle, keep row as-is
-            elections.append(Election(*(row.get(f) for f in ELECTION_FIELDS)))
+    # Extract just the Election objects
+    elections = [election for index, election in results]
 
     logging.info(f"{elections[:3]}, {elections[-3:]}")
 
