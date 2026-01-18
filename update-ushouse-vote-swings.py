@@ -16,6 +16,7 @@ import numpy as np
 from scipy.special import expit
 from scipy.optimize import root_scalar
 
+PARALLELISM = 10
 SPREADSHEET_ID = '1rcYOxrr_bqkQWggCeP8W6eYkofl9_Zk0deHv62ilE8Y'
 PLAN_URL_PAT_STR = r"^https://(?P<stack>dev.)?planscore.org/plan.html\?(?P<id>[\.\w]+)$"
 INDEX_URL_FMT = "https://{bucket}.s3.amazonaws.com/uploads/{id}/index.json"
@@ -34,6 +35,11 @@ STATE_ABBREVS = {
     'Texas': 'TX', 'Utah': 'UT', 'Vermont': 'VT', 'Virginia': 'VA', 'Washington': 'WA',
     'West Virginia': 'WV', 'Wisconsin': 'WI', 'Wyoming': 'WY'
 }
+
+# Shift headers (25 scenarios)
+ZERO_HEADER = 'Zero Shift'
+SHIFT_HEADERS = ['R+12', 'R+11', 'R+10', 'R+9', 'R+8', 'R+7', 'R+6', 'R+5', 'R+4', 'R+3', 'R+2', 'R+1',
+                 ZERO_HEADER, 'D+1', 'D+2', 'D+3', 'D+4', 'D+5', 'D+6', 'D+7', 'D+8', 'D+9', 'D+10', 'D+11', 'D+12']
 
 @dataclasses.dataclass
 class CloneTask:
@@ -223,15 +229,15 @@ def load_existing_state_plan_urls(service) -> dict:
     logging.debug(f"Loading {sheet_name}...")
     result = service.spreadsheets().values().get(
         spreadsheetId=SPREADSHEET_ID,
-        range=f'{sheet_name}!A:Z'
+        range=f'{sheet_name}!A:AA'
     ).execute()
 
     values = result.get('values', [])
     headers = values[0]
 
-    # Columns C-Z are the scenario columns (indices 2-25, 24 columns total)
+    # Columns C-AA are the scenario columns (indices 2-26, 25 columns total)
     # Headers are: R+12 PlanScore URL, R+11 PlanScore URL, ..., D+11 PlanScore URL, D+12 PlanScore URL
-    scenario_headers = headers[2:26]  # 24 columns
+    scenario_headers = headers[2:27]  # 25 columns
 
     # Build mapping of state abbreviation to dict of scenario -> URL
     state_plan_urls = {}
@@ -680,12 +686,8 @@ def clone_or_reuse_plan(api_key: str, plan_id: str, base_plan_url: str, existing
     return clone_plan_with_swings(api_key, plan_id, description, vote_swings, base_library_metadata)
 
 def build_state_swings(service, states: dict, district_swings: dict, api_key: str, existing_plan_urls: dict = {}) -> list:
-    """Build state swings by cloning plans with vote swings, using 10x parallelism. Reuses existing plan URLs if they're new enough."""
+    """Build state swings by cloning plans with vote swings, using parallelism. Reuses existing plan URLs if they're new enough."""
     logging.debug("Building state swings with cloned plans...")
-
-    # Shift headers without "Zero" (24 scenarios)
-    shift_headers = ['R+12', 'R+11', 'R+10', 'R+9', 'R+8', 'R+7', 'R+6', 'R+5', 'R+4', 'R+3', 'R+2', 'R+1',
-                     'D+1', 'D+2', 'D+3', 'D+4', 'D+5', 'D+6', 'D+7', 'D+8', 'D+9', 'D+10', 'D+11', 'D+12']
 
     # Prepare all clone tasks
     clone_tasks = []
@@ -727,7 +729,7 @@ def build_state_swings(service, states: dict, district_swings: dict, api_key: st
         }
 
         # Create clone task for each scenario
-        for header in shift_headers:
+        for header in SHIFT_HEADERS:
             vote_swings = state_swings.get(header, [])
             if not vote_swings:
                 logging.warning(f"No vote swings for {abbrev} {header}")
@@ -754,9 +756,9 @@ def build_state_swings(service, states: dict, district_swings: dict, api_key: st
 
     logging.debug(f"Prepared {len(clone_tasks)} clone tasks for {len(state_rows)} states")
 
-    # Execute clones in parallel with max 12 workers
+    # Execute clones in parallel with max PARALLELISM workers
     results = {}
-    with concurrent.futures.ThreadPoolExecutor(max_workers=12) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=PARALLELISM) as executor:
         future_to_task = {
             executor.submit(
                 clone_or_reuse_plan,
@@ -795,7 +797,7 @@ def build_state_swings(service, states: dict, district_swings: dict, api_key: st
                 break
 
         if abbrev:
-            for header in shift_headers:
+            for header in SHIFT_HEADERS:
                 key = (abbrev, header)
                 row['plan_urls'][header] = results.get(key, "")
 
@@ -806,12 +808,8 @@ def write_state_swings_worksheet(service, rows: list):
     """Write state swings to Google Sheets"""
     logging.debug("Writing state swings to Google Sheets...")
 
-    # Shift headers without "Zero" (24 scenarios)
-    shift_headers = ['R+12', 'R+11', 'R+10', 'R+9', 'R+8', 'R+7', 'R+6', 'R+5', 'R+4', 'R+3', 'R+2', 'R+1',
-                     'D+1', 'D+2', 'D+3', 'D+4', 'D+5', 'D+6', 'D+7', 'D+8', 'D+9', 'D+10', 'D+11', 'D+12']
-
     # Build headers: State Name, Plan Name, then 24 shift scenarios
-    headers = ['State Name', 'Plan Name'] + [f'{h} PlanScore URL' for h in shift_headers]
+    headers = ['State Name', 'Plan Name'] + [f'{h} PlanScore URL' for h in SHIFT_HEADERS]
 
     # Build output rows
     output_rows = [headers]
@@ -822,7 +820,7 @@ def write_state_swings_worksheet(service, rows: list):
             row['plan_name']
         ]
         # Add the 24 plan URLs
-        for shift_header in shift_headers:
+        for shift_header in SHIFT_HEADERS:
             output_row.append(row['plan_urls'].get(shift_header, ''))
         output_rows.append(output_row)
 
@@ -844,7 +842,7 @@ def write_state_swings_worksheet(service, rows: list):
                     'title': worksheet_name,
                     'gridProperties': {
                         'rowCount': 51,
-                        'columnCount': 26,
+                        'columnCount': 27,
                         'frozenRowCount': 1
                     }
                 }
@@ -890,7 +888,7 @@ def write_state_swings_worksheet(service, rows: list):
 
         logging.debug("Applied header formatting")
 
-        # Set column widths: A=100px, B=302px, C-Z=138px
+        # Set column widths: A=100px, B=302px, C-AA=138px
         width_body = {
             'requests': [
                 {
@@ -924,13 +922,13 @@ def write_state_swings_worksheet(service, rows: list):
                     }
                 },
                 {
-                    # Columns C-Z: 138px, center-aligned
+                    # Columns C-AA: 138px, center-aligned
                     'updateDimensionProperties': {
                         'range': {
                             'sheetId': sheet_id,
                             'dimension': 'COLUMNS',
                             'startIndex': 2,
-                            'endIndex': 26
+                            'endIndex': 27
                         },
                         'properties': {
                             'pixelSize': 138
@@ -939,12 +937,12 @@ def write_state_swings_worksheet(service, rows: list):
                     }
                 },
                 {
-                    # Center-align columns C-Z
+                    # Center-align columns C-AA
                     'repeatCell': {
                         'range': {
                             'sheetId': sheet_id,
                             'startColumnIndex': 2,
-                            'endColumnIndex': 26
+                            'endColumnIndex': 27
                         },
                         'cell': {
                             'userEnteredFormat': {
@@ -962,7 +960,7 @@ def write_state_swings_worksheet(service, rows: list):
             body=width_body
         ).execute()
 
-        logging.debug("Applied column widths: A=100px, B=302px, C-Z=138px (center-aligned)")
+        logging.debug("Applied column widths: A=100px, B=302px, C-AA=138px (center-aligned)")
 
         # Write data to the worksheet
         range_name = f"{worksheet_name}!A1"
@@ -996,18 +994,11 @@ def calculate_all_district_shifts(rows: list) -> dict:
     """
     logging.debug("Calculating logit shifts for 24 scenarios...")
 
-    # Shift headers without "Zero" (24 scenarios)
-    shift_headers = ['R+12', 'R+11', 'R+10', 'R+9', 'R+8', 'R+7', 'R+6', 'R+5', 'R+4', 'R+3', 'R+2', 'R+1',
-                     'D+1', 'D+2', 'D+3', 'D+4', 'D+5', 'D+6', 'D+7', 'D+8', 'D+9', 'D+10', 'D+11', 'D+12']
-
     # Calculate shifts for all districts (flat list indexed by district)
     all_shifts = {}
     for i in range(-12, 13):  # -12 to +12 inclusive
-        if i == 0:
-            continue  # Skip zero
-
         target_diff = (i / 100.0)  # Convert percentage points to decimal
-        header = f'D+{i}' if i > 0 else f'R+{abs(i)}'
+        header = ZERO_HEADER if i == 0 else f'D+{i}' if i > 0 else f'R+{abs(i)}'
         shifts = calculate_district_shifts(rows, target_diff)
         all_shifts[header] = shifts
         logging.debug(f"Calculated shifts for {header} (target={target_diff:.1%})")
@@ -1017,9 +1008,9 @@ def calculate_all_district_shifts(rows: list) -> dict:
     for idx, row in enumerate(rows):
         state_abbrev = row['state_abbrev']
         if state_abbrev not in state_shifts:
-            state_shifts[state_abbrev] = {header: [] for header in shift_headers}
+            state_shifts[state_abbrev] = {header: [] for header in SHIFT_HEADERS}
 
-        for header in shift_headers:
+        for header in SHIFT_HEADERS:
             state_shifts[state_abbrev][header].append(all_shifts[header][idx])
 
     logging.debug(f"Calculated district shifts for {len(state_shifts)} states")
@@ -1031,27 +1022,24 @@ def write_predictions_worksheet(service, rows: list, shift_data: dict):
 
     # Build headers for District Swings: State Name, Postal Code, FIPS Code, District
     # Plus our 3 prediction columns plus 25 shift columns
-    shift_headers = ['R+12', 'R+11', 'R+10', 'R+9', 'R+8', 'R+7', 'R+6', 'R+5', 'R+4', 'R+3', 'R+2', 'R+1',
-                     'Zero',
-                     'D+1', 'D+2', 'D+3', 'D+4', 'D+5', 'D+6', 'D+7', 'D+8', 'D+9', 'D+10', 'D+11', 'D+12']
     headers = ['State Name', 'Postal Code', 'FIPS Code', 'District',
-               'Predicted Dem Votes', 'Predicted Rep Votes', 'Predicted Dem Wins'] + shift_headers
+               'Predicted Dem Votes', 'Predicted Rep Votes', 'Predicted Dem Wins'] + SHIFT_HEADERS
 
     # Build shift_columns from pre-calculated shift_data
     # shift_data is {state_abbrev: {scenario: [shifts per district]}}
     # We need to flatten it to match the order of rows
     shift_columns = {}
-    for header in shift_headers:
-        if header == 'Zero':
-            shift_columns['Zero'] = [0.0] * len(rows)
+    for header in SHIFT_HEADERS:
+        if header == ZERO_HEADER:
+            shift_columns[ZERO_HEADER] = [0.0] * len(rows)
         else:
             shift_columns[header] = []
 
     for row in rows:
         state_abbrev = row['state_abbrev']
         state_data = shift_data.get(state_abbrev, {})
-        for header in shift_headers:
-            if header != 'Zero':
+        for header in SHIFT_HEADERS:
+            if header != ZERO_HEADER:
                 # Get the next shift value for this district in this state
                 state_shifts = state_data.get(header, [])
                 # Find which district index this is within the state
@@ -1074,7 +1062,7 @@ def write_predictions_worksheet(service, rows: list, shift_data: dict):
             row['dem_wins']
         ]
         # Add the 25 shift values for this district
-        for shift_header in shift_headers:
+        for shift_header in SHIFT_HEADERS:
             output_row.append(shift_columns[shift_header][idx])
         output_rows.append(output_row)
 
