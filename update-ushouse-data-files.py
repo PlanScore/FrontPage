@@ -85,6 +85,58 @@ def load_google_states(credentials_file: str) -> GdocsStates:
 
     return GdocsStates(states, service)
 
+def load_google_state_swings(service: typing.Any) -> dict:
+    """Load most recent State Swings worksheet data"""
+    # Get all sheets in the spreadsheet
+    spreadsheet = service.spreadsheets().get(spreadsheetId=SPREADSHEET_ID).execute()
+    sheets = spreadsheet.get('sheets', [])
+
+    # Find all State Swings worksheets
+    swings_sheets = []
+    for sheet in sheets:
+        title = sheet['properties']['title']
+        if title.startswith('State Swings '):
+            # Extract date from title like "State Swings 2026-01-17"
+            date_str = title.replace('State Swings ', '')
+            swings_sheets.append((date_str, title))
+
+    if not swings_sheets:
+        logging.debug("No State Swings worksheets found")
+        return {}
+
+    # Sort by date and get the most recent
+    swings_sheets.sort(reverse=True)
+    most_recent_date, most_recent_title = swings_sheets[0]
+    logging.debug(f"Using State Swings worksheet: {most_recent_title}")
+
+    # Load data from the most recent sheet
+    result = service.spreadsheets().values().get(
+        spreadsheetId=SPREADSHEET_ID,
+        range=f"'{most_recent_title}'!A:O"
+    ).execute()
+
+    values = result.get('values', [])
+    if not values:
+        return {}
+
+    headers = values[0]
+
+    # Build dict mapping state abbreviation -> Zero Shift URL
+    state_swings = {}
+    for row in values[1:]:
+        row_padded = row + [''] * (len(headers) - len(row))
+        state_data = dict(zip(headers, row_padded))
+        state_name = state_data.get('State Name', '')
+        zero_shift_url = state_data.get('Zero Shift PlanScore URL', '').strip()
+
+        # Convert state name to abbreviation
+        abbrev = STATE_ABBREVS.get(state_name)
+        if abbrev and zero_shift_url:
+            state_swings[abbrev] = zero_shift_url
+            logging.debug(f"  {abbrev}: {zero_shift_url}")
+
+    return state_swings
+
 def planscore2election(plan_url: str, row: dict) -> typing.Optional[Election]:
     """Process an existing plan URL to calculate election data"""
     if not (plan_match := PLAN_URL_PAT.match(plan_url)):
@@ -125,6 +177,11 @@ def main(credentials_file: str, filename: str):
     gdocs = load_google_states(credentials_file)
     logging.debug(f"Loaded {len(gdocs.states)} states from Google Sheets")
 
+    # Load State Swings data
+    logging.debug("Loading State Swings data...")
+    state_swings = load_google_state_swings(gdocs.service)
+    logging.debug(f"Loaded {len(state_swings)} states from State Swings")
+
     with open(filename, "r") as file1:
         rows = list(csv.DictReader(file1))
 
@@ -157,8 +214,22 @@ def main(credentials_file: str, filename: str):
             else:
                 # No Google Sheets data for this state, keep row as-is
                 elections.append(Election(*(row.get(f) for f in ELECTION_FIELDS)))
+        elif cycle == "predict":
+            # For predict rows, check State Swings worksheet
+            stateabrev = row.get("stateabrev")
+            zero_shift_url = state_swings.get(stateabrev)
+
+            if zero_shift_url:
+                # State has a Zero Shift URL in State Swings, process the plan
+                row = dict(row)
+                row['url'] = zero_shift_url
+                election = planscore2election(zero_shift_url, row)
+                elections.append(election)
+            else:
+                # No Zero Shift URL, keep row as-is
+                elections.append(Election(*(row.get(f) for f in ELECTION_FIELDS)))
         else:
-            # Not a 2026 cycle, keep row as-is
+            # Not a 2026 or predict cycle, keep row as-is
             elections.append(Election(*(row.get(f) for f in ELECTION_FIELDS)))
 
     logging.info(f"{elections[:3]}, {elections[-3:]}")

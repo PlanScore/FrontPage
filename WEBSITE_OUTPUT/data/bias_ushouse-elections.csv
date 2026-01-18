@@ -1412,7 +1412,7 @@ predict,GA,,0.0,14,
 predict,HI,,0.0,2,
 predict,IA,,0.0,4,
 predict,ID,,0.0,2,
-predict,IL,,0.0,17,
+predict,IL,,0.173,17,https://planscore.org/plan.html?20260118T001631.622137249Z
 predict,IN,,0.0,9,
 predict,KS,,0.0,4,
 predict,KY,,0.0,6,
@@ -1425,7 +1425,7 @@ predict,MN,,0.0,8,
 predict,MO,yes,0.0,8,https://planscore.org/plan.html?20251116T014919.269577678Z
 predict,MS,yes,0.0,4,https://planscore.org/plan.html?20251228T184417.650378800Z
 predict,MT,,0.0,2,
-predict,NC,yes,0.0,14,https://planscore.org/plan.html?20251220T215350.341663516Z
+predict,NC,yes,-0.227,14,https://planscore.org/plan.html?20260118T001631.540221736Z
 predict,ND,,0.0,1,
 predict,NE,,0.0,3,
 predict,NH,,0.0,2,
@@ -1442,8 +1442,8 @@ predict,SC,,0.0,7,
 predict,SD,,0.0,1,
 predict,TN,,0.0,9,
 predict,TX,yes,0.0,38,https://planscore.org/plan.html?20251219T184700.037794076Z
-predict,UT,yes,0.0,4,https://planscore.org/plan.html?20260109T043743.846525206Z
-predict,VA,,0.0,11,
+predict,UT,yes,-0.022,4,https://planscore.org/plan.html?20260118T001634.186677257Z
+predict,VA,,0.003,11,https://planscore.org/plan.html?20260118T001636.365843215Z
 predict,VT,,0.0,1,
 predict,WA,,0.0,10,
 predict,WI,,0.0,8,
