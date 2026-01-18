@@ -693,11 +693,7 @@ def build_state_swings(service, states: dict, district_swings: dict, api_key: st
     clone_tasks = []
     state_rows = []
 
-    # TEMPORARY: Hardcode Illinois, Virginia, and redrawn states
-    # TODO: expand to sorted(states.keys()) in later stages
-    state_abbrevs = ["IL", "VA", "CA", "TX", "MO", "OH", "NC", "UT", "MS"]
-
-    for abbrev in state_abbrevs:
+    for abbrev in sorted(states.keys()):
         state_data = states[abbrev]
         plan_url = state_data.get('PlanScore URL', '').strip()
 
