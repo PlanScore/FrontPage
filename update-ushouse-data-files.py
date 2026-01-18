@@ -151,14 +151,14 @@ def get_state_swings_column_name(cycle: str) -> typing.Optional[str]:
     """Convert cycle name to State Swings worksheet column name
 
     Examples:
-        predict0 -> Zero Shift PlanScore URL
+        predict0 -> No-Swing PlanScore URL
         predict1D -> D+1 PlanScore URL
         predict12D -> D+12 PlanScore URL
         predict1R -> R+1 PlanScore URL
         predict12R -> R+12 PlanScore URL
     """
     if cycle == "predict0":
-        return "Zero Shift PlanScore URL"
+        return "No-Swing PlanScore URL"
 
     # Parse predictXD or predictXR format
     match = re.match(r'^predict(\d+)([DR])$', cycle)
