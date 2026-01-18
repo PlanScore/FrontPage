@@ -1,12 +1,9 @@
 #!/usr/bin/env python3
 import argparse
-import csv
-import dataclasses
 import datetime
 import http.client
 import json
 import logging
-import operator
 import os
 import re
 import shutil
@@ -22,32 +19,16 @@ import zipfile
 import oauth2client.service_account
 import googleapiclient.discovery
 
-@dataclasses.dataclass
-class Election:
-    cycle: str
-    stateabrev: str
-    newplan: str
-    EG: float
-    seats: int
-    url: str
-
-@dataclasses.dataclass
-class District:
-    dem_wins: float
-    dem_share: float
-    total_votes: int
-
-@dataclasses.dataclass
 class GdocsStates:
-    states: dict
-    service: typing.Any
+    def __init__(self, states: dict, service: typing.Any):
+        self.states = states
+        self.service = service
 
 UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.1 Safari/605.1.15'
 
 PLAN_URL_PAT = re.compile(r"^https://(?P<stack>dev.)?planscore.org/plan.html\?(?P<id>[\.\w]+)$")
 INDEX_URL_FMT = "https://{bucket}.s3.amazonaws.com/uploads/{id}/index.json"
 STACK_BUCKETS = {None: "planscore", "dev.": "planscore--dev"}
-ELECTION_FIELDS = tuple(f.name for f in dataclasses.fields(Election))
 
 SPREADSHEET_ID = '1rcYOxrr_bqkQWggCeP8W6eYkofl9_Zk0deHv62ilE8Y'
 
@@ -390,25 +371,17 @@ def upload_new_plan(api_key, plan_name, auth_url, shapefile_url, incumbents):
     finally:
         os.unlink(local_shapefile)
 
-def row2election(api_key: str, gdocs: GdocsStates, row: dict) -> typing.Optional[Election]:
+def process_state(api_key: str, gdocs: GdocsStates, stateabrev: str, google_state: dict) -> None:
     """
-    Process a 2026 election row, checking if it needs to be updated based on Google Sheet data.
+    Process a state from Google Sheets, checking if it needs to be updated.
+    If plan needs updating, uploads new plan and updates Google Sheets.
     """
-    stateabrev = row.get("stateabrev")
-    plan_url = row.get("url")
-
-    # Look up the state in Google Sheets by abbreviation
-    google_state = gdocs.states.get(stateabrev)
-
-    if not google_state:
-        logging.debug(f"No Google state found for {stateabrev}, returning as-is")
-        return planscore2election(plan_url, row) if plan_url else None
-
     # Check if we should skip this state
     has_redraw = google_state.get('2026 Redraw', '').strip().upper() == 'Y'
     filing_deadline_str = google_state.get('Filing Deadline', '').strip()
 
     filing_deadline_passed = False
+    filing_deadline = None
     if filing_deadline_str:
         try:
             filing_deadline = datetime.datetime.strptime(filing_deadline_str, '%Y-%m-%d').date()
@@ -416,15 +389,6 @@ def row2election(api_key: str, gdocs: GdocsStates, row: dict) -> typing.Optional
             filing_deadline_passed = today > filing_deadline
         except ValueError:
             logging.debug(f"Could not parse filing deadline: {filing_deadline_str}")
-
-    # Decision logic
-
-    # if not has_redraw:
-    #     logging.debug(f"{google_state['State Name']} - no redraw and we don't care about filing deadline, skipping")
-    #     return planscore2election(plan_url, row) if plan_url else None
-    # if not has_redraw and not filing_deadline_passed:
-    #     logging.debug(f"{google_state['State Name']} - no redraw and filing deadline not passed, skipping")
-    #     return planscore2election(plan_url, row) if plan_url else None
 
     # Check if incumbents have changed
     current_incumbents, score_date = get_plan_details(google_state.get('PlanScore URL', ''))
@@ -435,12 +399,12 @@ def row2election(api_key: str, gdocs: GdocsStates, row: dict) -> typing.Optional
     logging.debug(f"  Current:  {current_incumbents}")
     logging.debug(f"  New:      {new_incumbents}")
 
-    if current_incumbents == new_incumbents and score_date > filing_deadline:
+    if current_incumbents == new_incumbents and filing_deadline and score_date and score_date > filing_deadline:
         logging.debug(f"{google_state['State Name']} - incumbents unchanged and {score_date} new enough, skipping")
-        return planscore2election(plan_url, row) if plan_url else None
+        return
     elif current_incumbents == new_incumbents and not filing_deadline_passed:
         logging.debug(f"{google_state['State Name']} - incumbents unchanged and {score_date} filing deadline not passed, skipping")
-        return planscore2election(plan_url, row) if plan_url else None
+        return
 
     # Incumbents have changed, need to upload new plan
     logging.debug(f"{google_state['State Name']} - incumbents changed or {score_date} too old, uploading new plan")
@@ -458,86 +422,23 @@ def row2election(api_key: str, gdocs: GdocsStates, row: dict) -> typing.Optional
     # Update Google Sheet with the new plan URL
     update_google_sheet_plan_url(gdocs, stateabrev, google_state, new_plan_url)
 
-    # Update the row dict to use the new URL
-    row = dict(row)
-    row['url'] = new_plan_url
 
-    # Process the new plan to get election data
-    return planscore2election(new_plan_url, row)
-
-def planscore2election(plan_url: str, row: dict) -> typing.Optional[Election]:
-    """Process an existing plan URL to calculate election data"""
-    if not (plan_match := PLAN_URL_PAT.match(plan_url)):
-        raise ValueError(plan_url)
-
-    logging.debug(f"Processing plan: {plan_url}")
-    plan_bucket = STACK_BUCKETS[plan_match.group("stack")]
-    index_url = INDEX_URL_FMT.format(bucket=plan_bucket, id=plan_match.group("id"))
-    index_data = json.load(urllib.request.urlopen(index_url))
-
-    districts = [
-        District(
-            t["Democratic Wins"],
-            t["Democratic Votes"] / (t["Democratic Votes"] + t["Republican Votes"]),
-            t.get("US President 2024 - DEM", t["US President 2020 - DEM"]) + t.get("US President 2024 - REP", t["US President 2020 - REP"]),
-        )
-        for t in map(operator.itemgetter("totals"), index_data["districts"])
-    ]
-    state_votes = sum(d.total_votes for d in districts)
-
-    # vote share is turnout-weighted, seat share is not
-    seat_share = sum(d.dem_wins * 1 / len(districts) for d in districts)
-    vote_share = sum(d.dem_share * d.total_votes / state_votes for d in districts)
-    efficiency_gap = (seat_share - .5) - 2 * (vote_share - .5)
-
-    return Election(
-        row.get("cycle"),
-        row.get("stateabrev"),
-        row.get("newplan"),
-        round(efficiency_gap, 3),
-        row.get("seats"),
-        row.get("url"),
-    )
-
-def main(api_key: str, credentials_file: str, filename: str):
+def main(api_key: str, credentials_file: str):
     # Load Google Sheets states data
     logging.debug("Loading Google Sheets states data...")
     gdocs = load_google_states(credentials_file)
     logging.debug(f"Loaded {len(gdocs.states)} states from Google Sheets")
 
-    with open(filename, "r") as file1:
-        rows = list(csv.DictReader(file1))
+    # Iterate over all states in Google Sheets and process each one
+    for stateabrev, google_state in gdocs.states.items():
+        process_state(api_key, gdocs, stateabrev, google_state)
 
-    logging.info(f"{rows[:3]}, {rows[-3:]}")
-
-    elections = [
-        Election(*(row.get(f) for f in ELECTION_FIELDS))
-        for row in rows if row.get("cycle") not in ("2026", "predict")
-    ]
-
-    elections += [
-        row2election(api_key, gdocs, row) or Election(*(row.get(f) for f in ELECTION_FIELDS))
-        for row in rows if row.get("cycle") == "2026"
-    ]
-
-    elections += [
-        Election(*(row.get(f) for f in ELECTION_FIELDS))
-        for row in rows if row.get("cycle") == "predict"
-    ]
-
-    logging.info(f"{elections[:3]}, {elections[-3:]}")
-
-    with open(filename, "w") as file2:
-        out = csv.DictWriter(file2, ELECTION_FIELDS)
-        out.writeheader()
-        for election in elections:
-            out.writerow(dataclasses.asdict(election))
+    logging.info("All states processed.")
 
 parser = argparse.ArgumentParser()
 parser.add_argument("api_key")
 parser.add_argument("credentials_file")
-parser.add_argument("filename")
 
 if __name__ == "__main__":
     args = parser.parse_args()
-    exit(main(args.api_key, args.credentials_file, args.filename))
+    exit(main(args.api_key, args.credentials_file))
