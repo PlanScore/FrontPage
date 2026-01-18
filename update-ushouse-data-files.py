@@ -109,10 +109,10 @@ def load_google_state_swings(service: typing.Any) -> dict:
     most_recent_date, most_recent_title = swings_sheets[0]
     logging.debug(f"Using State Swings worksheet: {most_recent_title}")
 
-    # Load data from the most recent sheet
+    # Load data from the most recent sheet - read wide range to get all columns
     result = service.spreadsheets().values().get(
         spreadsheetId=SPREADSHEET_ID,
-        range=f"'{most_recent_title}'!A:O"
+        range=f"'{most_recent_title}'!A:AZ"
     ).execute()
 
     values = result.get('values', [])
@@ -121,21 +121,53 @@ def load_google_state_swings(service: typing.Any) -> dict:
 
     headers = values[0]
 
-    # Build dict mapping state abbreviation -> Zero Shift URL
+    # Build dict mapping state abbreviation -> dict of column names to URLs
+    # Structure: {state_abbrev: {column_name: url}}
     state_swings = {}
     for row in values[1:]:
         row_padded = row + [''] * (len(headers) - len(row))
         state_data = dict(zip(headers, row_padded))
         state_name = state_data.get('State Name', '')
-        zero_shift_url = state_data.get('Zero Shift PlanScore URL', '').strip()
 
         # Convert state name to abbreviation
         abbrev = STATE_ABBREVS.get(state_name)
-        if abbrev and zero_shift_url:
-            state_swings[abbrev] = zero_shift_url
-            logging.debug(f"  {abbrev}: {zero_shift_url}")
+        if not abbrev:
+            continue
+
+        # Extract all PlanScore URL columns
+        state_urls = {}
+        for header, value in state_data.items():
+            if 'PlanScore URL' in header and value and value.strip():
+                state_urls[header] = value.strip()
+
+        if state_urls:
+            state_swings[abbrev] = state_urls
+            logging.debug(f"  {abbrev}: {len(state_urls)} URLs found")
 
     return state_swings
+
+def get_state_swings_column_name(cycle: str) -> typing.Optional[str]:
+    """Convert cycle name to State Swings worksheet column name
+
+    Examples:
+        predict -> Zero Shift PlanScore URL
+        predict1D -> D+1 PlanScore URL
+        predict12D -> D+12 PlanScore URL
+        predict1R -> R+1 PlanScore URL
+        predict12R -> R+12 PlanScore URL
+    """
+    if cycle == "predict":
+        return "Zero Shift PlanScore URL"
+
+    # Parse predictXD or predictXR format
+    match = re.match(r'^predict(\d+)([DR])$', cycle)
+    if not match:
+        return None
+
+    number = match.group(1)
+    party = match.group(2)
+
+    return f"{party}+{number} PlanScore URL"
 
 def planscore2election(plan_url: str, row: dict) -> typing.Optional[Election]:
     """Process an existing plan URL to calculate election data"""
@@ -214,19 +246,26 @@ def main(credentials_file: str, filename: str):
             else:
                 # No Google Sheets data for this state, keep row as-is
                 elections.append(Election(*(row.get(f) for f in ELECTION_FIELDS)))
-        elif cycle == "predict":
-            # For predict rows, check State Swings worksheet
+        elif cycle and cycle.startswith("predict"):
+            # For predict* rows, check State Swings worksheet
             stateabrev = row.get("stateabrev")
-            zero_shift_url = state_swings.get(stateabrev)
+            column_name = get_state_swings_column_name(cycle)
 
-            if zero_shift_url:
-                # State has a Zero Shift URL in State Swings, process the plan
-                row = dict(row)
-                row['url'] = zero_shift_url
-                election = planscore2election(zero_shift_url, row)
-                elections.append(election)
+            if column_name and stateabrev in state_swings:
+                # Get the URL for this specific column/cycle
+                plan_url = state_swings[stateabrev].get(column_name, '').strip()
+
+                if plan_url:
+                    # State has a URL for this cycle in State Swings, process the plan
+                    row = dict(row)
+                    row['url'] = plan_url
+                    election = planscore2election(plan_url, row)
+                    elections.append(election)
+                else:
+                    # No URL for this cycle, keep row as-is
+                    elections.append(Election(*(row.get(f) for f in ELECTION_FIELDS)))
             else:
-                # No Zero Shift URL, keep row as-is
+                # State not in State Swings or invalid cycle name, keep row as-is
                 elections.append(Election(*(row.get(f) for f in ELECTION_FIELDS)))
         else:
             # Not a 2026 or predict cycle, keep row as-is
