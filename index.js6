@@ -478,6 +478,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                 const seatBiases = {};
                 const stateAreas = {};
                 const rawScales = {};
+                const realScales = {};
                 results.data.forEach(function (datarow) {
                     const value = parseFloat(datarow.EG);
                     const seats = parseInt(datarow.seats);
@@ -491,12 +492,16 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                     const $shape = $(`#state-shape-${datarow.stateabrev}`);
                     const stateArea = parseFloat($shape.attr('data-area')) || 1;
 
-                    // Dimensionless raw scale that we'll adjust later
-                    rawScales[`${datarow.stateabrev}-${datarow.cycle}`] = Math.sqrt(seatBias * 1e11 / stateArea);
+                    // Dimensionless raw scales that we'll adjust later
+                    var rawScale = Math.sqrt(seatBias * 1e11 / stateArea);
+                    rawScales[`${datarow.stateabrev}-${datarow.cycle}`] = rawScale;
+                    if (datarow.cycle.match(/^(19|20)\d\d$/)) {
+                        realScales[`${datarow.stateabrev}-${datarow.cycle}`] = rawScale;
+                    }
                 });
 
-                // Find the P10 and P90 raw scales to guide visual range
-                const scalesList = Object.values(rawScales).sort(function (a, b) { return a - b });
+                // Find the P10 and P90 real scales to guide visual range
+                const scalesList = Object.values(realScales).sort(function (a, b) { return a - b });
                 const p90RawScale = scalesList[Math.round(scalesList.length * 0.9)];
                 const p10RawScale = scalesList[Math.round(scalesList.length * 0.1)];
                 console.log(`p10RawScale ${p10RawScale.toFixed(2)}, p90RawScale ${p90RawScale.toFixed(2)}`);
