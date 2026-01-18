@@ -1403,7 +1403,7 @@ predict12D,AK,,0.0,1,
 predict12D,AL,,0.0,7,
 predict12D,AR,,0.0,4,
 predict12D,AZ,,0.0,9,
-predict12D,CA,yes,0.0,52,https://planscore.org/plan.html?20251109T005753.161170853Z
+predict12D,CA,yes,0.044,52,https://planscore.org/plan.html?20260118T030331.145136330Z
 predict12D,CO,,0.0,8,
 predict12D,CT,,0.0,5,
 predict12D,DE,,0.0,1,
@@ -1422,8 +1422,8 @@ predict12D,MD,,0.0,8,
 predict12D,ME,,0.0,2,
 predict12D,MI,,0.0,13,
 predict12D,MN,,0.0,8,
-predict12D,MO,yes,0.0,8,https://planscore.org/plan.html?20251116T014919.269577678Z
-predict12D,MS,yes,0.0,4,https://planscore.org/plan.html?20251228T184417.650378800Z
+predict12D,MO,yes,0.02,8,https://planscore.org/plan.html?20260118T030631.805452611Z
+predict12D,MS,yes,-0.212,4,https://planscore.org/plan.html?20260118T030806.674600353Z
 predict12D,MT,,0.0,2,
 predict12D,NC,yes,0.214,14,https://planscore.org/plan.html?20260118T000604.431947701Z
 predict12D,ND,,0.0,1,
@@ -1433,7 +1433,7 @@ predict12D,NJ,,0.0,12,
 predict12D,NM,,0.0,3,
 predict12D,NV,,0.0,4,
 predict12D,NY,,0.0,26,
-predict12D,OH,yes,0.0,15,https://planscore.org/plan.html?20251030T231915.464256903Z
+predict12D,OH,yes,0.039,15,https://planscore.org/plan.html?20260118T030728.905441817Z
 predict12D,OK,,0.0,5,
 predict12D,OR,,0.0,6,
 predict12D,PA,,0.0,17,
@@ -1441,7 +1441,7 @@ predict12D,RI,,0.0,2,
 predict12D,SC,,0.0,7,
 predict12D,SD,,0.0,1,
 predict12D,TN,,0.0,9,
-predict12D,TX,yes,0.0,38,https://planscore.org/plan.html?20251219T184700.037794076Z
+predict12D,TX,yes,0.055,38,https://planscore.org/plan.html?20260118T030519.951608056Z
 predict12D,UT,yes,-0.148,4,https://planscore.org/plan.html?20260118T000610.397049254Z
 predict12D,VA,,0.07,11,https://planscore.org/plan.html?20260118T000608.068337205Z
 predict12D,VT,,0.0,1,
@@ -1453,7 +1453,7 @@ predict11D,AK,,0.0,1,
 predict11D,AL,,0.0,7,
 predict11D,AR,,0.0,4,
 predict11D,AZ,,0.0,9,
-predict11D,CA,yes,0.0,52,https://planscore.org/plan.html?20251109T005753.161170853Z
+predict11D,CA,yes,0.057,52,https://planscore.org/plan.html?20260118T030331.608965682Z
 predict11D,CO,,0.0,8,
 predict11D,CT,,0.0,5,
 predict11D,DE,,0.0,1,
@@ -1472,8 +1472,8 @@ predict11D,MD,,0.0,8,
 predict11D,ME,,0.0,2,
 predict11D,MI,,0.0,13,
 predict11D,MN,,0.0,8,
-predict11D,MO,yes,0.0,8,https://planscore.org/plan.html?20251116T014919.269577678Z
-predict11D,MS,yes,0.0,4,https://planscore.org/plan.html?20251228T184417.650378800Z
+predict11D,MO,yes,-0.014,8,https://planscore.org/plan.html?20260118T030627.741274374Z
+predict11D,MS,yes,-0.201,4,https://planscore.org/plan.html?20260118T030806.802386516Z
 predict11D,MT,,0.0,2,
 predict11D,NC,yes,0.191,14,https://planscore.org/plan.html?20260117T234221.573532111Z
 predict11D,ND,,0.0,1,
@@ -1483,7 +1483,7 @@ predict11D,NJ,,0.0,12,
 predict11D,NM,,0.0,3,
 predict11D,NV,,0.0,4,
 predict11D,NY,,0.0,26,
-predict11D,OH,yes,0.0,15,https://planscore.org/plan.html?20251030T231915.464256903Z
+predict11D,OH,yes,0.026,15,https://planscore.org/plan.html?20260118T030727.518908525Z
 predict11D,OK,,0.0,5,
 predict11D,OR,,0.0,6,
 predict11D,PA,,0.0,17,
@@ -1491,7 +1491,7 @@ predict11D,RI,,0.0,2,
 predict11D,SC,,0.0,7,
 predict11D,SD,,0.0,1,
 predict11D,TN,,0.0,9,
-predict11D,TX,yes,0.0,38,https://planscore.org/plan.html?20251219T184700.037794076Z
+predict11D,TX,yes,0.006,38,https://planscore.org/plan.html?20260118T030519.531690543Z
 predict11D,UT,yes,-0.175,4,https://planscore.org/plan.html?20260117T234258.083201955Z
 predict11D,VA,,0.074,11,https://planscore.org/plan.html?20260117T234336.944596105Z
 predict11D,VT,,0.0,1,
@@ -1503,7 +1503,7 @@ predict10D,AK,,0.0,1,
 predict10D,AL,,0.0,7,
 predict10D,AR,,0.0,4,
 predict10D,AZ,,0.0,9,
-predict10D,CA,yes,0.0,52,https://planscore.org/plan.html?20251109T005753.161170853Z
+predict10D,CA,yes,0.069,52,https://planscore.org/plan.html?20260118T030331.157345468Z
 predict10D,CO,,0.0,8,
 predict10D,CT,,0.0,5,
 predict10D,DE,,0.0,1,
@@ -1522,8 +1522,8 @@ predict10D,MD,,0.0,8,
 predict10D,ME,,0.0,2,
 predict10D,MI,,0.0,13,
 predict10D,MN,,0.0,8,
-predict10D,MO,yes,0.0,8,https://planscore.org/plan.html?20251116T014919.269577678Z
-predict10D,MS,yes,0.0,4,https://planscore.org/plan.html?20251228T184417.650378800Z
+predict10D,MO,yes,-0.051,8,https://planscore.org/plan.html?20260118T030626.964598966Z
+predict10D,MS,yes,-0.185,4,https://planscore.org/plan.html?20260118T030806.666278529Z
 predict10D,MT,,0.0,2,
 predict10D,NC,yes,0.152,14,https://planscore.org/plan.html?20260117T234221.054080815Z
 predict10D,ND,,0.0,1,
@@ -1533,7 +1533,7 @@ predict10D,NJ,,0.0,12,
 predict10D,NM,,0.0,3,
 predict10D,NV,,0.0,4,
 predict10D,NY,,0.0,26,
-predict10D,OH,yes,0.0,15,https://planscore.org/plan.html?20251030T231915.464256903Z
+predict10D,OH,yes,0.009,15,https://planscore.org/plan.html?20260118T030725.282097399Z
 predict10D,OK,,0.0,5,
 predict10D,OR,,0.0,6,
 predict10D,PA,,0.0,17,
@@ -1541,7 +1541,7 @@ predict10D,RI,,0.0,2,
 predict10D,SC,,0.0,7,
 predict10D,SD,,0.0,1,
 predict10D,TN,,0.0,9,
-predict10D,TX,yes,0.0,38,https://planscore.org/plan.html?20251219T184700.037794076Z
+predict10D,TX,yes,-0.041,38,https://planscore.org/plan.html?20260118T030512.233686082Z
 predict10D,UT,yes,-0.183,4,https://planscore.org/plan.html?20260117T234258.555518952Z
 predict10D,VA,,0.073,11,https://planscore.org/plan.html?20260117T234336.675178157Z
 predict10D,VT,,0.0,1,
@@ -1553,7 +1553,7 @@ predict9D,AK,,0.0,1,
 predict9D,AL,,0.0,7,
 predict9D,AR,,0.0,4,
 predict9D,AZ,,0.0,9,
-predict9D,CA,yes,0.0,52,https://planscore.org/plan.html?20251109T005753.161170853Z
+predict9D,CA,yes,0.081,52,https://planscore.org/plan.html?20260118T030331.043046348Z
 predict9D,CO,,0.0,8,
 predict9D,CT,,0.0,5,
 predict9D,DE,,0.0,1,
@@ -1572,8 +1572,8 @@ predict9D,MD,,0.0,8,
 predict9D,ME,,0.0,2,
 predict9D,MI,,0.0,13,
 predict9D,MN,,0.0,8,
-predict9D,MO,yes,0.0,8,https://planscore.org/plan.html?20251116T014919.269577678Z
-predict9D,MS,yes,0.0,4,https://planscore.org/plan.html?20251228T184417.650378800Z
+predict9D,MO,yes,-0.086,8,https://planscore.org/plan.html?20260118T030626.530607494Z
+predict9D,MS,yes,-0.168,4,https://planscore.org/plan.html?20260118T030806.388982732Z
 predict9D,MT,,0.0,2,
 predict9D,NC,yes,0.096,14,https://planscore.org/plan.html?20260117T234221.458859302Z
 predict9D,ND,,0.0,1,
@@ -1583,7 +1583,7 @@ predict9D,NJ,,0.0,12,
 predict9D,NM,,0.0,3,
 predict9D,NV,,0.0,4,
 predict9D,NY,,0.0,26,
-predict9D,OH,yes,0.0,15,https://planscore.org/plan.html?20251030T231915.464256903Z
+predict9D,OH,yes,-0.007,15,https://planscore.org/plan.html?20260118T030725.812163091Z
 predict9D,OK,,0.0,5,
 predict9D,OR,,0.0,6,
 predict9D,PA,,0.0,17,
@@ -1591,7 +1591,7 @@ predict9D,RI,,0.0,2,
 predict9D,SC,,0.0,7,
 predict9D,SD,,0.0,1,
 predict9D,TN,,0.0,9,
-predict9D,TX,yes,0.0,38,https://planscore.org/plan.html?20251219T184700.037794076Z
+predict9D,TX,yes,-0.082,38,https://planscore.org/plan.html?20260118T030511.831201923Z
 predict9D,UT,yes,-0.179,4,https://planscore.org/plan.html?20260117T234258.688560986Z
 predict9D,VA,,0.073,11,https://planscore.org/plan.html?20260117T234336.451498751Z
 predict9D,VT,,0.0,1,
@@ -1603,7 +1603,7 @@ predict8D,AK,,0.0,1,
 predict8D,AL,,0.0,7,
 predict8D,AR,,0.0,4,
 predict8D,AZ,,0.0,9,
-predict8D,CA,yes,0.0,52,https://planscore.org/plan.html?20251109T005753.161170853Z
+predict8D,CA,yes,0.093,52,https://planscore.org/plan.html?20260118T030330.025827987Z
 predict8D,CO,,0.0,8,
 predict8D,CT,,0.0,5,
 predict8D,DE,,0.0,1,
@@ -1622,8 +1622,8 @@ predict8D,MD,,0.0,8,
 predict8D,ME,,0.0,2,
 predict8D,MI,,0.0,13,
 predict8D,MN,,0.0,8,
-predict8D,MO,yes,0.0,8,https://planscore.org/plan.html?20251116T014919.269577678Z
-predict8D,MS,yes,0.0,4,https://planscore.org/plan.html?20251228T184417.650378800Z
+predict8D,MO,yes,-0.121,8,https://planscore.org/plan.html?20260118T030623.873968463Z
+predict8D,MS,yes,-0.148,4,https://planscore.org/plan.html?20260118T030806.343174183Z
 predict8D,MT,,0.0,2,
 predict8D,NC,yes,0.029,14,https://planscore.org/plan.html?20260117T234221.368325905Z
 predict8D,ND,,0.0,1,
@@ -1633,7 +1633,7 @@ predict8D,NJ,,0.0,12,
 predict8D,NM,,0.0,3,
 predict8D,NV,,0.0,4,
 predict8D,NY,,0.0,26,
-predict8D,OH,yes,0.0,15,https://planscore.org/plan.html?20251030T231915.464256903Z
+predict8D,OH,yes,-0.028,15,https://planscore.org/plan.html?20260118T030720.270066051Z
 predict8D,OK,,0.0,5,
 predict8D,OR,,0.0,6,
 predict8D,PA,,0.0,17,
@@ -1641,7 +1641,7 @@ predict8D,RI,,0.0,2,
 predict8D,SC,,0.0,7,
 predict8D,SD,,0.0,1,
 predict8D,TN,,0.0,9,
-predict8D,TX,yes,0.0,38,https://planscore.org/plan.html?20251219T184700.037794076Z
+predict8D,TX,yes,-0.114,38,https://planscore.org/plan.html?20260118T030511.634280701Z
 predict8D,UT,yes,-0.167,4,https://planscore.org/plan.html?20260117T234258.064963898Z
 predict8D,VA,,0.069,11,https://planscore.org/plan.html?20260117T234336.199011895Z
 predict8D,VT,,0.0,1,
@@ -1653,7 +1653,7 @@ predict7D,AK,,0.0,1,
 predict7D,AL,,0.0,7,
 predict7D,AR,,0.0,4,
 predict7D,AZ,,0.0,9,
-predict7D,CA,yes,0.0,52,https://planscore.org/plan.html?20251109T005753.161170853Z
+predict7D,CA,yes,0.104,52,https://planscore.org/plan.html?20260118T030252.997967710Z
 predict7D,CO,,0.0,8,
 predict7D,CT,,0.0,5,
 predict7D,DE,,0.0,1,
@@ -1672,8 +1672,8 @@ predict7D,MD,,0.0,8,
 predict7D,ME,,0.0,2,
 predict7D,MI,,0.0,13,
 predict7D,MN,,0.0,8,
-predict7D,MO,yes,0.0,8,https://planscore.org/plan.html?20251116T014919.269577678Z
-predict7D,MS,yes,0.0,4,https://planscore.org/plan.html?20251228T184417.650378800Z
+predict7D,MO,yes,-0.15,8,https://planscore.org/plan.html?20260118T030623.022534564Z
+predict7D,MS,yes,-0.129,4,https://planscore.org/plan.html?20260118T030804.719413815Z
 predict7D,MT,,0.0,2,
 predict7D,NC,yes,-0.043,14,https://planscore.org/plan.html?20260117T234221.270985772Z
 predict7D,ND,,0.0,1,
@@ -1683,7 +1683,7 @@ predict7D,NJ,,0.0,12,
 predict7D,NM,,0.0,3,
 predict7D,NV,,0.0,4,
 predict7D,NY,,0.0,26,
-predict7D,OH,yes,0.0,15,https://planscore.org/plan.html?20251030T231915.464256903Z
+predict7D,OH,yes,-0.051,15,https://planscore.org/plan.html?20260118T030716.163628881Z
 predict7D,OK,,0.0,5,
 predict7D,OR,,0.0,6,
 predict7D,PA,,0.0,17,
@@ -1691,7 +1691,7 @@ predict7D,RI,,0.0,2,
 predict7D,SC,,0.0,7,
 predict7D,SD,,0.0,1,
 predict7D,TN,,0.0,9,
-predict7D,TX,yes,0.0,38,https://planscore.org/plan.html?20251219T184700.037794076Z
+predict7D,TX,yes,-0.138,38,https://planscore.org/plan.html?20260118T030511.787812485Z
 predict7D,UT,yes,-0.15,4,https://planscore.org/plan.html?20260117T234258.384641936Z
 predict7D,VA,,0.068,11,https://planscore.org/plan.html?20260117T234336.060619480Z
 predict7D,VT,,0.0,1,
@@ -1703,7 +1703,7 @@ predict6D,AK,,0.0,1,
 predict6D,AL,,0.0,7,
 predict6D,AR,,0.0,4,
 predict6D,AZ,,0.0,9,
-predict6D,CA,yes,0.0,52,https://planscore.org/plan.html?20251109T005753.161170853Z
+predict6D,CA,yes,0.116,52,https://planscore.org/plan.html?20260118T030252.845197453Z
 predict6D,CO,,0.0,8,
 predict6D,CT,,0.0,5,
 predict6D,DE,,0.0,1,
@@ -1722,8 +1722,8 @@ predict6D,MD,,0.0,8,
 predict6D,ME,,0.0,2,
 predict6D,MI,,0.0,13,
 predict6D,MN,,0.0,8,
-predict6D,MO,yes,0.0,8,https://planscore.org/plan.html?20251116T014919.269577678Z
-predict6D,MS,yes,0.0,4,https://planscore.org/plan.html?20251228T184417.650378800Z
+predict6D,MO,yes,-0.169,8,https://planscore.org/plan.html?20260118T030623.088954904Z
+predict6D,MS,yes,-0.109,4,https://planscore.org/plan.html?20260118T030803.981888327Z
 predict6D,MT,,0.0,2,
 predict6D,NC,yes,-0.106,14,https://planscore.org/plan.html?20260117T234221.612505460Z
 predict6D,ND,,0.0,1,
@@ -1733,7 +1733,7 @@ predict6D,NJ,,0.0,12,
 predict6D,NM,,0.0,3,
 predict6D,NV,,0.0,4,
 predict6D,NY,,0.0,26,
-predict6D,OH,yes,0.0,15,https://planscore.org/plan.html?20251030T231915.464256903Z
+predict6D,OH,yes,-0.075,15,https://planscore.org/plan.html?20260118T030715.994016276Z
 predict6D,OK,,0.0,5,
 predict6D,OR,,0.0,6,
 predict6D,PA,,0.0,17,
@@ -1741,7 +1741,7 @@ predict6D,RI,,0.0,2,
 predict6D,SC,,0.0,7,
 predict6D,SD,,0.0,1,
 predict6D,TN,,0.0,9,
-predict6D,TX,yes,0.0,38,https://planscore.org/plan.html?20251219T184700.037794076Z
+predict6D,TX,yes,-0.155,38,https://planscore.org/plan.html?20260118T030511.148301073Z
 predict6D,UT,yes,-0.131,4,https://planscore.org/plan.html?20260117T234258.469650078Z
 predict6D,VA,,0.061,11,https://planscore.org/plan.html?20260117T234336.957781207Z
 predict6D,VT,,0.0,1,
@@ -1753,7 +1753,7 @@ predict5D,AK,,0.0,1,
 predict5D,AL,,0.0,7,
 predict5D,AR,,0.0,4,
 predict5D,AZ,,0.0,9,
-predict5D,CA,yes,0.0,52,https://planscore.org/plan.html?20251109T005753.161170853Z
+predict5D,CA,yes,0.127,52,https://planscore.org/plan.html?20260118T030252.737563658Z
 predict5D,CO,,0.0,8,
 predict5D,CT,,0.0,5,
 predict5D,DE,,0.0,1,
@@ -1772,8 +1772,8 @@ predict5D,MD,,0.0,8,
 predict5D,ME,,0.0,2,
 predict5D,MI,,0.0,13,
 predict5D,MN,,0.0,8,
-predict5D,MO,yes,0.0,8,https://planscore.org/plan.html?20251116T014919.269577678Z
-predict5D,MS,yes,0.0,4,https://planscore.org/plan.html?20251228T184417.650378800Z
+predict5D,MO,yes,-0.182,8,https://planscore.org/plan.html?20260118T030621.229449404Z
+predict5D,MS,yes,-0.089,4,https://planscore.org/plan.html?20260118T030757.525458940Z
 predict5D,MT,,0.0,2,
 predict5D,NC,yes,-0.158,14,https://planscore.org/plan.html?20260117T234221.600050008Z
 predict5D,ND,,0.0,1,
@@ -1783,7 +1783,7 @@ predict5D,NJ,,0.0,12,
 predict5D,NM,,0.0,3,
 predict5D,NV,,0.0,4,
 predict5D,NY,,0.0,26,
-predict5D,OH,yes,0.0,15,https://planscore.org/plan.html?20251030T231915.464256903Z
+predict5D,OH,yes,-0.097,15,https://planscore.org/plan.html?20260118T030714.775910865Z
 predict5D,OK,,0.0,5,
 predict5D,OR,,0.0,6,
 predict5D,PA,,0.0,17,
@@ -1791,7 +1791,7 @@ predict5D,RI,,0.0,2,
 predict5D,SC,,0.0,7,
 predict5D,SD,,0.0,1,
 predict5D,TN,,0.0,9,
-predict5D,TX,yes,0.0,38,https://planscore.org/plan.html?20251219T184700.037794076Z
+predict5D,TX,yes,-0.162,38,https://planscore.org/plan.html?20260118T030509.566342901Z
 predict5D,UT,yes,-0.111,4,https://planscore.org/plan.html?20260117T234258.320182311Z
 predict5D,VA,,0.052,11,https://planscore.org/plan.html?20260117T234336.698952557Z
 predict5D,VT,,0.0,1,
@@ -1803,7 +1803,7 @@ predict4D,AK,,0.0,1,
 predict4D,AL,,0.0,7,
 predict4D,AR,,0.0,4,
 predict4D,AZ,,0.0,9,
-predict4D,CA,yes,0.0,52,https://planscore.org/plan.html?20251109T005753.161170853Z
+predict4D,CA,yes,0.136,52,https://planscore.org/plan.html?20260118T030252.618859988Z
 predict4D,CO,,0.0,8,
 predict4D,CT,,0.0,5,
 predict4D,DE,,0.0,1,
@@ -1822,8 +1822,8 @@ predict4D,MD,,0.0,8,
 predict4D,ME,,0.0,2,
 predict4D,MI,,0.0,13,
 predict4D,MN,,0.0,8,
-predict4D,MO,yes,0.0,8,https://planscore.org/plan.html?20251116T014919.269577678Z
-predict4D,MS,yes,0.0,4,https://planscore.org/plan.html?20251228T184417.650378800Z
+predict4D,MO,yes,-0.19,8,https://planscore.org/plan.html?20260118T030615.143398440Z
+predict4D,MS,yes,-0.07,4,https://planscore.org/plan.html?20260118T030754.409657846Z
 predict4D,MT,,0.0,2,
 predict4D,NC,yes,-0.194,14,https://planscore.org/plan.html?20260117T234221.969053780Z
 predict4D,ND,,0.0,1,
@@ -1833,7 +1833,7 @@ predict4D,NJ,,0.0,12,
 predict4D,NM,,0.0,3,
 predict4D,NV,,0.0,4,
 predict4D,NY,,0.0,26,
-predict4D,OH,yes,0.0,15,https://planscore.org/plan.html?20251030T231915.464256903Z
+predict4D,OH,yes,-0.116,15,https://planscore.org/plan.html?20260118T030709.606806539Z
 predict4D,OK,,0.0,5,
 predict4D,OR,,0.0,6,
 predict4D,PA,,0.0,17,
@@ -1841,7 +1841,7 @@ predict4D,RI,,0.0,2,
 predict4D,SC,,0.0,7,
 predict4D,SD,,0.0,1,
 predict4D,TN,,0.0,9,
-predict4D,TX,yes,0.0,38,https://planscore.org/plan.html?20251219T184700.037794076Z
+predict4D,TX,yes,-0.163,38,https://planscore.org/plan.html?20260118T030459.372275955Z
 predict4D,UT,yes,-0.091,4,https://planscore.org/plan.html?20260117T234258.272329018Z
 predict4D,VA,,0.042,11,https://planscore.org/plan.html?20260117T234336.305127911Z
 predict4D,VT,,0.0,1,
@@ -1853,7 +1853,7 @@ predict3D,AK,,0.0,1,
 predict3D,AL,,0.0,7,
 predict3D,AR,,0.0,4,
 predict3D,AZ,,0.0,9,
-predict3D,CA,yes,0.0,52,https://planscore.org/plan.html?20251109T005753.161170853Z
+predict3D,CA,yes,0.141,52,https://planscore.org/plan.html?20260118T030252.629929107Z
 predict3D,CO,,0.0,8,
 predict3D,CT,,0.0,5,
 predict3D,DE,,0.0,1,
@@ -1872,8 +1872,8 @@ predict3D,MD,,0.0,8,
 predict3D,ME,,0.0,2,
 predict3D,MI,,0.0,13,
 predict3D,MN,,0.0,8,
-predict3D,MO,yes,0.0,8,https://planscore.org/plan.html?20251116T014919.269577678Z
-predict3D,MS,yes,0.0,4,https://planscore.org/plan.html?20251228T184417.650378800Z
+predict3D,MO,yes,-0.189,8,https://planscore.org/plan.html?20260118T030615.773859372Z
+predict3D,MS,yes,-0.05,4,https://planscore.org/plan.html?20260118T030753.930697431Z
 predict3D,MT,,0.0,2,
 predict3D,NC,yes,-0.216,14,https://planscore.org/plan.html?20260117T234221.796939814Z
 predict3D,ND,,0.0,1,
@@ -1883,7 +1883,7 @@ predict3D,NJ,,0.0,12,
 predict3D,NM,,0.0,3,
 predict3D,NV,,0.0,4,
 predict3D,NY,,0.0,26,
-predict3D,OH,yes,0.0,15,https://planscore.org/plan.html?20251030T231915.464256903Z
+predict3D,OH,yes,-0.13,15,https://planscore.org/plan.html?20260118T030704.350502137Z
 predict3D,OK,,0.0,5,
 predict3D,OR,,0.0,6,
 predict3D,PA,,0.0,17,
@@ -1891,7 +1891,7 @@ predict3D,RI,,0.0,2,
 predict3D,SC,,0.0,7,
 predict3D,SD,,0.0,1,
 predict3D,TN,,0.0,9,
-predict3D,TX,yes,0.0,38,https://planscore.org/plan.html?20251219T184700.037794076Z
+predict3D,TX,yes,-0.159,38,https://planscore.org/plan.html?20260118T030458.068499828Z
 predict3D,UT,yes,-0.071,4,https://planscore.org/plan.html?20260117T234258.031041000Z
 predict3D,VA,,0.031,11,https://planscore.org/plan.html?20260117T234336.515941951Z
 predict3D,VT,,0.0,1,
@@ -1903,7 +1903,7 @@ predict2D,AK,,0.0,1,
 predict2D,AL,,0.0,7,
 predict2D,AR,,0.0,4,
 predict2D,AZ,,0.0,9,
-predict2D,CA,yes,0.0,52,https://planscore.org/plan.html?20251109T005753.161170853Z
+predict2D,CA,yes,0.144,52,https://planscore.org/plan.html?20260118T030252.922766740Z
 predict2D,CO,,0.0,8,
 predict2D,CT,,0.0,5,
 predict2D,DE,,0.0,1,
@@ -1922,8 +1922,8 @@ predict2D,MD,,0.0,8,
 predict2D,ME,,0.0,2,
 predict2D,MI,,0.0,13,
 predict2D,MN,,0.0,8,
-predict2D,MO,yes,0.0,8,https://planscore.org/plan.html?20251116T014919.269577678Z
-predict2D,MS,yes,0.0,4,https://planscore.org/plan.html?20251228T184417.650378800Z
+predict2D,MO,yes,-0.185,8,https://planscore.org/plan.html?20260118T030613.202395703Z
+predict2D,MS,yes,-0.031,4,https://planscore.org/plan.html?20260118T030753.491983875Z
 predict2D,MT,,0.0,2,
 predict2D,NC,yes,-0.23,14,https://planscore.org/plan.html?20260117T234221.568537282Z
 predict2D,ND,,0.0,1,
@@ -1933,7 +1933,7 @@ predict2D,NJ,,0.0,12,
 predict2D,NM,,0.0,3,
 predict2D,NV,,0.0,4,
 predict2D,NY,,0.0,26,
-predict2D,OH,yes,0.0,15,https://planscore.org/plan.html?20251030T231915.464256903Z
+predict2D,OH,yes,-0.141,15,https://planscore.org/plan.html?20260118T030704.788946696Z
 predict2D,OK,,0.0,5,
 predict2D,OR,,0.0,6,
 predict2D,PA,,0.0,17,
@@ -1941,7 +1941,7 @@ predict2D,RI,,0.0,2,
 predict2D,SC,,0.0,7,
 predict2D,SD,,0.0,1,
 predict2D,TN,,0.0,9,
-predict2D,TX,yes,0.0,38,https://planscore.org/plan.html?20251219T184700.037794076Z
+predict2D,TX,yes,-0.153,38,https://planscore.org/plan.html?20260118T030431.293353925Z
 predict2D,UT,yes,-0.052,4,https://planscore.org/plan.html?20260117T234258.723719788Z
 predict2D,VA,,0.022,11,https://planscore.org/plan.html?20260117T234336.770882824Z
 predict2D,VT,,0.0,1,
@@ -1953,7 +1953,7 @@ predict1D,AK,,0.0,1,
 predict1D,AL,,0.0,7,
 predict1D,AR,,0.0,4,
 predict1D,AZ,,0.0,9,
-predict1D,CA,yes,0.0,52,https://planscore.org/plan.html?20251109T005753.161170853Z
+predict1D,CA,yes,0.144,52,https://planscore.org/plan.html?20260118T030252.196522373Z
 predict1D,CO,,0.0,8,
 predict1D,CT,,0.0,5,
 predict1D,DE,,0.0,1,
@@ -1972,8 +1972,8 @@ predict1D,MD,,0.0,8,
 predict1D,ME,,0.0,2,
 predict1D,MI,,0.0,13,
 predict1D,MN,,0.0,8,
-predict1D,MO,yes,0.0,8,https://planscore.org/plan.html?20251116T014919.269577678Z
-predict1D,MS,yes,0.0,4,https://planscore.org/plan.html?20251228T184417.650378800Z
+predict1D,MO,yes,-0.174,8,https://planscore.org/plan.html?20260118T030613.658819192Z
+predict1D,MS,yes,-0.012,4,https://planscore.org/plan.html?20260118T030753.385083278Z
 predict1D,MT,,0.0,2,
 predict1D,NC,yes,-0.233,14,https://planscore.org/plan.html?20260117T234221.056068356Z
 predict1D,ND,,0.0,1,
@@ -1983,7 +1983,7 @@ predict1D,NJ,,0.0,12,
 predict1D,NM,,0.0,3,
 predict1D,NV,,0.0,4,
 predict1D,NY,,0.0,26,
-predict1D,OH,yes,0.0,15,https://planscore.org/plan.html?20251030T231915.464256903Z
+predict1D,OH,yes,-0.148,15,https://planscore.org/plan.html?20260118T030703.469110947Z
 predict1D,OK,,0.0,5,
 predict1D,OR,,0.0,6,
 predict1D,PA,,0.0,17,
@@ -1991,7 +1991,7 @@ predict1D,RI,,0.0,2,
 predict1D,SC,,0.0,7,
 predict1D,SD,,0.0,1,
 predict1D,TN,,0.0,9,
-predict1D,TX,yes,0.0,38,https://planscore.org/plan.html?20251219T184700.037794076Z
+predict1D,TX,yes,-0.144,38,https://planscore.org/plan.html?20260118T030431.400900689Z
 predict1D,UT,yes,-0.035,4,https://planscore.org/plan.html?20260117T234258.229422821Z
 predict1D,VA,,0.011,11,https://planscore.org/plan.html?20260117T234336.509215875Z
 predict1D,VT,,0.0,1,
@@ -2003,7 +2003,7 @@ predict0,AK,,0.0,1,
 predict0,AL,,0.0,7,
 predict0,AR,,0.0,4,
 predict0,AZ,,0.0,9,
-predict0,CA,yes,0.0,52,https://planscore.org/plan.html?20251109T005753.161170853Z
+predict0,CA,yes,0.136,52,https://planscore.org/plan.html?20260118T030252.652919306Z
 predict0,CO,,0.0,8,
 predict0,CT,,0.0,5,
 predict0,DE,,0.0,1,
@@ -2022,8 +2022,8 @@ predict0,MD,,0.0,8,
 predict0,ME,,0.0,2,
 predict0,MI,,0.0,13,
 predict0,MN,,0.0,8,
-predict0,MO,yes,0.0,8,https://planscore.org/plan.html?20251116T014919.269577678Z
-predict0,MS,yes,0.0,4,https://planscore.org/plan.html?20251228T184417.650378800Z
+predict0,MO,yes,-0.161,8,https://planscore.org/plan.html?20260118T030613.245734369Z
+predict0,MS,yes,0.007,4,https://planscore.org/plan.html?20260118T030753.052954058Z
 predict0,MT,,0.0,2,
 predict0,NC,yes,-0.227,14,https://planscore.org/plan.html?20260118T001631.540221736Z
 predict0,ND,,0.0,1,
@@ -2033,7 +2033,7 @@ predict0,NJ,,0.0,12,
 predict0,NM,,0.0,3,
 predict0,NV,,0.0,4,
 predict0,NY,,0.0,26,
-predict0,OH,yes,0.0,15,https://planscore.org/plan.html?20251030T231915.464256903Z
+predict0,OH,yes,-0.15,15,https://planscore.org/plan.html?20260118T030701.322881787Z
 predict0,OK,,0.0,5,
 predict0,OR,,0.0,6,
 predict0,PA,,0.0,17,
@@ -2041,7 +2041,7 @@ predict0,RI,,0.0,2,
 predict0,SC,,0.0,7,
 predict0,SD,,0.0,1,
 predict0,TN,,0.0,9,
-predict0,TX,yes,0.0,38,https://planscore.org/plan.html?20251219T184700.037794076Z
+predict0,TX,yes,-0.131,38,https://planscore.org/plan.html?20260118T030423.156140601Z
 predict0,UT,yes,-0.022,4,https://planscore.org/plan.html?20260118T001634.186677257Z
 predict0,VA,,0.003,11,https://planscore.org/plan.html?20260118T001636.365843215Z
 predict0,VT,,0.0,1,
@@ -2053,7 +2053,7 @@ predict1R,AK,,0.0,1,
 predict1R,AL,,0.0,7,
 predict1R,AR,,0.0,4,
 predict1R,AZ,,0.0,9,
-predict1R,CA,yes,0.0,52,https://planscore.org/plan.html?20251109T005753.161170853Z
+predict1R,CA,yes,0.124,52,https://planscore.org/plan.html?20260118T030252.680510220Z
 predict1R,CO,,0.0,8,
 predict1R,CT,,0.0,5,
 predict1R,DE,,0.0,1,
@@ -2072,8 +2072,8 @@ predict1R,MD,,0.0,8,
 predict1R,ME,,0.0,2,
 predict1R,MI,,0.0,13,
 predict1R,MN,,0.0,8,
-predict1R,MO,yes,0.0,8,https://planscore.org/plan.html?20251116T014919.269577678Z
-predict1R,MS,yes,0.0,4,https://planscore.org/plan.html?20251228T184417.650378800Z
+predict1R,MO,yes,-0.144,8,https://planscore.org/plan.html?20260118T030607.209410478Z
+predict1R,MS,yes,0.025,4,https://planscore.org/plan.html?20260118T030753.807201969Z
 predict1R,MT,,0.0,2,
 predict1R,NC,yes,-0.216,14,https://planscore.org/plan.html?20260117T234156.465130495Z
 predict1R,ND,,0.0,1,
@@ -2083,7 +2083,7 @@ predict1R,NJ,,0.0,12,
 predict1R,NM,,0.0,3,
 predict1R,NV,,0.0,4,
 predict1R,NY,,0.0,26,
-predict1R,OH,yes,0.0,15,https://planscore.org/plan.html?20251030T231915.464256903Z
+predict1R,OH,yes,-0.146,15,https://planscore.org/plan.html?20260118T030701.146353065Z
 predict1R,OK,,0.0,5,
 predict1R,OR,,0.0,6,
 predict1R,PA,,0.0,17,
@@ -2091,7 +2091,7 @@ predict1R,RI,,0.0,2,
 predict1R,SC,,0.0,7,
 predict1R,SD,,0.0,1,
 predict1R,TN,,0.0,9,
-predict1R,TX,yes,0.0,38,https://planscore.org/plan.html?20251219T184700.037794076Z
+predict1R,TX,yes,-0.115,38,https://planscore.org/plan.html?20260118T030423.823475436Z
 predict1R,UT,yes,-0.011,4,https://planscore.org/plan.html?20260117T234245.143444456Z
 predict1R,VA,,-0.005,11,https://planscore.org/plan.html?20260117T234312.712481701Z
 predict1R,VT,,0.0,1,
@@ -2103,7 +2103,7 @@ predict2R,AK,,0.0,1,
 predict2R,AL,,0.0,7,
 predict2R,AR,,0.0,4,
 predict2R,AZ,,0.0,9,
-predict2R,CA,yes,0.0,52,https://planscore.org/plan.html?20251109T005753.161170853Z
+predict2R,CA,yes,0.104,52,https://planscore.org/plan.html?20260118T030252.937441472Z
 predict2R,CO,,0.0,8,
 predict2R,CT,,0.0,5,
 predict2R,DE,,0.0,1,
@@ -2122,8 +2122,8 @@ predict2R,MD,,0.0,8,
 predict2R,ME,,0.0,2,
 predict2R,MI,,0.0,13,
 predict2R,MN,,0.0,8,
-predict2R,MO,yes,0.0,8,https://planscore.org/plan.html?20251116T014919.269577678Z
-predict2R,MS,yes,0.0,4,https://planscore.org/plan.html?20251228T184417.650378800Z
+predict2R,MO,yes,-0.128,8,https://planscore.org/plan.html?20260118T030607.194953407Z
+predict2R,MS,yes,0.044,4,https://planscore.org/plan.html?20260118T030753.424673613Z
 predict2R,MT,,0.0,2,
 predict2R,NC,yes,-0.202,14,https://planscore.org/plan.html?20260117T234156.905654195Z
 predict2R,ND,,0.0,1,
@@ -2133,7 +2133,7 @@ predict2R,NJ,,0.0,12,
 predict2R,NM,,0.0,3,
 predict2R,NV,,0.0,4,
 predict2R,NY,,0.0,26,
-predict2R,OH,yes,0.0,15,https://planscore.org/plan.html?20251030T231915.464256903Z
+predict2R,OH,yes,-0.138,15,https://planscore.org/plan.html?20260118T030701.440396556Z
 predict2R,OK,,0.0,5,
 predict2R,OR,,0.0,6,
 predict2R,PA,,0.0,17,
@@ -2141,7 +2141,7 @@ predict2R,RI,,0.0,2,
 predict2R,SC,,0.0,7,
 predict2R,SD,,0.0,1,
 predict2R,TN,,0.0,9,
-predict2R,TX,yes,0.0,38,https://planscore.org/plan.html?20251219T184700.037794076Z
+predict2R,TX,yes,-0.098,38,https://planscore.org/plan.html?20260118T030423.855729685Z
 predict2R,UT,yes,-0.008,4,https://planscore.org/plan.html?20260117T234246.646987203Z
 predict2R,VA,,-0.008,11,https://planscore.org/plan.html?20260117T234311.468266651Z
 predict2R,VT,,0.0,1,
@@ -2153,7 +2153,7 @@ predict3R,AK,,0.0,1,
 predict3R,AL,,0.0,7,
 predict3R,AR,,0.0,4,
 predict3R,AZ,,0.0,9,
-predict3R,CA,yes,0.0,52,https://planscore.org/plan.html?20251109T005753.161170853Z
+predict3R,CA,yes,0.081,52,https://planscore.org/plan.html?20260118T030200.028924269Z
 predict3R,CO,,0.0,8,
 predict3R,CT,,0.0,5,
 predict3R,DE,,0.0,1,
@@ -2172,8 +2172,8 @@ predict3R,MD,,0.0,8,
 predict3R,ME,,0.0,2,
 predict3R,MI,,0.0,13,
 predict3R,MN,,0.0,8,
-predict3R,MO,yes,0.0,8,https://planscore.org/plan.html?20251116T014919.269577678Z
-predict3R,MS,yes,0.0,4,https://planscore.org/plan.html?20251228T184417.650378800Z
+predict3R,MO,yes,-0.11,8,https://planscore.org/plan.html?20260118T030601.745884321Z
+predict3R,MS,yes,0.062,4,https://planscore.org/plan.html?20260118T030752.293566925Z
 predict3R,MT,,0.0,2,
 predict3R,NC,yes,-0.185,14,https://planscore.org/plan.html?20260117T234156.638310881Z
 predict3R,ND,,0.0,1,
@@ -2183,7 +2183,7 @@ predict3R,NJ,,0.0,12,
 predict3R,NM,,0.0,3,
 predict3R,NV,,0.0,4,
 predict3R,NY,,0.0,26,
-predict3R,OH,yes,0.0,15,https://planscore.org/plan.html?20251030T231915.464256903Z
+predict3R,OH,yes,-0.128,15,https://planscore.org/plan.html?20260118T030655.519157246Z
 predict3R,OK,,0.0,5,
 predict3R,OR,,0.0,6,
 predict3R,PA,,0.0,17,
@@ -2191,7 +2191,7 @@ predict3R,RI,,0.0,2,
 predict3R,SC,,0.0,7,
 predict3R,SD,,0.0,1,
 predict3R,TN,,0.0,9,
-predict3R,TX,yes,0.0,38,https://planscore.org/plan.html?20251219T184700.037794076Z
+predict3R,TX,yes,-0.081,38,https://planscore.org/plan.html?20260118T030422.141945889Z
 predict3R,UT,yes,-0.011,4,https://planscore.org/plan.html?20260117T234245.579626535Z
 predict3R,VA,,-0.014,11,https://planscore.org/plan.html?20260117T234311.159862084Z
 predict3R,VT,,0.0,1,
@@ -2203,7 +2203,7 @@ predict4R,AK,,0.0,1,
 predict4R,AL,,0.0,7,
 predict4R,AR,,0.0,4,
 predict4R,AZ,,0.0,9,
-predict4R,CA,yes,0.0,52,https://planscore.org/plan.html?20251109T005753.161170853Z
+predict4R,CA,yes,0.054,52,https://planscore.org/plan.html?20260118T030159.186150510Z
 predict4R,CO,,0.0,8,
 predict4R,CT,,0.0,5,
 predict4R,DE,,0.0,1,
@@ -2222,8 +2222,8 @@ predict4R,MD,,0.0,8,
 predict4R,ME,,0.0,2,
 predict4R,MI,,0.0,13,
 predict4R,MN,,0.0,8,
-predict4R,MO,yes,0.0,8,https://planscore.org/plan.html?20251116T014919.269577678Z
-predict4R,MS,yes,0.0,4,https://planscore.org/plan.html?20251228T184417.650378800Z
+predict4R,MO,yes,-0.092,8,https://planscore.org/plan.html?20260118T030601.827495017Z
+predict4R,MS,yes,0.08,4,https://planscore.org/plan.html?20260118T030751.713665634Z
 predict4R,MT,,0.0,2,
 predict4R,NC,yes,-0.167,14,https://planscore.org/plan.html?20260117T234156.580785945Z
 predict4R,ND,,0.0,1,
@@ -2233,7 +2233,7 @@ predict4R,NJ,,0.0,12,
 predict4R,NM,,0.0,3,
 predict4R,NV,,0.0,4,
 predict4R,NY,,0.0,26,
-predict4R,OH,yes,0.0,15,https://planscore.org/plan.html?20251030T231915.464256903Z
+predict4R,OH,yes,-0.116,15,https://planscore.org/plan.html?20260118T030651.798636513Z
 predict4R,OK,,0.0,5,
 predict4R,OR,,0.0,6,
 predict4R,PA,,0.0,17,
@@ -2241,7 +2241,7 @@ predict4R,RI,,0.0,2,
 predict4R,SC,,0.0,7,
 predict4R,SD,,0.0,1,
 predict4R,TN,,0.0,9,
-predict4R,TX,yes,0.0,38,https://planscore.org/plan.html?20251219T184700.037794076Z
+predict4R,TX,yes,-0.063,38,https://planscore.org/plan.html?20260118T030422.962937815Z
 predict4R,UT,yes,-0.014,4,https://planscore.org/plan.html?20260117T234245.192003314Z
 predict4R,VA,,-0.019,11,https://planscore.org/plan.html?20260117T234311.769107907Z
 predict4R,VT,,0.0,1,
@@ -2253,7 +2253,7 @@ predict5R,AK,,0.0,1,
 predict5R,AL,,0.0,7,
 predict5R,AR,,0.0,4,
 predict5R,AZ,,0.0,9,
-predict5R,CA,yes,0.0,52,https://planscore.org/plan.html?20251109T005753.161170853Z
+predict5R,CA,yes,0.025,52,https://planscore.org/plan.html?20260118T030200.441188330Z
 predict5R,CO,,0.0,8,
 predict5R,CT,,0.0,5,
 predict5R,DE,,0.0,1,
@@ -2272,8 +2272,8 @@ predict5R,MD,,0.0,8,
 predict5R,ME,,0.0,2,
 predict5R,MI,,0.0,13,
 predict5R,MN,,0.0,8,
-predict5R,MO,yes,0.0,8,https://planscore.org/plan.html?20251116T014919.269577678Z
-predict5R,MS,yes,0.0,4,https://planscore.org/plan.html?20251228T184417.650378800Z
+predict5R,MO,yes,-0.074,8,https://planscore.org/plan.html?20260118T030600.406733173Z
+predict5R,MS,yes,0.098,4,https://planscore.org/plan.html?20260118T030744.175590594Z
 predict5R,MT,,0.0,2,
 predict5R,NC,yes,-0.147,14,https://planscore.org/plan.html?20260117T234156.668749961Z
 predict5R,ND,,0.0,1,
@@ -2283,7 +2283,7 @@ predict5R,NJ,,0.0,12,
 predict5R,NM,,0.0,3,
 predict5R,NV,,0.0,4,
 predict5R,NY,,0.0,26,
-predict5R,OH,yes,0.0,15,https://planscore.org/plan.html?20251030T231915.464256903Z
+predict5R,OH,yes,-0.102,15,https://planscore.org/plan.html?20260118T030650.614484834Z
 predict5R,OK,,0.0,5,
 predict5R,OR,,0.0,6,
 predict5R,PA,,0.0,17,
@@ -2291,7 +2291,7 @@ predict5R,RI,,0.0,2,
 predict5R,SC,,0.0,7,
 predict5R,SD,,0.0,1,
 predict5R,TN,,0.0,9,
-predict5R,TX,yes,0.0,38,https://planscore.org/plan.html?20251219T184700.037794076Z
+predict5R,TX,yes,-0.045,38,https://planscore.org/plan.html?20260118T030421.251128331Z
 predict5R,UT,yes,-0.026,4,https://planscore.org/plan.html?20260117T234245.146139982Z
 predict5R,VA,,-0.021,11,https://planscore.org/plan.html?20260117T234311.299631581Z
 predict5R,VT,,0.0,1,
@@ -2303,7 +2303,7 @@ predict6R,AK,,0.0,1,
 predict6R,AL,,0.0,7,
 predict6R,AR,,0.0,4,
 predict6R,AZ,,0.0,9,
-predict6R,CA,yes,0.0,52,https://planscore.org/plan.html?20251109T005753.161170853Z
+predict6R,CA,yes,-0.001,52,https://planscore.org/plan.html?20260118T030200.575696615Z
 predict6R,CO,,0.0,8,
 predict6R,CT,,0.0,5,
 predict6R,DE,,0.0,1,
@@ -2322,8 +2322,8 @@ predict6R,MD,,0.0,8,
 predict6R,ME,,0.0,2,
 predict6R,MI,,0.0,13,
 predict6R,MN,,0.0,8,
-predict6R,MO,yes,0.0,8,https://planscore.org/plan.html?20251116T014919.269577678Z
-predict6R,MS,yes,0.0,4,https://planscore.org/plan.html?20251228T184417.650378800Z
+predict6R,MO,yes,-0.056,8,https://planscore.org/plan.html?20260118T030600.823604117Z
+predict6R,MS,yes,0.114,4,https://planscore.org/plan.html?20260118T030740.827585341Z
 predict6R,MT,,0.0,2,
 predict6R,NC,yes,-0.127,14,https://planscore.org/plan.html?20260117T234156.081909068Z
 predict6R,ND,,0.0,1,
@@ -2333,7 +2333,7 @@ predict6R,NJ,,0.0,12,
 predict6R,NM,,0.0,3,
 predict6R,NV,,0.0,4,
 predict6R,NY,,0.0,26,
-predict6R,OH,yes,0.0,15,https://planscore.org/plan.html?20251030T231915.464256903Z
+predict6R,OH,yes,-0.087,15,https://planscore.org/plan.html?20260118T030650.226337072Z
 predict6R,OK,,0.0,5,
 predict6R,OR,,0.0,6,
 predict6R,PA,,0.0,17,
@@ -2341,7 +2341,7 @@ predict6R,RI,,0.0,2,
 predict6R,SC,,0.0,7,
 predict6R,SD,,0.0,1,
 predict6R,TN,,0.0,9,
-predict6R,TX,yes,0.0,38,https://planscore.org/plan.html?20251219T184700.037794076Z
+predict6R,TX,yes,-0.027,38,https://planscore.org/plan.html?20260118T030410.854775160Z
 predict6R,UT,yes,-0.037,4,https://planscore.org/plan.html?20260117T234245.168662904Z
 predict6R,VA,,-0.019,11,https://planscore.org/plan.html?20260117T234311.884055474Z
 predict6R,VT,,0.0,1,
@@ -2353,7 +2353,7 @@ predict7R,AK,,0.0,1,
 predict7R,AL,,0.0,7,
 predict7R,AR,,0.0,4,
 predict7R,AZ,,0.0,9,
-predict7R,CA,yes,0.0,52,https://planscore.org/plan.html?20251109T005753.161170853Z
+predict7R,CA,yes,-0.026,52,https://planscore.org/plan.html?20260118T030200.555679511Z
 predict7R,CO,,0.0,8,
 predict7R,CT,,0.0,5,
 predict7R,DE,,0.0,1,
@@ -2372,8 +2372,8 @@ predict7R,MD,,0.0,8,
 predict7R,ME,,0.0,2,
 predict7R,MI,,0.0,13,
 predict7R,MN,,0.0,8,
-predict7R,MO,yes,0.0,8,https://planscore.org/plan.html?20251116T014919.269577678Z
-predict7R,MS,yes,0.0,4,https://planscore.org/plan.html?20251228T184417.650378800Z
+predict7R,MO,yes,-0.038,8,https://planscore.org/plan.html?20260118T030559.466329935Z
+predict7R,MS,yes,0.129,4,https://planscore.org/plan.html?20260118T030740.509966820Z
 predict7R,MT,,0.0,2,
 predict7R,NC,yes,-0.107,14,https://planscore.org/plan.html?20260117T234156.925860594Z
 predict7R,ND,,0.0,1,
@@ -2383,7 +2383,7 @@ predict7R,NJ,,0.0,12,
 predict7R,NM,,0.0,3,
 predict7R,NV,,0.0,4,
 predict7R,NY,,0.0,26,
-predict7R,OH,yes,0.0,15,https://planscore.org/plan.html?20251030T231915.464256903Z
+predict7R,OH,yes,-0.07,15,https://planscore.org/plan.html?20260118T030645.078326657Z
 predict7R,OK,,0.0,5,
 predict7R,OR,,0.0,6,
 predict7R,PA,,0.0,17,
@@ -2391,7 +2391,7 @@ predict7R,RI,,0.0,2,
 predict7R,SC,,0.0,7,
 predict7R,SD,,0.0,1,
 predict7R,TN,,0.0,9,
-predict7R,TX,yes,0.0,38,https://planscore.org/plan.html?20251219T184700.037794076Z
+predict7R,TX,yes,-0.011,38,https://planscore.org/plan.html?20260118T030410.386120565Z
 predict7R,UT,yes,-0.046,4,https://planscore.org/plan.html?20260117T234245.180439542Z
 predict7R,VA,,-0.011,11,https://planscore.org/plan.html?20260117T234311.596057619Z
 predict7R,VT,,0.0,1,
@@ -2403,7 +2403,7 @@ predict8R,AK,,0.0,1,
 predict8R,AL,,0.0,7,
 predict8R,AR,,0.0,4,
 predict8R,AZ,,0.0,9,
-predict8R,CA,yes,0.0,52,https://planscore.org/plan.html?20251109T005753.161170853Z
+predict8R,CA,yes,-0.048,52,https://planscore.org/plan.html?20260118T030200.606257536Z
 predict8R,CO,,0.0,8,
 predict8R,CT,,0.0,5,
 predict8R,DE,,0.0,1,
@@ -2422,8 +2422,8 @@ predict8R,MD,,0.0,8,
 predict8R,ME,,0.0,2,
 predict8R,MI,,0.0,13,
 predict8R,MN,,0.0,8,
-predict8R,MO,yes,0.0,8,https://planscore.org/plan.html?20251116T014919.269577678Z
-predict8R,MS,yes,0.0,4,https://planscore.org/plan.html?20251228T184417.650378800Z
+predict8R,MO,yes,-0.02,8,https://planscore.org/plan.html?20260118T030559.394077513Z
+predict8R,MS,yes,0.14,4,https://planscore.org/plan.html?20260118T030740.247265100Z
 predict8R,MT,,0.0,2,
 predict8R,NC,yes,-0.086,14,https://planscore.org/plan.html?20260117T234156.896993265Z
 predict8R,ND,,0.0,1,
@@ -2433,7 +2433,7 @@ predict8R,NJ,,0.0,12,
 predict8R,NM,,0.0,3,
 predict8R,NV,,0.0,4,
 predict8R,NY,,0.0,26,
-predict8R,OH,yes,0.0,15,https://planscore.org/plan.html?20251030T231915.464256903Z
+predict8R,OH,yes,-0.052,15,https://planscore.org/plan.html?20260118T030639.569202862Z
 predict8R,OK,,0.0,5,
 predict8R,OR,,0.0,6,
 predict8R,PA,,0.0,17,
@@ -2441,7 +2441,7 @@ predict8R,RI,,0.0,2,
 predict8R,SC,,0.0,7,
 predict8R,SD,,0.0,1,
 predict8R,TN,,0.0,9,
-predict8R,TX,yes,0.0,38,https://planscore.org/plan.html?20251219T184700.037794076Z
+predict8R,TX,yes,0.004,38,https://planscore.org/plan.html?20260118T030342.710244620Z
 predict8R,UT,yes,-0.05,4,https://planscore.org/plan.html?20260117T234245.448786761Z
 predict8R,VA,,-0.001,11,https://planscore.org/plan.html?20260117T234311.377663437Z
 predict8R,VT,,0.0,1,
@@ -2453,7 +2453,7 @@ predict9R,AK,,0.0,1,
 predict9R,AL,,0.0,7,
 predict9R,AR,,0.0,4,
 predict9R,AZ,,0.0,9,
-predict9R,CA,yes,0.0,52,https://planscore.org/plan.html?20251109T005753.161170853Z
+predict9R,CA,yes,-0.066,52,https://planscore.org/plan.html?20260118T030200.506995214Z
 predict9R,CO,,0.0,8,
 predict9R,CT,,0.0,5,
 predict9R,DE,,0.0,1,
@@ -2472,8 +2472,8 @@ predict9R,MD,,0.0,8,
 predict9R,ME,,0.0,2,
 predict9R,MI,,0.0,13,
 predict9R,MN,,0.0,8,
-predict9R,MO,yes,0.0,8,https://planscore.org/plan.html?20251116T014919.269577678Z
-predict9R,MS,yes,0.0,4,https://planscore.org/plan.html?20251228T184417.650378800Z
+predict9R,MO,yes,-0.002,8,https://planscore.org/plan.html?20260118T030559.837394085Z
+predict9R,MS,yes,0.148,4,https://planscore.org/plan.html?20260118T030740.368231961Z
 predict9R,MT,,0.0,2,
 predict9R,NC,yes,-0.065,14,https://planscore.org/plan.html?20260117T234156.678236264Z
 predict9R,ND,,0.0,1,
@@ -2483,7 +2483,7 @@ predict9R,NJ,,0.0,12,
 predict9R,NM,,0.0,3,
 predict9R,NV,,0.0,4,
 predict9R,NY,,0.0,26,
-predict9R,OH,yes,0.0,15,https://planscore.org/plan.html?20251030T231915.464256903Z
+predict9R,OH,yes,-0.034,15,https://planscore.org/plan.html?20260118T030639.644875372Z
 predict9R,OK,,0.0,5,
 predict9R,OR,,0.0,6,
 predict9R,PA,,0.0,17,
@@ -2491,7 +2491,7 @@ predict9R,RI,,0.0,2,
 predict9R,SC,,0.0,7,
 predict9R,SD,,0.0,1,
 predict9R,TN,,0.0,9,
-predict9R,TX,yes,0.0,38,https://planscore.org/plan.html?20251219T184700.037794076Z
+predict9R,TX,yes,0.019,38,https://planscore.org/plan.html?20260118T030341.391447285Z
 predict9R,UT,yes,-0.053,4,https://planscore.org/plan.html?20260117T234245.311067908Z
 predict9R,VA,,0.012,11,https://planscore.org/plan.html?20260117T234311.571250395Z
 predict9R,VT,,0.0,1,
@@ -2503,7 +2503,7 @@ predict10R,AK,,0.0,1,
 predict10R,AL,,0.0,7,
 predict10R,AR,,0.0,4,
 predict10R,AZ,,0.0,9,
-predict10R,CA,yes,0.0,52,https://planscore.org/plan.html?20251109T005753.161170853Z
+predict10R,CA,yes,-0.078,52,https://planscore.org/plan.html?20260118T030200.397641197Z
 predict10R,CO,,0.0,8,
 predict10R,CT,,0.0,5,
 predict10R,DE,,0.0,1,
@@ -2522,8 +2522,8 @@ predict10R,MD,,0.0,8,
 predict10R,ME,,0.0,2,
 predict10R,MI,,0.0,13,
 predict10R,MN,,0.0,8,
-predict10R,MO,yes,0.0,8,https://planscore.org/plan.html?20251116T014919.269577678Z
-predict10R,MS,yes,0.0,4,https://planscore.org/plan.html?20251228T184417.650378800Z
+predict10R,MO,yes,0.016,8,https://planscore.org/plan.html?20260118T030558.187773184Z
+predict10R,MS,yes,0.149,4,https://planscore.org/plan.html?20260118T030740.632554971Z
 predict10R,MT,,0.0,2,
 predict10R,NC,yes,-0.045,14,https://planscore.org/plan.html?20260117T234156.233074361Z
 predict10R,ND,,0.0,1,
@@ -2533,7 +2533,7 @@ predict10R,NJ,,0.0,12,
 predict10R,NM,,0.0,3,
 predict10R,NV,,0.0,4,
 predict10R,NY,,0.0,26,
-predict10R,OH,yes,0.0,15,https://planscore.org/plan.html?20251030T231915.464256903Z
+predict10R,OH,yes,-0.015,15,https://planscore.org/plan.html?20260118T030637.852038087Z
 predict10R,OK,,0.0,5,
 predict10R,OR,,0.0,6,
 predict10R,PA,,0.0,17,
@@ -2541,7 +2541,7 @@ predict10R,RI,,0.0,2,
 predict10R,SC,,0.0,7,
 predict10R,SD,,0.0,1,
 predict10R,TN,,0.0,9,
-predict10R,TX,yes,0.0,38,https://planscore.org/plan.html?20251219T184700.037794076Z
+predict10R,TX,yes,0.032,38,https://planscore.org/plan.html?20260118T030332.019915266Z
 predict10R,UT,yes,-0.049,4,https://planscore.org/plan.html?20260117T234245.625717273Z
 predict10R,VA,,0.025,11,https://planscore.org/plan.html?20260117T234311.368273783Z
 predict10R,VT,,0.0,1,
@@ -2553,7 +2553,7 @@ predict11R,AK,,0.0,1,
 predict11R,AL,,0.0,7,
 predict11R,AR,,0.0,4,
 predict11R,AZ,,0.0,9,
-predict11R,CA,yes,0.0,52,https://planscore.org/plan.html?20251109T005753.161170853Z
+predict11R,CA,yes,-0.087,52,https://planscore.org/plan.html?20260118T030200.141128823Z
 predict11R,CO,,0.0,8,
 predict11R,CT,,0.0,5,
 predict11R,DE,,0.0,1,
@@ -2572,8 +2572,8 @@ predict11R,MD,,0.0,8,
 predict11R,ME,,0.0,2,
 predict11R,MI,,0.0,13,
 predict11R,MN,,0.0,8,
-predict11R,MO,yes,0.0,8,https://planscore.org/plan.html?20251116T014919.269577678Z
-predict11R,MS,yes,0.0,4,https://planscore.org/plan.html?20251228T184417.650378800Z
+predict11R,MO,yes,0.033,8,https://planscore.org/plan.html?20260118T030547.581530491Z
+predict11R,MS,yes,0.14,4,https://planscore.org/plan.html?20260118T030740.517657323Z
 predict11R,MT,,0.0,2,
 predict11R,NC,yes,-0.026,14,https://planscore.org/plan.html?20260117T234155.737098406Z
 predict11R,ND,,0.0,1,
@@ -2583,7 +2583,7 @@ predict11R,NJ,,0.0,12,
 predict11R,NM,,0.0,3,
 predict11R,NV,,0.0,4,
 predict11R,NY,,0.0,26,
-predict11R,OH,yes,0.0,15,https://planscore.org/plan.html?20251030T231915.464256903Z
+predict11R,OH,yes,0.003,15,https://planscore.org/plan.html?20260118T030637.728645134Z
 predict11R,OK,,0.0,5,
 predict11R,OR,,0.0,6,
 predict11R,PA,,0.0,17,
@@ -2591,7 +2591,7 @@ predict11R,RI,,0.0,2,
 predict11R,SC,,0.0,7,
 predict11R,SD,,0.0,1,
 predict11R,TN,,0.0,9,
-predict11R,TX,yes,0.0,38,https://planscore.org/plan.html?20251219T184700.037794076Z
+predict11R,TX,yes,0.044,38,https://planscore.org/plan.html?20260118T030331.738486725Z
 predict11R,UT,yes,-0.037,4,https://planscore.org/plan.html?20260117T234245.926777968Z
 predict11R,VA,,0.035,11,https://planscore.org/plan.html?20260117T234311.872389943Z
 predict11R,VT,,0.0,1,
@@ -2603,7 +2603,7 @@ predict12R,AK,,0.0,1,
 predict12R,AL,,0.0,7,
 predict12R,AR,,0.0,4,
 predict12R,AZ,,0.0,9,
-predict12R,CA,yes,0.0,52,https://planscore.org/plan.html?20251109T005753.161170853Z
+predict12R,CA,yes,-0.094,52,https://planscore.org/plan.html?20260118T030200.294312663Z
 predict12R,CO,,0.0,8,
 predict12R,CT,,0.0,5,
 predict12R,DE,,0.0,1,
@@ -2622,8 +2622,8 @@ predict12R,MD,,0.0,8,
 predict12R,ME,,0.0,2,
 predict12R,MI,,0.0,13,
 predict12R,MN,,0.0,8,
-predict12R,MO,yes,0.0,8,https://planscore.org/plan.html?20251116T014919.269577678Z
-predict12R,MS,yes,0.0,4,https://planscore.org/plan.html?20251228T184417.650378800Z
+predict12R,MO,yes,0.051,8,https://planscore.org/plan.html?20260118T030547.292371665Z
+predict12R,MS,yes,0.127,4,https://planscore.org/plan.html?20260118T030740.058286956Z
 predict12R,MT,,0.0,2,
 predict12R,NC,yes,-0.007,14,https://planscore.org/plan.html?20260117T234155.082537795Z
 predict12R,ND,,0.0,1,
@@ -2633,7 +2633,7 @@ predict12R,NJ,,0.0,12,
 predict12R,NM,,0.0,3,
 predict12R,NV,,0.0,4,
 predict12R,NY,,0.0,26,
-predict12R,OH,yes,0.0,15,https://planscore.org/plan.html?20251030T231915.464256903Z
+predict12R,OH,yes,0.021,15,https://planscore.org/plan.html?20260118T030637.946673077Z
 predict12R,OK,,0.0,5,
 predict12R,OR,,0.0,6,
 predict12R,PA,,0.0,17,
@@ -2641,7 +2641,7 @@ predict12R,RI,,0.0,2,
 predict12R,SC,,0.0,7,
 predict12R,SD,,0.0,1,
 predict12R,TN,,0.0,9,
-predict12R,TX,yes,0.0,38,https://planscore.org/plan.html?20251219T184700.037794076Z
+predict12R,TX,yes,0.054,38,https://planscore.org/plan.html?20260118T030331.720171855Z
 predict12R,UT,yes,-0.024,4,https://planscore.org/plan.html?20260117T234245.745755577Z
 predict12R,VA,,0.039,11,https://planscore.org/plan.html?20260117T234311.522115761Z
 predict12R,VT,,0.0,1,
