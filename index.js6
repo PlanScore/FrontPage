@@ -39,7 +39,7 @@ const PREDICTION_SLIDER = {
     centerY: null,   // set during initialization from DOM
     minValue: -12,   // R+12 (right side)
     maxValue: 12,    // D+12 (left side)
-    currentValue: 0, // default: Even (center)
+    currentValue: 0, // default: no-swing (center)
 };
 
 // the map uses a choropleth constructed from BELLCURVE_SPREAD
@@ -228,12 +228,6 @@ window.initPredictionSlider = () => {
         return PREDICTION_SLIDER.minX + fraction * (PREDICTION_SLIDER.maxX - PREDICTION_SLIDER.minX);
     };
 
-    // helper: format value as label text
-    const formatLabel = (value) => {
-        if (value === 0) return 'Even';
-        return value > 0 ? `+${value}D` : `+${Math.abs(value)}R`;
-    };
-
     // helper: update thumb position and label using matrix transform
     const updateThumb = (x, skipYearUpdate = false) => {
         // constrain x to slider bounds
@@ -250,7 +244,7 @@ window.initPredictionSlider = () => {
         $thumb.attr('transform', `translate(${translateX}, 0)`);
 
         // update label text
-        $label.text(formatLabel(value));
+        $label.text(formatSwingValue(value));
 
         // update the year state to match slider position
         if (!skipYearUpdate) {
@@ -351,23 +345,34 @@ window.initLoadStartingConditions = () => {
 
     // If we have a prediction year from the URL, parse it and set the slider value
     if (isPredictionYear(year)) {
-        const match = year.match(/predict(\d+)?([DR])?/);
-        if (match) {
-            const value = match[1] ? parseInt(match[1]) : 0;
-            const party = match[2];  // 'D', 'R', or undefined
-            if (party === 'R') {
-                PREDICTION_SLIDER.currentValue = -value;
-            } else if (party === 'D') {
-                PREDICTION_SLIDER.currentValue = value;
-            } else {
-                PREDICTION_SLIDER.currentValue = 0;
-            }
-        }
+        PREDICTION_SLIDER.currentValue = parseSwingSlug(year);
     }
 
     // ready, set, go
     selectYear(year);
     selectBoundaryType(type);
+};
+
+window.parseSwingSlug = (slug) => {
+    const match = slug.match(/predict(\d+)?([DR])?/);
+    if (match) {
+        const value = match[1] ? parseInt(match[1]) : 0;
+        const party = match[2];  // 'D', 'R', or undefined
+        if (party === 'R') {
+            return -value;
+        } else if (party === 'D') {
+            return value;
+        } else {
+            return 0;
+        }
+    }
+
+    return undefined;
+};
+
+window.formatSwingValue = (value) => {
+    if (value === 0) return 'No-Swing';
+    return value > 0 ? `+${value}D` : `+${Math.abs(value)}R`;
 };
 
 window.handleResize = () => {
@@ -386,7 +391,7 @@ window.handleResize = () => {
 //
 
 // Helper: Convert prediction slider value to year string
-// value: -12 to +12 (negative = R, positive = D, 0 = Even)
+// value: -12 to +12 (negative = R, positive = D, 0 = No swing)
 // returns: "predict0", "predict12D", "predict12R", etc.
 window.getPredictionYearString = (value) => {
     if (value === 0) return 'predict0';
@@ -605,15 +610,14 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
         const stateslug = stateInfo.name.toLowerCase().replace(/\W/g, '_');
         const currview = CURRENT_VIEW.boundtype;
         const moreinfourl = stateInfo.url ? stateInfo.url : `/${stateslug}/#!${CURRENT_VIEW.year}-${plan_or_election}-${currview}`;
-        var labelPrefix = CURRENT_VIEW.year;
+        var linkHtml = `${CURRENT_VIEW.year} Plan`;
         if (isPredictionYear(CURRENT_VIEW.year)) {
-            labelPrefix = 'Predicted';
+            linkHtml = `${formatSwingValue(parseSwingSlug(CURRENT_VIEW.year))} Prediction`;
         } else if (isPrediction) {
-            labelPrefix = '2024+Remaps<sup>*</sup>';
+            linkHtml = '2024+Remaps<sup>*</sup> Plan';
         } else if (CURRENT_VIEW.year == 2026) {
-            labelPrefix = 2024;
+            linkHtml = '2024 Plan';
         }
-        const linkHtml = `(${labelPrefix} Plan)`;
         $('#state-tooltip .link').attr('href', moreinfourl).html(linkHtml);
 
         // Show/hide link based on data and seat count
@@ -654,7 +658,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             var currYear = CURRENT_VIEW.year;
             var turnoutNote = '';
             if (isPredictionYear(CURRENT_VIEW.year)) {
-                currYear = '2026 Predictions';
+                currYear = `${formatSwingValue(parseSwingSlug(CURRENT_VIEW.year))} Predictions`;
                 turnoutNote = '<sup>†</sup>';
             } else if(CURRENT_VIEW.year == 2026) {
                 currYear = '2024+Remaps<sup>*</sup>';

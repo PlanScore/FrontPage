@@ -37,7 +37,7 @@ STATE_ABBREVS = {
 }
 
 # Shift headers (25 scenarios)
-ZERO_HEADER = 'Zero Shift'
+ZERO_HEADER = 'No-Swing'
 SHIFT_HEADERS = ['R+12', 'R+11', 'R+10', 'R+9', 'R+8', 'R+7', 'R+6', 'R+5', 'R+4', 'R+3', 'R+2', 'R+1',
                  ZERO_HEADER, 'D+1', 'D+2', 'D+3', 'D+4', 'D+5', 'D+6', 'D+7', 'D+8', 'D+9', 'D+10', 'D+11', 'D+12']
 
@@ -313,7 +313,7 @@ def clone_plan_with_swings(api_key: str, plan_id: str, description: str, vote_sw
     payload = {
         "id": plan_id,
         "description": description,
-        "vote_swings": vote_swings,
+        "vote_swings": [round(s, 3) for s in vote_swings],
         "library_metadata": library_metadata,
     }
 
