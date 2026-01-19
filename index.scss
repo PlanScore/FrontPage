@@ -345,6 +345,7 @@ body.ushouse-selected {
       #yearpicker-predict-voteswing {
         text {
           font-size: 10px;
+          text-anchor: middle;
         }
         #yearpicker-predict-slider {
           fill: white;
@@ -355,9 +356,6 @@ body.ushouse-selected {
           circle {
             fill: black;
             stroke: none;
-          }
-          text {
-            text-anchor: middle;
           }
         }
       }
