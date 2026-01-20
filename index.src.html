@@ -490,16 +490,8 @@
         <a id="yearpicker-2024"><rect class="hitarea" x="96.85%" y="20" width="3.70%" height="24" /><circle cx="98.70%" cy="32" r="4" /></a>
       </svg>
       <svg id="yearpicker-future" version="1.1" xmlns="http://www.w3.org/2000/svg" width="100%" height="100">
-        <!-- Bottom path -->
-        <a class="unavailable">
-            <path d="M 0 32 C 16 32, 16 36, 32 36 L 36 36" />
-            <rect class="hitarea" x="20" y="28" width="130" height="50" />
-            <circle cx="36" cy="36" r="4" />
-            <text x="46" y="40">2026 Predictions</text>
-        </a>
-
         <!-- Top path -->
-        <a class="unavailable">
+        <a id="yearpicker-2026">
             <path d="M 0 32 C 16 32, 16 16, 32 16 L 36 16" />
             <rect class="background" x="42" y="8" width="106" height="16" rx="2" />
             <rect class="hitarea" x="20" y="8" width="130" height="20" />
@@ -507,13 +499,22 @@
             <text x="46" y="20">2024 + Remaps*</text>
         </a>
 
-        <!-- Sole path, for now -->
-        <a id="yearpicker-2026">
-            <path d="M 0 32 L 18 32" />
-            <rect class="background" x="24" y="24" width="106" height="16" rx="2" />
-            <rect class="hitarea" x="2" y="24" width="130" height="20" />
-            <circle cx="18" cy="32" r="4" />
-            <text x="28" y="36">2024 + Remaps*</text>
+        <!-- Bottom path -->
+        <a id="yearpicker-predict">
+            <path d="M 0 32 C 16 32, 16 36, 32 36 L 36 36" />
+            <rect class="background" x="42" y="26" width="108" height="66" rx="2" />
+            <rect class="hitarea" x="20" y="27" width="130" height="52" />
+            <circle cx="36" cy="36" r="4" />
+            <text x="46" y="40">2026 Predictions</text>
+            <g id="yearpicker-predict-voteswing">
+                <rect id="yearpicker-predict-slider" x="56" y="60" width="80" rx="5" height="12" />
+                <g id="yearpicker-predict-thumb" transform="translate(96, 0)">
+                    <rect class="hitarea" x="-16" y="38" width="32" height="30" />
+                    <circle cx="0" cy="66" r="5" />
+                    <text x="0" y="55">Even</text>
+                </g>
+                <text x="96" y="85">Drag to swing vote</text>
+            </g>
         </a>
       </svg>
     </div>

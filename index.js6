@@ -30,6 +30,18 @@ const ANIMATION = {
     timer: undefined,  // if playing, an interval handle from setInterval(); else undefined
 };
 
+// prediction slider state; see initPredictionSlider()
+const PREDICTION_SLIDER = {
+    isDragging: false,
+    initialized: false,
+    minX: null,      // set during initialization from DOM
+    maxX: null,      // set during initialization from DOM
+    centerY: null,   // set during initialization from DOM
+    minValue: -12,   // R+12 (right side)
+    maxValue: 12,    // D+12 (left side)
+    currentValue: 0, // default: no-swing (center)
+};
+
 // the map uses a choropleth constructed from BELLCURVE_SPREAD
 // but for nodata states, use this NODATA value and this color fill
 const MAP_NODATA_VALUE = 999999;
@@ -157,7 +169,13 @@ window.initYearPickers = () => {
     // attach to all year elements in both timeline and future
     $('#yearpicker-timeline a[id^="yearpicker-"], #yearpicker-future a[id^="yearpicker-"]', $picker_big).on('click', function () {
         const elementId = $(this).attr('id');
-        const year = elementId.replace('yearpicker-', '');
+        let year = elementId.replace('yearpicker-', '');
+
+        // When clicking on predict, use the current slider value to determine the year
+        if (year === 'predict') {
+            year = getPredictionYearString(PREDICTION_SLIDER.currentValue);
+        }
+
         selectYear(year);
         logToGoogleAnalytics('yearselected', year);
     });
@@ -166,6 +184,142 @@ window.initYearPickers = () => {
     $('#yearpicker-playbutton a', $picker_big).click(function () {
         yearAnimationToggle();
     });
+};
+
+window.initPredictionSlider = () => {
+    // lazy initialization: only set up once when predict mode is first activated
+    if (PREDICTION_SLIDER.initialized) return;
+    PREDICTION_SLIDER.initialized = true;
+
+    const $thumb = $('#yearpicker-predict-thumb');
+    const $circle = $thumb.find('circle');
+    const $label = $thumb.find('text');
+    const $slider = $('#yearpicker-predict-slider');
+
+    // read slider dimensions from DOM
+    const sliderX = parseFloat($slider.attr('x'));
+    const sliderWidth = parseFloat($slider.attr('width'));
+    const sliderY = parseFloat($slider.attr('y'));
+    const sliderHeight = parseFloat($slider.attr('height'));
+    const circleRadius = parseFloat($circle.attr('r'));
+
+    // calculate bounds with 1px clearance for circle
+    PREDICTION_SLIDER.minX = sliderX + circleRadius + 1;
+    PREDICTION_SLIDER.maxX = sliderX + sliderWidth - circleRadius - 1;
+    PREDICTION_SLIDER.centerY = sliderY + (sliderHeight / 2);
+
+    // original position of thumb in SVG (read from group's transform)
+    const transformAttr = $thumb.attr('transform');
+    const transformMatch = transformAttr ? transformAttr.match(/translate\(([^,]+)/) : null;
+    const originalX = transformMatch ? parseFloat(transformMatch[1]) : 0;
+    const originalY = parseFloat($circle.attr('cy'));
+
+    // helper: convert slider position (x coordinate) to prediction value
+    // reversed: left = D (positive), right = R (negative)
+    const positionToValue = (x) => {
+        const fraction = (x - PREDICTION_SLIDER.minX) / (PREDICTION_SLIDER.maxX - PREDICTION_SLIDER.minX);
+        return Math.round(PREDICTION_SLIDER.maxValue - fraction * (PREDICTION_SLIDER.maxValue - PREDICTION_SLIDER.minValue));
+    };
+
+    // helper: convert prediction value to slider position (x coordinate)
+    // reversed: left = D (positive), right = R (negative)
+    const valueToPosition = (value) => {
+        const fraction = (PREDICTION_SLIDER.maxValue - value) / (PREDICTION_SLIDER.maxValue - PREDICTION_SLIDER.minValue);
+        return PREDICTION_SLIDER.minX + fraction * (PREDICTION_SLIDER.maxX - PREDICTION_SLIDER.minX);
+    };
+
+    // helper: update thumb position and label using matrix transform
+    const updateThumb = (x, skipYearUpdate = false) => {
+        // constrain x to slider bounds
+        const constrainedX = Math.max(PREDICTION_SLIDER.minX, Math.min(PREDICTION_SLIDER.maxX, x));
+        const value = positionToValue(constrainedX);
+
+        PREDICTION_SLIDER.currentValue = value;
+
+        // x is the desired absolute position, use it directly as translation
+        // (since circle is at cx="0" in the group, translation = absolute position)
+        const translateX = constrainedX;
+
+        // apply matrix transform to move entire group
+        $thumb.attr('transform', `translate(${translateX}, 0)`);
+
+        // update label text
+        $label.text(formatSwingValue(value));
+
+        // update the year state to match slider position
+        if (!skipYearUpdate) {
+            const predictionYear = getPredictionYearString(value);
+            // Update the year, hash, and reload data to show the new prediction scenario
+            if (CURRENT_VIEW.year !== predictionYear) {
+                CURRENT_VIEW.year = predictionYear;
+                updateAddressHash();
+                loadDataForSelectedBoundaryAndYear();
+            }
+        }
+    };
+
+    // prevent thumb click from triggering parent link
+    $thumb.on('click', function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+    });
+
+    // click on slider: move thumb to clicked position
+    $slider.on('click', function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        // get mouse position relative to the SVG
+        const svg = $('#yearpicker-future')[0];
+        const pt = svg.createSVGPoint();
+        pt.x = event.clientX;
+        pt.y = event.clientY;
+        const svgP = pt.matrixTransform(svg.getScreenCTM().inverse());
+
+        updateThumb(svgP.x);
+    });
+
+    // mousedown on thumb: start dragging
+    $thumb.on('mousedown', function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        PREDICTION_SLIDER.isDragging = true;
+        $thumb.css('cursor', 'grabbing');
+    });
+
+    // mousemove on document: update position if dragging
+    $(document).on('mousemove.predictionslider', function (event) {
+        if (!PREDICTION_SLIDER.isDragging) return;
+
+        // get mouse position relative to the SVG
+        const svg = $('#yearpicker-future')[0];
+        const pt = svg.createSVGPoint();
+        pt.x = event.clientX;
+        pt.y = event.clientY;
+        const svgP = pt.matrixTransform(svg.getScreenCTM().inverse());
+
+        updateThumb(svgP.x);
+    });
+
+    // mouseup on document: stop dragging
+    $(document).on('mouseup.predictionslider', function () {
+        if (PREDICTION_SLIDER.isDragging) {
+            PREDICTION_SLIDER.isDragging = false;
+            $thumb.css('cursor', 'pointer');
+        }
+    });
+
+    // initialize thumb to current value
+    const initialPosition = valueToPosition(PREDICTION_SLIDER.currentValue);
+    updateThumb(initialPosition, true);
+
+    // After initialization, update the year state to match the slider position
+    // This ensures CURRENT_VIEW.year and the hash are correct
+    const predictionYear = getPredictionYearString(PREDICTION_SLIDER.currentValue);
+    if (CURRENT_VIEW.year !== predictionYear) {
+        CURRENT_VIEW.year = predictionYear;
+        updateAddressHash();
+    }
 };
 
 window.initBoundaryPicker = () => {
@@ -182,15 +336,43 @@ window.initLoadStartingConditions = () => {
     let year = PLAN_YEARS[PLAN_YEARS.length - 1];
     let type = 'ushouse';
 
-    const year_and_type = /^#!(\d\d\d\d)\-(\w+)$/.exec(window.location.hash);
+    // Match: predict, predict0, predict12D, predict12R, or 4-digit years
+    const year_and_type = /^#!(predict(?:\d+[DR]|\d+)?|\d\d\d\d)\-(\w+)$/.exec(window.location.hash);
     if (year_and_type) {
         year = year_and_type[1];
         type = year_and_type[2];
     }
 
+    // If we have a prediction year from the URL, parse it and set the slider value
+    if (isPredictionYear(year)) {
+        PREDICTION_SLIDER.currentValue = parseSwingSlug(year);
+    }
+
     // ready, set, go
     selectYear(year);
     selectBoundaryType(type);
+};
+
+window.parseSwingSlug = (slug) => {
+    const match = slug.match(/predict(\d+)?([DR])?/);
+    if (match) {
+        const value = match[1] ? parseInt(match[1]) : 0;
+        const party = match[2];  // 'D', 'R', or undefined
+        if (party === 'R') {
+            return -value;
+        } else if (party === 'D') {
+            return value;
+        } else {
+            return 0;
+        }
+    }
+
+    return undefined;
+};
+
+window.formatSwingValue = (value) => {
+    if (value === 0) return 'No-Swing';
+    return value > 0 ? `+${value}D` : `+${Math.abs(value)}R`;
 };
 
 window.handleResize = () => {
@@ -207,6 +389,21 @@ window.handleResize = () => {
 // RUNTIME FUNCTIONS FOR CHANGING YEAR + DISTRICT TYPE + STATE INFO
 // loadDataForSelectedBoundaryAndYear() is the real worker here; the others are basically convenience functions
 //
+
+// Helper: Convert prediction slider value to year string
+// value: -12 to +12 (negative = R, positive = D, 0 = No swing)
+// returns: "predict0", "predict12D", "predict12R", etc.
+window.getPredictionYearString = (value) => {
+    if (value === 0) return 'predict0';
+    if (value > 0) return `predict${value}D`;
+    return `predict${Math.abs(value)}R`;
+};
+
+// Helper: Check if a year string is a prediction year
+// returns: true for "predict", "predict0", "predict5D", "predict12R", etc.
+window.isPredictionYear = (year) => {
+    return String(year).startsWith('predict');
+};
 
 window.loadDataForSelectedBoundaryAndYear = (options={}) => {
     if (! CURRENT_VIEW.year || ! CURRENT_VIEW.boundtype) return;  // need both; during startup one will be blank, so avoid an error
@@ -239,7 +436,11 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             // primarily used when switching district types, as not all district types have the same coverage for every year (e.g. State House 2016)
             if (options.fudgeYearIfNoData) {
                 const yearColumn = CURRENT_VIEW.boundtype === 'ushouse' ? 'cycle' : 'year';
-                const hasdata = results.data.filter((datarow) => { return datarow[yearColumn] == CURRENT_VIEW.year; }).length;
+                // For predict years in non-ushouse boundaries, default to 2026 since predictions are ushouse-only
+                const yearToCheck = (isPredictionYear(CURRENT_VIEW.year) && CURRENT_VIEW.boundtype !== 'ushouse')
+                    ? 2026
+                    : CURRENT_VIEW.year;
+                const hasdata = results.data.filter((datarow) => { return datarow[yearColumn] == yearToCheck; }).length;
                 if (! hasdata) {
                     const wehavetheseyears = results.data.map((datarow) => {
                         return datarow[yearColumn] ? parseInt(datarow[yearColumn]) : 0;  // workaround for 176, iOS 11 including blank rows so year=NaN
@@ -282,6 +483,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                 const seatBiases = {};
                 const stateAreas = {};
                 const rawScales = {};
+                const realScales = {};
                 results.data.forEach(function (datarow) {
                     const value = parseFloat(datarow.EG);
                     const seats = parseInt(datarow.seats);
@@ -295,12 +497,16 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                     const $shape = $(`#state-shape-${datarow.stateabrev}`);
                     const stateArea = parseFloat($shape.attr('data-area')) || 1;
 
-                    // Dimensionless raw scale that we'll adjust later
-                    rawScales[`${datarow.stateabrev}-${datarow.cycle}`] = Math.sqrt(seatBias * 1e11 / stateArea);
+                    // Dimensionless raw scales that we'll adjust later
+                    var rawScale = Math.sqrt(seatBias * 1e11 / stateArea);
+                    rawScales[`${datarow.stateabrev}-${datarow.cycle}`] = rawScale;
+                    if (datarow.cycle.match(/^(19|20)\d\d$/)) {
+                        realScales[`${datarow.stateabrev}-${datarow.cycle}`] = rawScale;
+                    }
                 });
 
-                // Find the P10 and P90 raw scales to guide visual range
-                const scalesList = Object.values(rawScales).sort(function (a, b) { return a - b });
+                // Find the P10 and P90 real scales to guide visual range
+                const scalesList = Object.values(realScales).sort(function (a, b) { return a - b });
                 const p90RawScale = scalesList[Math.round(scalesList.length * 0.9)];
                 const p10RawScale = scalesList[Math.round(scalesList.length * 0.1)];
                 console.log(`p10RawScale ${p10RawScale.toFixed(2)}, p90RawScale ${p90RawScale.toFixed(2)}`);
@@ -344,7 +550,8 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             // this is loop-within-loop as we match arrays to arrays, but P=50 and Q=20ish so it's affordable
             results.data.forEach(function (datarow) {
                 // Boolean flag for mid-cycle redistricting on this plan
-                const midCycleplan = (datarow.newplan == "yes") && (CURRENT_VIEW.year % 10 != 2);
+                const numericYear = isPredictionYear(CURRENT_VIEW.year) ? 2026 : CURRENT_VIEW.year;
+                const midCycleplan = (datarow.newplan == "yes") && (numericYear % 10 != 2);
 
                 // For ushouse, use different column names
                 if (CURRENT_VIEW.boundtype === 'ushouse') {
@@ -355,7 +562,6 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                     chartrow.seats = parseInt(datarow.seats);
                     chartrow.percentrank = null;
                     chartrow.url = datarow.url;
-                    chartrow.districts = datarow.districts ? JSON.parse(datarow.districts) : undefined;
                     chartrow.stateScale = datarow.stateScale;
                     chartrow.midcyclePlan = midCycleplan;
                 } else {
@@ -383,7 +589,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
     });
 
     function updateTooltipContent(stateInfo) {
-        const isPrediction = (CURRENT_VIEW.year == 2026) && stateInfo.url;
+        const isPrediction = (CURRENT_VIEW.year == 2026 || isPredictionYear(CURRENT_VIEW.year)) && stateInfo.url;
 
         // Update tooltip content with state data
         $('#state-tooltip .state-name').text(stateInfo.name);
@@ -404,8 +610,14 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
         const stateslug = stateInfo.name.toLowerCase().replace(/\W/g, '_');
         const currview = CURRENT_VIEW.boundtype;
         const moreinfourl = stateInfo.url ? stateInfo.url : `/${stateslug}/#!${CURRENT_VIEW.year}-${plan_or_election}-${currview}`;
-        const curryear = isPrediction ? '2024+Remaps<sup>*</sup>' : (CURRENT_VIEW.year == 2026 ? 2024 : CURRENT_VIEW.year);
-        const linkHtml = `(${curryear} Plan)`;
+        var linkHtml = `${CURRENT_VIEW.year} Plan`;
+        if (isPredictionYear(CURRENT_VIEW.year)) {
+            linkHtml = `${formatSwingValue(parseSwingSlug(CURRENT_VIEW.year))} Prediction`;
+        } else if (isPrediction) {
+            linkHtml = '2024+Remaps<sup>*</sup> Plan';
+        } else if (CURRENT_VIEW.year == 2026) {
+            linkHtml = '2024 Plan';
+        }
         $('#state-tooltip .link').attr('href', moreinfourl).html(linkHtml);
 
         // Show/hide link based on data and seat count
@@ -443,8 +655,15 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             const biasEval = lookupBias('eg', nationalEG, CURRENT_VIEW.boundtype);
             const absBiasPercent = twoDigits(Math.abs(100 * nationalEG));
             const absBiasSeats = twoDigits(Math.abs(nationalEG * totalSeats));
-            const currYear = CURRENT_VIEW.year == 2026 ? '2024+Remaps<sup>*</sup>' : CURRENT_VIEW.year;
-            const turnoutNote = CURRENT_VIEW.year == 2026 ? '<sup>†</sup>' : '';
+            var currYear = CURRENT_VIEW.year;
+            var turnoutNote = '';
+            if (isPredictionYear(CURRENT_VIEW.year)) {
+                currYear = `${formatSwingValue(parseSwingSlug(CURRENT_VIEW.year))} Predictions`;
+                turnoutNote = '<sup>†</sup>';
+            } else if(CURRENT_VIEW.year == 2026) {
+                currYear = '2024+Remaps<sup>*</sup>';
+                turnoutNote = '<sup>†</sup>';
+            }
             $('#ushouse-legend .swatch').css({ 'background': biasEval.color });
             $('#ushouse-legend .caption').html(`Total ${currYear} Bias:`);
             $('#ushouse-legend .bias').html(`${absBiasPercent}% (${absBiasSeats} seats)${turnoutNote} pro-${biasEval.party}`);
@@ -797,16 +1016,26 @@ window.selectYear = (year, options={}) => {
     // remove active class from all years and add to the selected one
     const $picker_big = $('#yearpicker-big');
     $('#yearpicker-timeline a[id^="yearpicker-"], #yearpicker-future a[id^="yearpicker-"]', $picker_big).removeClass('active');
-    $(`#yearpicker-${year}`, $picker_big).addClass('active');
+    // For prediction years, activate the "predict" element
+    const yearForPicker = isPredictionYear(year) ? 'predict' : year;
+    $(`#yearpicker-${yearForPicker}`, $picker_big).addClass('active');
+
+    // save to the state BEFORE initializing slider (slider init needs this to be set)
+    CURRENT_VIEW.year = year;
 
     // UI update: yearpicker-current indicator position and text
     // move the current year indicator to match the selected year's position
     // but hide it if year 2026 is selected (which is in the yearpicker-future SVG)
     const $current = $('#yearpicker-current', $picker_big);
 
-    if (year == 2026) {
-        // year 2026 is in yearpicker-future, so hide the current indicator
+    if (year == 2026 || isPredictionYear(year)) {
+        // years past 2024 are in yearpicker-future, so hide the current indicator
         $current.hide();
+
+        // initialize prediction slider when predict mode is activated
+        if (isPredictionYear(year)) {
+            initPredictionSlider();
+        }
     } else {
         // show the indicator and position it at the selected year
         $current.show();
@@ -827,9 +1056,6 @@ window.selectYear = (year, options={}) => {
             }
         }
     }
-
-    // save to the state and refresh the map + data
-    CURRENT_VIEW.year = year;
 
     loadDataForSelectedBoundaryAndYear(options);  // no new options nor overrides; just pass options as-given
 };

@@ -291,7 +291,13 @@ body.ushouse-selected {
       }
       a.unavailable
       {
-          display: none;
+          cursor: not-allowed;
+          path, circle {
+            stroke: #999;
+          }
+          text {
+            fill: #999;
+          }
       }
       a .hitarea {
           fill: rgba(0, 0, 0, 0);
@@ -320,14 +326,38 @@ body.ushouse-selected {
     }
 
     #yearpicker-future {
+      a.active {
+        cursor: inherit;
+      }
       a.active text {
         fill: white;
       }
-      a .background {
-        visibility: hidden;
+      a {
+        .background, #yearpicker-predict-voteswing {
+          visibility: hidden;
+        }
       }
-      a.active .background {
-        visibility: visible;
+      a.active {
+        .background, #yearpicker-predict-voteswing {
+          visibility: visible;
+        }
+      }
+      #yearpicker-predict-voteswing {
+        text {
+          font-size: 10px;
+          text-anchor: middle;
+        }
+        #yearpicker-predict-slider {
+          fill: white;
+          cursor: pointer;
+        }
+        #yearpicker-predict-thumb {
+          cursor: pointer;
+          circle {
+            fill: black;
+            stroke: none;
+          }
+        }
       }
     }
 }
