@@ -140,16 +140,23 @@ def get_plan_details(plan_url) -> tuple[str, datetime.date]:
 
 def download_shapefile(url):
     """Download shapefile to a temporary location, filtering out ZZ districts if needed"""
-    # Download original shapefile
-    req = urllib.request.Request(url, headers={'User-Agent': UA})
-    response = urllib.request.urlopen(req)
-    original_zip = tempfile.NamedTemporaryFile(delete=False, suffix='.zip')
-    original_zip.write(response.read())
-    original_zip.close()
+    local_path = os.path.join("/tmp/", os.path.basename(urllib.parse.urlparse(url).path))
+    if not os.path.exists(local_path):
+        # Download original shapefile
+        logging.debug(f"Downloading {url}")
+        req = urllib.request.Request(url, headers={'User-Agent': UA})
+        response = urllib.request.urlopen(req)
+        original_zip = tempfile.NamedTemporaryFile(delete=False, suffix='.zip')
+        original_zip.write(response.read())
+        original_zip.close()
+        original_zip_name = original_zip.name
+    else:
+        logging.debug(f"Found {local_path}")
+        original_zip_name = local_path
 
     try:
         # Use GDAL's /vsizip/ to read the shapefile directly from the zip
-        vsizip_path = f"/vsizip/{original_zip.name}"
+        vsizip_path = f"/vsizip/{original_zip_name}"
 
         # Use ogrinfo to list files in the zip and find the .shp file
         ogrinfo_list = subprocess.run(
@@ -169,8 +176,8 @@ def download_shapefile(url):
                     break
 
         if not layer_name:
-            logging.debug(f"Could not find layer in zip, using original {repr(original_zip.name)}")
-            return original_zip.name
+            logging.debug(f"Could not find layer in zip, using original {repr(original_zip_name)}")
+            return original_zip_name
 
         shp_path = f"{vsizip_path}/{layer_name}.shp"
 
@@ -185,7 +192,7 @@ def download_shapefile(url):
 
         if not has_cd119fp:
             logging.debug("No CD119FP field found, using original shapefile")
-            return original_zip.name
+            return original_zip_name
 
         # Check if there are any ZZ districts
         ogrinfo_zz = subprocess.run(
@@ -198,7 +205,7 @@ def download_shapefile(url):
 
         if not has_zz_district:
             logging.debug("No ZZ districts found, using original shapefile")
-            return original_zip.name
+            return original_zip_name
 
         logging.debug("Found ZZ districts, filtering them out")
 
@@ -222,7 +229,7 @@ def download_shapefile(url):
 
             if result.returncode != 0:
                 logging.debug(f"ogr2ogr filtering failed, using original: {result.stderr}")
-                return original_zip.name
+                return original_zip_name
 
             # Create new zip with filtered shapefile
             filtered_zip = tempfile.NamedTemporaryFile(delete=False, suffix='.zip')
@@ -236,7 +243,7 @@ def download_shapefile(url):
                         zip_ref.write(file_path, arcname)
 
             # Clean up
-            os.unlink(original_zip.name)
+            os.unlink(original_zip_name)
             logging.debug("Filtered shapefile created successfully")
             return filtered_zip.name
 
@@ -246,7 +253,7 @@ def download_shapefile(url):
 
     except Exception as e:
         logging.debug(f"Error processing shapefile: {e}, using original")
-        return original_zip.name
+        return original_zip_name
 
 def upload_new_plan(api_key, plan_name, auth_url, shapefile_url, incumbents):
     """Upload a new plan to PlanScore API"""
