@@ -256,7 +256,7 @@ window.parseSwingSlug = (slug) => {
 
 window.formatSwingValue = (value) => {
     if (value === 0) return 'No-Swing';
-    return value > 0 ? `+${value}D` : `+${Math.abs(value)}R`;
+    return value > 0 ? `D+${value}` : `D+${Math.abs(value)}`;
 };
 
 window.handleResize = () => {
