@@ -333,33 +333,34 @@ body.ushouse-selected {
         fill: white;
       }
       a {
-        .background, #yearpicker-predict-voteswing {
+        .background {
           visibility: hidden;
         }
       }
       a.active {
-        .background, #yearpicker-predict-voteswing {
+        .background {
           visibility: visible;
         }
       }
-      #yearpicker-predict-voteswing {
-        text {
-          font-size: 10px;
-          text-anchor: middle;
-        }
-        #yearpicker-predict-slider {
-          fill: white;
-          cursor: pointer;
-        }
-        #yearpicker-predict-thumb {
-          cursor: pointer;
-          circle {
-            fill: black;
-            stroke: none;
-          }
-        }
-      }
     }
+}
+
+#margin-swing {
+  display: none; // Hidden by default
+  text-align: center;
+  margin: 20px auto;
+  max-width: 400px;
+
+  &.visible {
+    display: block; // Shown when predict mode is active
+  }
+
+  input[type="range"] {
+    direction: rtl; // Reverse slider: left=max=+12(D), right=min=-12(R)
+    width: 100%;
+    max-width: 300px;
+    cursor: pointer;
+  }
 }
 
 #map-footnotes {
