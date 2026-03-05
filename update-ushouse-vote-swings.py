@@ -43,6 +43,8 @@ STATE_ABBREVS = {
 #   - D+4 margin swing = +2 percentage point vote swing (0.02 passed to API)
 #   - R+4 margin swing = -2 percentage point vote swing (-0.02 passed to API)
 ZERO_HEADER = 'No-Swing'
+LINK_HASH_PARTS = ['12R', '11R', '10R', '9R', '8R', '7R', '6R', '5R', '4R', '3R', '2R', '1R',
+                 '0', '1D', '2D', '3D', '4D', '5D', '6D', '7D', '8D', '9D', '10D', '11D', '12D']
 SHIFT_HEADERS = ['R+12', 'R+11', 'R+10', 'R+9', 'R+8', 'R+7', 'R+6', 'R+5', 'R+4', 'R+3', 'R+2', 'R+1',
                  ZERO_HEADER, 'D+1', 'D+2', 'D+3', 'D+4', 'D+5', 'D+6', 'D+7', 'D+8', 'D+9', 'D+10', 'D+11', 'D+12']
 
@@ -54,6 +56,7 @@ class CloneTask:
     base_plan_url: str
     existing_url: str
     description: str
+    national_url: str
     vote_swings: list
     state_abbrev: str
     header: str
@@ -303,7 +306,7 @@ def get_plan_data(plan_url: str) -> dict:
     except Exception:
         return {'start_time': None, 'library_metadata': {}}
 
-def clone_plan_with_swings(api_key: str, plan_id: str, description: str, vote_swings: list, base_library_metadata: dict = None) -> str:
+def clone_plan_with_swings(api_key: str, plan_id: str, description: str, national_url: str, vote_swings: list, base_library_metadata: dict = None) -> str:
     """Clone a plan with vote swings via PlanScore API (or dummy mode if no api_key)"""
     if not api_key:
         # Dummy mode
@@ -317,8 +320,9 @@ def clone_plan_with_swings(api_key: str, plan_id: str, description: str, vote_sw
     # (e.g., [0.06, 0.055, ...] for a D+12 margin swing, since margin = 2 × vote)
     library_metadata = base_library_metadata.copy() if base_library_metadata else {}
     library_metadata["notes"] = f"""
-        This {description} plan is part of a simulated, hypothetical national vote swing using
+        This {description} plan is part of a simulated, hypothetical national margin swing using
         <a href="https://www.cambridge.org/core/journals/political-analysis/article/abs/recalibration-of-predicted-probabilities-using-the-logit-shift-why-does-it-work-and-when-can-it-be-expected-to-work-well/67B3C222EB34BBA376AD730F34038CA4">logit shifts for each district</a>.
+        See the <a href="{national_url}">full national picture of U.S. House plans</a>.
     """
 
     payload = {
@@ -673,7 +677,7 @@ def create_worksheet(service, worksheet_name: str, row_count: int, column_count:
         logging.error(f"Error creating worksheet: {e}")
         raise
 
-def clone_or_reuse_plan(api_key: str, plan_id: str, base_plan_url: str, existing_url: str, description: str, vote_swings: list, state_abbrev: str, header: str) -> str:
+def clone_or_reuse_plan(api_key: str, plan_id: str, base_plan_url: str, existing_url: str, description: str, national_url: str, vote_swings: list, state_abbrev: str, header: str) -> str:
     """Clone a plan or reuse existing if it's new enough. Fetches plan data inside parallel task."""
     # Get base plan data (start_time and library_metadata)
     base_data = get_plan_data(base_plan_url)
@@ -694,7 +698,7 @@ def clone_or_reuse_plan(api_key: str, plan_id: str, base_plan_url: str, existing
             logging.debug(f"Re-cloning {state_abbrev} {header}: base plan is newer")
 
     # Clone the plan with merged metadata
-    return clone_plan_with_swings(api_key, plan_id, description, vote_swings, base_library_metadata)
+    return clone_plan_with_swings(api_key, plan_id, description, national_url, vote_swings, base_library_metadata)
 
 def build_state_swings(service, states: dict, district_swings: dict, api_key: str, existing_plan_urls: dict = {}) -> list:
     """Build state swings by cloning plans with vote swings, using parallelism. Reuses existing plan URLs if they're new enough."""
@@ -737,7 +741,7 @@ def build_state_swings(service, states: dict, district_swings: dict, api_key: st
         }
 
         # Create clone task for each scenario
-        for header in SHIFT_HEADERS:
+        for link_hash_part, header in zip(LINK_HASH_PARTS, SHIFT_HEADERS):
             vote_swings = state_swings.get(header, [])
             if not vote_swings:
                 logging.warning(f"No vote swings for {abbrev} {header}")
@@ -746,8 +750,11 @@ def build_state_swings(service, states: dict, district_swings: dict, api_key: st
             # Get existing URL if available
             existing_url = existing_plan_urls.get(abbrev, {}).get(header, '').strip()
 
-            # Format description like "R+12 Illinois 119th Congress Districts"
-            description = f"{header} {plan_name}"
+            # Format description like "Illinois 119th Congress Districts (National R+12 Environment)"
+            description = f"{plan_name} (National {header} Environment)"
+
+            # Generate a link to the national map
+            national_url = f'https://planscore.org/#!predict{link_hash_part}-ushouse'
 
             clone_tasks.append(CloneTask(
                 api_key=api_key,
@@ -755,6 +762,7 @@ def build_state_swings(service, states: dict, district_swings: dict, api_key: st
                 base_plan_url=plan_url,
                 existing_url=existing_url,
                 description=description,
+                national_url=national_url,
                 vote_swings=vote_swings,
                 state_abbrev=abbrev,
                 header=header
@@ -775,6 +783,7 @@ def build_state_swings(service, states: dict, district_swings: dict, api_key: st
                 task.base_plan_url,
                 task.existing_url,
                 task.description,
+                task.national_url,
                 task.vote_swings,
                 task.state_abbrev,
                 task.header
