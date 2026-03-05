@@ -22,6 +22,7 @@ class Election:
     EG: float
     seats: int
     url: str
+    districts: str
 
 @dataclasses.dataclass
 class District:
@@ -195,6 +196,13 @@ def planscore2election(plan_url: str, row: dict) -> typing.Optional[Election]:
     vote_share = sum(d.dem_share * d.total_votes / state_votes for d in districts)
     efficiency_gap = (seat_share - .5) - 2 * (vote_share - .5)
 
+    # Calculate district values for JSON encoding
+    district_values = [(d.dem_wins, d.dem_share, round(d.total_votes)) for d in districts]
+    districts_json = json.dumps(
+        [list(map(lambda n: round(n, 3), v)) for v in district_values],
+        separators=(',', ':')
+    )
+
     return Election(
         row.get("cycle"),
         row.get("stateabrev"),
@@ -202,6 +210,7 @@ def planscore2election(plan_url: str, row: dict) -> typing.Optional[Election]:
         round(efficiency_gap, 3),
         row.get("seats"),
         row.get("url"),
+        districts_json,
     )
 
 def process_row(index: int, row: dict, gdocs: GdocsStates, state_swings: dict) -> tuple[int, Election]:
@@ -225,10 +234,10 @@ def process_row(index: int, row: dict, gdocs: GdocsStates, state_swings: dict) -
                 return (index, election)
             else:
                 # No redraw or no URL, keep row as-is without URL
-                return (index, Election(*(row.get(f) for f in ELECTION_FIELDS)))
+                return (index, Election(*(row.get(f, '') for f in ELECTION_FIELDS)))
         else:
             # No Google Sheets data for this state, keep row as-is
-            return (index, Election(*(row.get(f) for f in ELECTION_FIELDS)))
+            return (index, Election(*(row.get(f, '') for f in ELECTION_FIELDS)))
     elif cycle and cycle.startswith("predict"):
         # For predict* rows, check State Swings worksheet
         stateabrev = row.get("stateabrev")
@@ -243,16 +252,18 @@ def process_row(index: int, row: dict, gdocs: GdocsStates, state_swings: dict) -
                 row = dict(row)
                 row['url'] = plan_url
                 election = planscore2election(plan_url, row)
+                # Clear districts for predict rows - not used yet
+                election = dataclasses.replace(election, districts='')
                 return (index, election)
             else:
                 # No URL for this cycle, keep row as-is
-                return (index, Election(*(row.get(f) for f in ELECTION_FIELDS)))
+                return (index, Election(*(row.get(f, '') for f in ELECTION_FIELDS)))
         else:
             # State not in State Swings or invalid cycle name, keep row as-is
-            return (index, Election(*(row.get(f) for f in ELECTION_FIELDS)))
+            return (index, Election(*(row.get(f, '') for f in ELECTION_FIELDS)))
     else:
         # Not a 2026 or predict cycle, keep row as-is
-        return (index, Election(*(row.get(f) for f in ELECTION_FIELDS)))
+        return (index, Election(*(row.get(f, '') for f in ELECTION_FIELDS)))
 
 def main(credentials_file: str, filename: str):
     # Load Google Sheets states data
