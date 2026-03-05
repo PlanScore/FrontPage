@@ -37,6 +37,11 @@ STATE_ABBREVS = {
 }
 
 # Shift headers (25 scenarios)
+# These headers represent MARGIN SWINGS (e.g., D+12 means 12 percentage point margin swing)
+# Margin swing = 2 × vote swing, so:
+#   - D+12 margin swing = +6 percentage point vote swing (0.06 passed to API)
+#   - D+4 margin swing = +2 percentage point vote swing (0.02 passed to API)
+#   - R+4 margin swing = -2 percentage point vote swing (-0.02 passed to API)
 ZERO_HEADER = 'No-Swing'
 SHIFT_HEADERS = ['R+12', 'R+11', 'R+10', 'R+9', 'R+8', 'R+7', 'R+6', 'R+5', 'R+4', 'R+3', 'R+2', 'R+1',
                  ZERO_HEADER, 'D+1', 'D+2', 'D+3', 'D+4', 'D+5', 'D+6', 'D+7', 'D+8', 'D+9', 'D+10', 'D+11', 'D+12']
@@ -59,12 +64,16 @@ def calculate_district_shifts(districts: list, target_diff: float) -> list:
     """
     Calculate per-district vote shifts needed to achieve a target nationwide vote share.
 
+    Note: This calculates VOTE SHIFTS (not margin shifts). The target_diff is a vote swing
+    in decimal form (e.g., 0.06 for a 6 percentage point vote swing, which corresponds
+    to a 12 percentage point margin swing).
+
     Args:
         districts: List of district dicts with 'dem_votes' and 'rep_votes'
-        target_share: Target nationwide Democratic vote share (e.g., 0.50 for 50%)
+        target_diff: Target vote swing as a decimal (e.g., 0.06 for +6pp vote swing)
 
     Returns:
-        List of shift values (in percentage points) for each district
+        List of vote shift values as decimals (e.g., 0.05 for 5pp shift) for each district
     """
     # Extract arrays of votes
     ndv = np.array([d['dem_votes'] for d in districts])
@@ -304,6 +313,8 @@ def clone_plan_with_swings(api_key: str, plan_id: str, description: str, vote_sw
     clone_url = f"{api_base}/clone"
 
     # Merge base library_metadata with new notes field
+    # Note: description contains margin swing (e.g., "D+12"), but vote_swings contains vote swings
+    # (e.g., [0.06, 0.055, ...] for a D+12 margin swing, since margin = 2 × vote)
     library_metadata = base_library_metadata.copy() if base_library_metadata else {}
     library_metadata["notes"] = f"""
         This {description} plan is part of a simulated, hypothetical national vote swing using
@@ -993,12 +1004,16 @@ def calculate_all_district_shifts(rows: list) -> dict:
 
     # Calculate shifts for all districts (flat list indexed by district)
     all_shifts = {}
-    for i in range(-12, 13):  # -12 to +12 inclusive
-        target_diff = (i / 100.0)  # Convert percentage points to decimal
-        header = ZERO_HEADER if i == 0 else f'D+{i}' if i > 0 else f'R+{abs(i)}'
+    for margin_swing in range(-12, 13):  # -12 to +12 inclusive (margin swing in percentage points)
+        # Convert margin swing to vote swing: margin swing = 2 × vote swing
+        # E.g., D+12 margin swing → +6 percentage point vote swing
+        vote_swing = margin_swing / 2.0  # Vote swing in percentage points
+        target_diff = vote_swing / 100.0  # Convert to decimal for API (e.g., 0.06 for 6pp)
+
+        header = ZERO_HEADER if margin_swing == 0 else f'D+{margin_swing}' if margin_swing > 0 else f'R+{abs(margin_swing)}'
         shifts = calculate_district_shifts(rows, target_diff)
         all_shifts[header] = shifts
-        logging.debug(f"Calculated shifts for {header} (target={target_diff:.1%})")
+        logging.debug(f"Calculated shifts for {header} (margin={margin_swing}pp, vote={vote_swing}pp, target={target_diff:.3f})")
 
     # Organize by state
     state_shifts = {}
