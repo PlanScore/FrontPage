@@ -179,18 +179,23 @@ window.initYearPickers = () => {
 };
 
 window.updatePredictionCaption = (swing_value) => {
-    // Calculate vote percentages based on swing value
-    // Baseline: 44% D / 56% R at 0 swing
-    // Each +1 D swing adds 1% to D share, subtracts 1% from R share
-    const dem_vote = 44 + swing_value;
-    const rep_vote = 56 - swing_value;
+    // Use back-calculated vote share from CSV data (calculated in renderMapWithNewData)
+    // Vote share is derived from: vote_share = 0.5 + (seat_share - 0.5 - EG) / 2
+    // This ensures displayed vote share is always consistent with seat share and bias
+    if (CURRENT_VIEW.nationalVoteShareDem !== undefined) {
+        const dem_vote = Math.round(CURRENT_VIEW.nationalVoteShareDem * 100);
+        const rep_vote = 100 - dem_vote;
 
-    // Format swing label using existing helper
-    const swing_label = swing_value === 0 ? '0' : formatSwingValue(swing_value);
+        // Format swing label using existing helper
+        const swing_label = swing_value === 0 ? '0' : formatSwingValue(swing_value);
 
-    // Update caption text
-    const caption_text = `${dem_vote}% D / ${rep_vote}% R vote share at ${swing_label} margin swing`;
-    $('#margin-range-caption').text(caption_text);
+        // Update caption text
+        const caption_text = `${dem_vote}% D / ${rep_vote}% R vote share at ${swing_label} margin swing`;
+        $('#margin-range-caption').text(caption_text);
+    } else {
+        // Fallback if data hasn't loaded yet
+        $('#margin-range-caption').text('Loading vote share data...');
+    }
 };
 
 window.initPredictionSlider = () => {
@@ -564,6 +569,22 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             // Nationwide EG average
             const nationalEG = biasSeats / totalSeats;
 
+            // Back-calculate national vote share from efficiency gap formula
+            // EG = (seat_share - 0.5) - 2 * (vote_share - 0.5)
+            // Solving for vote_share: vote_share = 0.5 + (seat_share - 0.5 - EG) / 2
+            // This ensures vote share display is always consistent with seat share and EG
+            if (totalSeats > 0 && totalDemSeats >= 0) {
+                const seatShareDem = totalDemSeats / totalSeats;
+                const voteShareDem = 0.5 + (seatShareDem - 0.5 - nationalEG) / 2;
+                // Store for use in prediction caption
+                CURRENT_VIEW.nationalVoteShareDem = voteShareDem;
+                console.log(`Calculated vote share for ${CURRENT_VIEW.year}: ${(voteShareDem*100).toFixed(1)}% D (totalSeats=${totalSeats}, totalDemSeats=${totalDemSeats.toFixed(2)})`);
+            } else {
+                // Clear if we don't have valid data
+                CURRENT_VIEW.nationalVoteShareDem = undefined;
+                console.log(`No valid vote share data for ${CURRENT_VIEW.year}: totalSeats=${totalSeats}, totalDemSeats=${totalDemSeats}`);
+            }
+
             const biasEval = lookupBias('eg', nationalEG, CURRENT_VIEW.boundtype);
             const absBiasPercent = twoDigits(Math.abs(100 * nationalEG));
             const absBiasSeats = twoDigits(Math.abs(nationalEG * totalSeats));
@@ -709,6 +730,16 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             const stateInfo = data.find(d => d.abbr === currentStateAbbr);
             if (stateInfo) {
                 updateTooltipContent(stateInfo);
+            }
+        }
+
+        // Update prediction caption if we're in prediction mode and data has loaded
+        if (isPredictionYear(CURRENT_VIEW.year)) {
+            console.log(`Prediction year detected in renderMapWithNewData: ${CURRENT_VIEW.year}, voteShareDem=${CURRENT_VIEW.nationalVoteShareDem}`);
+            if (CURRENT_VIEW.nationalVoteShareDem !== undefined) {
+                const swingValue = parseSwingSlug(CURRENT_VIEW.year);
+                console.log(`Updating prediction caption with swing value: ${swingValue}`);
+                updatePredictionCaption(swingValue);
             }
         }
     }
