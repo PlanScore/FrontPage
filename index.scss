@@ -258,7 +258,7 @@ body.ushouse-selected {
     margin-top: 36px;
     margin-bottom: 36px;
     display: grid;
-    grid-template-columns: 35px 1fr 150px;
+    grid-template-columns: 35px 1fr 170px;
     grid-template-rows: 65px;
 
     #yearpicker-playbutton {
@@ -327,6 +327,9 @@ body.ushouse-selected {
     }
 
     #yearpicker-future {
+      text {
+        font-size: 16px;
+      }
       a.active {
         cursor: inherit;
       }

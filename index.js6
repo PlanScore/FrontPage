@@ -570,7 +570,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             var captionHtml = `Total ${CURRENT_VIEW.year} Bias:`;
             var turnoutNote = '';
             if (isPredictionYear(CURRENT_VIEW.year)) {
-                captionHtml = `Total ${formatSwingValue(parseSwingSlug(CURRENT_VIEW.year))} Predictions Bias:`;
+                captionHtml = `Total ${formatSwingValue(parseSwingSlug(CURRENT_VIEW.year))} Scenario Bias:`;
                 turnoutNote = '<sup>†</sup>';
             } else if(CURRENT_VIEW.year == 2026) {
                 captionHtml = `Total 2024+Remaps<sup>*</sup> Bias:`;
