@@ -572,6 +572,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             $('#ushouse-legend .swatch').css({ 'background': biasEval.color });
             $('#ushouse-legend .caption').html(captionHtml);
             $('#ushouse-legend .bias').html(`${absBiasPercent}% (${absBiasSeats} seats)${turnoutNote} pro-${biasEval.party}`);
+            $('#ushouse-legend .seats').html(`GOOD TIMES`);
         }
 
         // loop through each state in the data and update the SVG
