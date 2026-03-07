@@ -165,6 +165,7 @@ h3,
 #map {
   height: 400px;
   width: 100%;
+  margin-bottom: 20px;
   overflow: visible; /* Allow tooltip to extend beyond SVG bounds */
 
   @media screen and (max-width: $screen-sm) {
@@ -348,8 +349,8 @@ body.ushouse-selected {
 #margin-swing {
   display: none; // Hidden by default
   text-align: center;
-  margin: 10px auto -30px auto;
-  height: 20px;
+  margin: -5px auto -35px auto;
+  height: 40px;
   line-height: 20px;
 
   &.visible {
@@ -358,6 +359,10 @@ body.ushouse-selected {
 
   * {
     display: inline-block;
+  }
+  
+  #margin-range-caption {
+    font-size: 16px;
   }
 
   input[type="range"] {
