@@ -560,17 +560,17 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             const biasEval = lookupBias('eg', nationalEG, CURRENT_VIEW.boundtype);
             const absBiasPercent = twoDigits(Math.abs(100 * nationalEG));
             const absBiasSeats = twoDigits(Math.abs(nationalEG * totalSeats));
-            var currYear = CURRENT_VIEW.year;
+            var captionHtml = `Total ${CURRENT_VIEW.year} Bias:`;
             var turnoutNote = '';
             if (isPredictionYear(CURRENT_VIEW.year)) {
-                currYear = `${formatSwingValue(parseSwingSlug(CURRENT_VIEW.year))} Predictions`;
+                captionHtml = `Total ${formatSwingValue(parseSwingSlug(CURRENT_VIEW.year))} Predictions Bias:`;
                 turnoutNote = '<sup>†</sup>';
             } else if(CURRENT_VIEW.year == 2026) {
-                currYear = '2024+Remaps<sup>*</sup>';
+                captionHtml = `Total 2024+Remaps<sup>*</sup> Bias:`;
                 turnoutNote = '<sup>†</sup>';
             }
             $('#ushouse-legend .swatch').css({ 'background': biasEval.color });
-            $('#ushouse-legend .caption').html(`Total ${currYear} Bias:`);
+            $('#ushouse-legend .caption').html(captionHtml);
             $('#ushouse-legend .bias').html(`${absBiasPercent}% (${absBiasSeats} seats)${turnoutNote} pro-${biasEval.party}`);
         }
 
