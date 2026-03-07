@@ -218,7 +218,7 @@ def planscore2election(plan_url: str, row: dict) -> typing.Optional[Election]:
         districts_json,
     )
 
-def process_row(index: int, row: dict, gdocs: GdocsStates, state_swings: dict, state_2024_dem_seats: dict) -> tuple[int, Election]:
+def process_row(index: int, row: dict, gdocs: GdocsStates, state_swings: dict, state_2024_data: dict) -> tuple[int, Election]:
     """Process a single row and return (index, Election) tuple"""
     cycle = row.get("cycle")
 
@@ -239,14 +239,15 @@ def process_row(index: int, row: dict, gdocs: GdocsStates, state_swings: dict, s
                 election = planscore2election(sheets_url, row)
                 return (index, election)
 
-        # No redraw or no URL, copy dem_seats from 2024 row
+        # No redraw or no URL, copy EG, seats, and dem_seats from 2024 row
+        data_2024 = state_2024_data[stateabrev]
         return (index, Election(
             row.get("cycle", ""),
             row.get("stateabrev", ""),
             row.get("newplan", ""),
-            float(row.get("EG", 0)) if row.get("EG") else 0.0,
-            int(row.get("seats", 0)) if row.get("seats") else 0,
-            state_2024_dem_seats[stateabrev],
+            data_2024['EG'],
+            data_2024['seats'],
+            data_2024['dem_seats'],
             "",  # Clear any old URL
             "",  # Clear any old districts
         ))
@@ -293,22 +294,25 @@ def main(credentials_file: str, filename: str):
 
     logging.info(f"{rows[:3]}, {rows[-3:]}")
 
-    # Create dict mapping state abbreviation to 2024 dem_seats
-    state_2024_dem_seats = {}
+    # Create dict mapping state abbreviation to 2024 data (EG, seats, dem_seats)
+    state_2024_data = {}
     for row in rows:
         if row.get("cycle") == "2024":
             stateabrev = row.get("stateabrev")
-            dem_seats = row.get("dem_seats", "")
-            if stateabrev and dem_seats:
-                state_2024_dem_seats[stateabrev] = float(dem_seats)
+            if stateabrev:
+                state_2024_data[stateabrev] = {
+                    'EG': float(row.get("EG", 0)) if row.get("EG") else 0.0,
+                    'seats': int(row.get("seats", 0)) if row.get("seats") else 0,
+                    'dem_seats': float(row.get("dem_seats", 0)) if row.get("dem_seats") else 0.0,
+                }
 
-    logging.debug(f"Loaded 2024 dem_seats for {len(state_2024_dem_seats)} states")
+    logging.debug(f"Loaded 2024 data for {len(state_2024_data)} states")
 
     # Process all rows in parallel using ThreadPoolExecutor with 10 workers
     with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
         # Submit all rows with their indices
         futures = [
-            executor.submit(process_row, index, row, gdocs, state_swings, state_2024_dem_seats)
+            executor.submit(process_row, index, row, gdocs, state_swings, state_2024_data)
             for index, row in enumerate(rows)
         ]
 
