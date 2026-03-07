@@ -465,6 +465,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                     if (!chartrow) return;  // state not found, skip
                     chartrow.value = parseFloat(datarow.EG);
                     chartrow.seats = parseInt(datarow.seats);
+                    chartrow.dem_seats = parseFloat(datarow.dem_seats);
                     chartrow.percentrank = null;
                     chartrow.url = datarow.url;
                     chartrow.stateScale = datarow.stateScale;
@@ -545,12 +546,18 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
         if (CURRENT_VIEW.boundtype === 'ushouse') {
             let biasSeats = 0;
             let totalSeats = 0;
+            let totalDemSeats = 0;
             data.forEach(function(stateData) {
+                console.log('stateData:', stateData);
                 const seats = stateData.seats;
+                const demSeats = stateData.dem_seats;
                 if (stateData.value !== MAP_NODATA_VALUE && stateData.value !== undefined && seats) {
                     // Accumulate bias weighted by seats for national summary
                     biasSeats += stateData.value * seats;
                     totalSeats += seats;
+                    if (demSeats !== undefined && !isNaN(demSeats)) {
+                        totalDemSeats += demSeats;
+                    }
                 }
             });
 
@@ -572,7 +579,16 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             $('#ushouse-legend .swatch').css({ 'background': biasEval.color });
             $('#ushouse-legend .caption').html(captionHtml);
             $('#ushouse-legend .bias').html(`${absBiasPercent}% (${absBiasSeats} seats)${turnoutNote} pro-${biasEval.party}`);
-            $('#ushouse-legend .seats').html(`GOOD TIMES`);
+
+            // Calculate seat share percentages
+            let seatsHtml = '';
+            if (totalSeats > 0 && totalDemSeats > 0) {
+                const demPercent = Math.round((totalDemSeats / totalSeats) * 100);
+                const repPercent = 100 - demPercent;
+                const label = (CURRENT_VIEW.year <= 2024) ? 'Historical' : 'Predicted';
+                seatsHtml = `${label} ${demPercent}% D / ${repPercent}% R seat share`;
+            }
+            $('#ushouse-legend .seats').html(seatsHtml);
         }
 
         // loop through each state in the data and update the SVG
