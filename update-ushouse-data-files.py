@@ -21,6 +21,7 @@ class Election:
     newplan: str
     EG: float
     seats: int
+    dem_seats: float
     url: str
     districts: str
 
@@ -196,6 +197,9 @@ def planscore2election(plan_url: str, row: dict) -> typing.Optional[Election]:
     vote_share = sum(d.dem_share * d.total_votes / state_votes for d in districts)
     efficiency_gap = (seat_share - .5) - 2 * (vote_share - .5)
 
+    # Calculate predicted Democratic seats (sum of win probabilities)
+    dem_seats = round(sum(d.dem_wins for d in districts), 2)
+
     # Calculate district values for JSON encoding
     district_values = [(d.dem_wins, d.dem_share, round(d.total_votes)) for d in districts]
     districts_json = json.dumps(
@@ -209,35 +213,43 @@ def planscore2election(plan_url: str, row: dict) -> typing.Optional[Election]:
         row.get("newplan"),
         round(efficiency_gap, 3),
         row.get("seats"),
+        dem_seats,
         row.get("url"),
         districts_json,
     )
 
-def process_row(index: int, row: dict, gdocs: GdocsStates, state_swings: dict) -> tuple[int, Election]:
+def process_row(index: int, row: dict, gdocs: GdocsStates, state_swings: dict, state_2024_dem_seats: dict) -> tuple[int, Election]:
     """Process a single row and return (index, Election) tuple"""
     cycle = row.get("cycle")
 
     if cycle == "2026":
-        # For 2026 rows, check if state has a redraw (column G)
+        # For 2026 rows, check if state has a redraw with a plan URL
         stateabrev = row.get("stateabrev")
         google_state = gdocs.states.get(stateabrev)
 
+        # Only process plan URLs if has_redraw=Y
         if google_state:
             has_redraw = google_state.get('2026 Redraw', '').strip().upper() == 'Y'
-            plan_url = google_state.get('PlanScore URL', '').strip()
+            sheets_url = google_state.get('PlanScore URL', '').strip()
 
-            if has_redraw and plan_url:
-                # State has a redraw and URL in Google Sheets, process the plan
+            if has_redraw and sheets_url:
+                # State has a redraw, use URL from Google Sheets and calculate dem_seats
                 row = dict(row)
-                row['url'] = plan_url
-                election = planscore2election(plan_url, row)
+                row['url'] = sheets_url
+                election = planscore2election(sheets_url, row)
                 return (index, election)
-            else:
-                # No redraw or no URL, keep row as-is without URL
-                return (index, Election(*(row.get(f, '') for f in ELECTION_FIELDS)))
-        else:
-            # No Google Sheets data for this state, keep row as-is
-            return (index, Election(*(row.get(f, '') for f in ELECTION_FIELDS)))
+
+        # No redraw or no URL, copy dem_seats from 2024 row
+        return (index, Election(
+            row.get("cycle", ""),
+            row.get("stateabrev", ""),
+            row.get("newplan", ""),
+            float(row.get("EG", 0)) if row.get("EG") else 0.0,
+            int(row.get("seats", 0)) if row.get("seats") else 0,
+            state_2024_dem_seats[stateabrev],
+            "",  # Clear any old URL
+            "",  # Clear any old districts
+        ))
     elif cycle and cycle.startswith("predict"):
         # For predict* rows, check State Swings worksheet
         stateabrev = row.get("stateabrev")
@@ -281,11 +293,22 @@ def main(credentials_file: str, filename: str):
 
     logging.info(f"{rows[:3]}, {rows[-3:]}")
 
+    # Create dict mapping state abbreviation to 2024 dem_seats
+    state_2024_dem_seats = {}
+    for row in rows:
+        if row.get("cycle") == "2024":
+            stateabrev = row.get("stateabrev")
+            dem_seats = row.get("dem_seats", "")
+            if stateabrev and dem_seats:
+                state_2024_dem_seats[stateabrev] = float(dem_seats)
+
+    logging.debug(f"Loaded 2024 dem_seats for {len(state_2024_dem_seats)} states")
+
     # Process all rows in parallel using ThreadPoolExecutor with 10 workers
     with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
         # Submit all rows with their indices
         futures = [
-            executor.submit(process_row, index, row, gdocs, state_swings)
+            executor.submit(process_row, index, row, gdocs, state_swings, state_2024_dem_seats)
             for index, row in enumerate(rows)
         ]
 
