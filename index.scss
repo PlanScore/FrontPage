@@ -165,7 +165,7 @@ h3,
 #map {
   height: 400px;
   width: 100%;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   overflow: visible; /* Allow tooltip to extend beyond SVG bounds */
 
   @media screen and (max-width: $screen-sm) {
@@ -360,7 +360,7 @@ body.ushouse-selected {
   * {
     display: inline-block;
   }
-  
+
   #margin-range-caption {
     font-size: 16px;
   }

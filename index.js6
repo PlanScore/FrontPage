@@ -178,6 +178,21 @@ window.initYearPickers = () => {
     });
 };
 
+window.updatePredictionCaption = (swing_value) => {
+    // Calculate vote percentages based on swing value
+    // Baseline: 44% D / 56% R at 0 swing
+    // Each +1 D swing adds 1% to D share, subtracts 1% from R share
+    const dem_vote = 44 + swing_value;
+    const rep_vote = 56 - swing_value;
+
+    // Format swing label using existing helper
+    const swing_label = swing_value === 0 ? '0' : formatSwingValue(swing_value);
+
+    // Update caption text
+    const caption_text = `${dem_vote}% D / ${rep_vote}% R vote share at ${swing_label} margin swing`;
+    $('#margin-range-caption').text(caption_text);
+};
+
 window.initPredictionSlider = () => {
     const $slider = $('#margin-swing-range');
 
@@ -185,12 +200,18 @@ window.initPredictionSlider = () => {
     const value = parseSwingSlug(CURRENT_VIEW.year);
     $slider.val(value);
 
+    // Update caption with initial value
+    updatePredictionCaption(value);
+
     // Handle input events - only attach once
     if (!PREDICTION_SLIDER_INITIALIZED) {
         PREDICTION_SLIDER_INITIALIZED = true;
 
         $slider.on('input', function() {
             const sliderValue = parseInt($(this).val());
+
+            // Update caption immediately
+            updatePredictionCaption(sliderValue);
 
             // Update year and reload data
             const predictionYear = getPredictionYearString(sliderValue);
