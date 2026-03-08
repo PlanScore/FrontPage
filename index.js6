@@ -24,6 +24,10 @@ const CURRENT_VIEW = {};
 // track whether this is the first render, so we can suppress transitions on initial load
 let firstRender = true;
 
+// remember the US House year (2026 or prediction) when switching to state legislative views
+// so we can restore it when switching back to US House
+let remembered_ushouse_year = null;
+
 // year picker timeline animation; see yearAnimationToggle()
 const ANIMATION = {
     delayseconds: 0.75,  // time delay (in seconds) between switches
@@ -162,6 +166,11 @@ window.initYearPickers = () => {
         const elementId = $(this).attr('id');
         let year = elementId.replace('yearpicker-', '');
 
+        // Prevent clicking on future years (2026 or predict) when in state legislative views
+        if ((year === '2026' || year === 'predict') && CURRENT_VIEW.boundtype !== 'ushouse') {
+            return;  // Do nothing if trying to select future years in state legislative views
+        }
+
         // When clicking on predict, use the current slider value to determine the year
         if (year === 'predict') {
             const sliderValue = parseInt($('#margin-swing-range').val()) || 0;
@@ -256,6 +265,13 @@ window.initLoadStartingConditions = () => {
     if (year_and_type) {
         year = year_and_type[1];
         type = year_and_type[2];
+    }
+
+    // Set initial yearpicker-future state based on boundary type
+    if (type !== 'ushouse') {
+        $('#yearpicker-future').addClass('yearpicker-future-disabled');
+    } else {
+        $('#yearpicker-future').removeClass('yearpicker-future-disabled');
     }
 
     // ready, set, go
@@ -954,6 +970,12 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
 };
 
 window.selectYear = (year, options={}) => {
+    // If user is changing years while in state legislative views, clear the remembered US House year
+    // This indicates the user has made an explicit year choice that should carry forward
+    if (CURRENT_VIEW.boundtype !== 'ushouse' && CURRENT_VIEW.year !== year && !options.noHashUpdate) {
+        remembered_ushouse_year = null;
+    }
+
     // UI update: small/mobile yearpicker
     // if the selected year is the first/last then show/hide the prev/next buttons
     const $small_button = $('#yearpicker-small span').hide().filter(`[data-year="${year}"]`).show();
@@ -1014,7 +1036,12 @@ window.selectYear = (year, options={}) => {
         }
     }
 
-    loadDataForSelectedBoundaryAndYear(options);  // no new options nor overrides; just pass options as-given
+    // Skip loading data if noHashUpdate is set - this indicates we're in the middle of a compound
+    // operation (like switching boundary types) and the caller will handle loading data
+    // This prevents race conditions where we'd load data with mismatched year/boundtype
+    if (!options.noHashUpdate) {
+        loadDataForSelectedBoundaryAndYear(options);  // no new options nor overrides; just pass options as-given
+    }
 };
 
 window.selectBoundaryType = (boundtype, options={}) => {
@@ -1029,6 +1056,40 @@ window.selectBoundaryType = (boundtype, options={}) => {
         $('body').addClass('ushouse-selected');
     } else {
         $('body').removeClass('ushouse-selected');
+    }
+
+    // Handle year state transitions between US House and state legislative views
+    const old_boundtype = CURRENT_VIEW.boundtype;
+    const switching_from_ushouse = old_boundtype === 'ushouse' && boundtype !== 'ushouse';
+    const switching_to_ushouse = old_boundtype !== 'ushouse' && boundtype === 'ushouse';
+
+    if (switching_from_ushouse) {
+        // Switching from US House to state legislative: save future year and revert to 2024
+        const current_year = CURRENT_VIEW.year;
+        if (current_year == 2026 || isPredictionYear(current_year)) {
+            remembered_ushouse_year = current_year;
+            // Call selectYear to update all UI (margin-swing, yearpicker-current, etc.)
+            // Use noHashUpdate since selectBoundaryType will update hash at the end
+            selectYear('2024', { noHashUpdate: true, fudgeYearIfNoData: false });
+        }
+        // Disable future years in yearpicker
+        $('#yearpicker-future').addClass('yearpicker-future-disabled');
+    } else if (switching_to_ushouse) {
+        // Switching from state legislative to US House: restore remembered year if exists
+        if (remembered_ushouse_year) {
+            // Call selectYear to update all UI (margin-swing, yearpicker-current, etc.)
+            // Use noHashUpdate since selectBoundaryType will update hash at the end
+            selectYear(remembered_ushouse_year, { noHashUpdate: true, fudgeYearIfNoData: false });
+            remembered_ushouse_year = null;  // Clear after restoring
+        }
+        // Enable future years in yearpicker
+        $('#yearpicker-future').removeClass('yearpicker-future-disabled');
+    } else if (boundtype !== 'ushouse') {
+        // Switching between state legislative views: keep yearpicker disabled
+        $('#yearpicker-future').addClass('yearpicker-future-disabled');
+    } else {
+        // Staying in US House: keep yearpicker enabled
+        $('#yearpicker-future').removeClass('yearpicker-future-disabled');
     }
 
     // save to the state and refresh the map + data
