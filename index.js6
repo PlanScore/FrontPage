@@ -599,7 +599,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             }
             $('#ushouse-legend .swatch').css({ 'background': biasEval.color });
             $('#ushouse-legend .caption').html(captionHtml);
-            $('#ushouse-legend .bias').html(`${absBiasPercent}% (${absBiasSeats} seats)${turnoutNote} pro-${biasEval.party}`);
+            $('#ushouse-legend .bias').html(`EG ${absBiasPercent}% (${absBiasSeats} seats)${turnoutNote} pro-${biasEval.party}`);
 
             // Calculate seat share percentages
             let seatsHtml = '';
