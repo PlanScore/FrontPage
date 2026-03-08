@@ -7,6 +7,7 @@ import logging
 import os
 import re
 import shutil
+import ssl
 import subprocess
 import sys
 import tempfile
@@ -125,7 +126,18 @@ def download_shapefile(url):
         # Download original shapefile
         logging.debug(f"Downloading {url}")
         req = urllib.request.Request(url, headers={'User-Agent': UA})
-        response = urllib.request.urlopen(req)
+
+        # Create SSL context that doesn't verify certificates only for aelc.assembly.ca.gov
+        # (they have a self-signed certificate in their chain)
+        parsed_url = urllib.parse.urlparse(url)
+        if parsed_url.hostname == 'aelc.assembly.ca.gov':
+            ssl_context = ssl.create_default_context()
+            ssl_context.check_hostname = False
+            ssl_context.verify_mode = ssl.CERT_NONE
+            response = urllib.request.urlopen(req, context=ssl_context)
+        else:
+            response = urllib.request.urlopen(req)
+
         original_zip = tempfile.NamedTemporaryFile(delete=False, suffix='.zip')
         original_zip.write(response.read())
         original_zip.close()
