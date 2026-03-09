@@ -363,6 +363,10 @@ body.ushouse-selected {
   height: 40px;
   line-height: 20px;
 
+  @media (max-width: $screen-sm) {
+    margin: 0 auto 20px auto;
+  }
+
   &.visible {
     display: block; // Shown when predict mode is active
   }
@@ -373,28 +377,32 @@ body.ushouse-selected {
 
   #margin-range-caption {
     font-size: 16px;
+    white-space: nowrap;
   }
 
   input[type="range"] {
     direction: rtl; // Reverse slider: left=max=+12(D), right=min=-12(R)
-    width: 300px;
     cursor: pointer;
     position: relative;
     top: 4px; /* Nudge slightly to match labels */
     margin: 0 5px;
+
+    width: 300px;
+    @media (max-width: $screen-sm) { width: 200px }
   }
 
   input#margin-swing-range[type=range]
   {
     height: 20px;
     -webkit-appearance: none;
-    width: 300px;
     background-color: #f4f5f5; /* Light gray background */
+
+    width: 300px;
+    @media (max-width: $screen-sm) { width: 200px }
   }
 
     input#margin-swing-range[type=range]::-webkit-slider-runnable-track
     {
-      width: 300px;
       height: 18px;
       cursor: pointer;
       animate: 0.2s;
@@ -402,13 +410,15 @@ body.ushouse-selected {
       background: #0f2c3a; /* Track background */
       border-radius: 10px;
       border: 0px solid #0f2c3a; /* Track background */
+
+      width: 300px;
+      @media (max-width: $screen-sm) { width: 200px }
     }
 
     input#margin-swing-range[type=range]:focus::-webkit-slider-runnable-track { background: #0f2c3a; /* Track background */ }
 
     input#margin-swing-range[type=range]::-moz-range-track
     {
-      width: 300px;
       height: 18px;
       cursor: pointer;
       animate: 0.2s;
@@ -416,6 +426,9 @@ body.ushouse-selected {
       background: #0f2c3a; /* Track background */
       border-radius: 10px;
       border: 0px solid #0f2c3a; /* Track background */
+
+      width: 300px;
+      @media (max-width: $screen-sm) { width: 200px }
     }
 
     input#margin-swing-range[type=range]::-webkit-slider-thumb
@@ -443,13 +456,15 @@ body.ushouse-selected {
 
     input#margin-swing-range[type=range]::-ms-track
     {
-      width: 300px;
       height: 18px;
       cursor: pointer;
       animate: 0.2s;
       background: transparent;
       border-color: transparent;
       color: transparent;
+
+      width: 300px;
+      @media (max-width: $screen-sm) { width: 200px }
     }
 
     input#margin-swing-range[type=range]::-ms-fill-lower
