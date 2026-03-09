@@ -28,6 +28,10 @@ let firstRender = true;
 // so we can restore it when switching back to US House
 let remembered_ushouse_year = null;
 
+// remember the prediction year when leaving prediction mode on mobile
+// so we can restore it when re-entering prediction mode
+let remembered_prediction_year = null;
+
 // year picker timeline animation; see yearAnimationToggle()
 const ANIMATION = {
     delayseconds: 0.75,  // time delay (in seconds) between switches
@@ -143,15 +147,39 @@ window.initYearPickers = () => {
     PLAN_YEARS.forEach((year) => {
         $(`<span data-year="${year}">${year == 2026 ? '2024+Remaps<sup>*</sup>' : year}</span>`).appendTo($year_listing).hide();
     });
+    // Add a prediction mode entry for the small yearpicker
+    $(`<span data-year="predict0">2026 Scenarios</span>`).appendTo($year_listing).hide();
 
     $picker_small.on('click', 'div.nextprev.right', function () {
+        // Handle transition from 2026 to prediction mode in US House view
+        if (CURRENT_VIEW.year == 2026 && CURRENT_VIEW.boundtype === 'ushouse') {
+            // Restore the remembered prediction year, or default to predict0
+            const year_to_select = remembered_prediction_year || 'predict0';
+            selectYear(year_to_select);
+            logToGoogleAnalytics('yearselected', year_to_select);
+            return;
+        }
+
         const $targetbutton = $year_listing.find('span:visible').next('span');
         const year = $targetbutton.attr('data-year');
         if (! year) return;  // don't allow clicking past the first/last
+
+        // Prevent navigating to 2026 or prediction when in state legislative views
+        if ((year == 2026 || year == 'predict0') && CURRENT_VIEW.boundtype !== 'ushouse') {
+            return;  // Do nothing if trying to select future years in state legislative views
+        }
+
         selectYear(year);
         logToGoogleAnalytics('yearselected', year);
     });
     $picker_small.on('click', 'div.nextprev.left', function () {
+        // Handle transition from prediction mode back to 2026
+        if (isPredictionYear(CURRENT_VIEW.year)) {
+            selectYear('2026');
+            logToGoogleAnalytics('yearselected', '2026');
+            return;
+        }
+
         const $targetbutton = $year_listing.find('span:visible').prev('span');
         const year = $targetbutton.attr('data-year');
         if (! year) return;  // don't allow clicking past the first/last
@@ -976,16 +1004,42 @@ window.selectYear = (year, options={}) => {
         remembered_ushouse_year = null;
     }
 
+    // If leaving prediction mode, save the current prediction year so we can restore it later
+    if (isPredictionYear(CURRENT_VIEW.year) && !isPredictionYear(year)) {
+        remembered_prediction_year = CURRENT_VIEW.year;
+    }
+
     // UI update: small/mobile yearpicker
     // if the selected year is the first/last then show/hide the prev/next buttons
-    const $small_button = $('#yearpicker-small span').hide().filter(`[data-year="${year}"]`).show();
+    // For prediction years, show the predict0 span
+    const year_for_display = isPredictionYear(year) ? 'predict0' : year;
+    const $small_button = $('#yearpicker-small span').hide().filter(`[data-year="${year_for_display}"]`).show();
     const $prevbutton = $('#yearpicker-small div.nextprev.left');
     const $nextbutton = $('#yearpicker-small div.nextprev.right');
 
-    if ($small_button.is(':first-child')) $prevbutton.addClass('disabled');
-    else                                  $prevbutton.removeClass('disabled');
-    if ($small_button.is(':last-child'))  $nextbutton.addClass('disabled');
-    else                                  $nextbutton.removeClass('disabled');
+    // Prediction mode: always enable prev button, disable next button
+    if (isPredictionYear(year)) {
+        $prevbutton.removeClass('disabled');
+        $nextbutton.addClass('disabled');
+    } else {
+        // Regular year navigation
+        if ($small_button.is(':first-child')) $prevbutton.addClass('disabled');
+        else                                  $prevbutton.removeClass('disabled');
+
+        // Next button logic depends on boundary type and year
+        if (year == 2026 && CURRENT_VIEW.boundtype === 'ushouse') {
+            // At year 2026 in US House view, enable next to go to prediction mode
+            $nextbutton.removeClass('disabled');
+        } else if ((year == 2024 || year == 2026) && CURRENT_VIEW.boundtype !== 'ushouse') {
+            // At year 2024 or 2026 in state legislative views, disable next (can't go to 2026/prediction)
+            $nextbutton.addClass('disabled');
+        } else if ($small_button.is(':last-child')) {
+            // At last regular year
+            $nextbutton.addClass('disabled');
+        } else {
+            $nextbutton.removeClass('disabled');
+        }
+    }
 
     // UI update: yearpicker-big
     // remove active class from all years and add to the selected one
