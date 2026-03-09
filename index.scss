@@ -127,7 +127,8 @@ h3,
       margin-right: 4px;
       border: 1px solid rgb(149, 152, 154);
       position: relative;
-      top: 5px;
+      top: 2px;
+      vertical-align: top;
     }
     
     // Default display for narrow screens
@@ -135,6 +136,7 @@ h3,
     {
       display: inline-block;
       line-height: 1.2em;
+      max-width: 90%; /* leave room for the swatch */
 
       .caption, .bias { display: inline }
     }
@@ -143,9 +145,8 @@ h3,
     @media (min-width: 651px) {
       width: 240px;
 
-      span.swatch { top: -20px }
-
       div.content {
+        max-width: inherit; /* stop leaving room for the swatch */
         .caption, .bias { display: block }
       }
     }
