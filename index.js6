@@ -302,6 +302,9 @@ window.initLoadStartingConditions = () => {
         $('#yearpicker-future').removeClass('yearpicker-future-disabled');
     }
 
+    // Set boundary type BEFORE selectYear so that year navigation logic has access to boundtype
+    CURRENT_VIEW.boundtype = type;
+
     // ready, set, go
     selectYear(year);
     selectBoundaryType(type);
@@ -1117,6 +1120,9 @@ window.selectBoundaryType = (boundtype, options={}) => {
     const switching_from_ushouse = old_boundtype === 'ushouse' && boundtype !== 'ushouse';
     const switching_to_ushouse = old_boundtype !== 'ushouse' && boundtype === 'ushouse';
 
+    // Set boundary type BEFORE calling selectYear so button logic has correct context
+    CURRENT_VIEW.boundtype = boundtype;
+
     if (switching_from_ushouse) {
         // Switching from US House to state legislative: save future year and revert to 2024
         const current_year = CURRENT_VIEW.year;
@@ -1125,6 +1131,9 @@ window.selectBoundaryType = (boundtype, options={}) => {
             // Call selectYear to update all UI (margin-swing, yearpicker-current, etc.)
             // Use noHashUpdate since selectBoundaryType will update hash at the end
             selectYear('2024', { noHashUpdate: true, fudgeYearIfNoData: false });
+        } else {
+            // Call selectYear to update button states even if year doesn't change
+            selectYear(current_year, { noHashUpdate: true, fudgeYearIfNoData: false });
         }
         // Disable future years in yearpicker
         $('#yearpicker-future').addClass('yearpicker-future-disabled');
@@ -1135,6 +1144,9 @@ window.selectBoundaryType = (boundtype, options={}) => {
             // Use noHashUpdate since selectBoundaryType will update hash at the end
             selectYear(remembered_ushouse_year, { noHashUpdate: true, fudgeYearIfNoData: false });
             remembered_ushouse_year = null;  // Clear after restoring
+        } else {
+            // Call selectYear to update button states even if year doesn't change
+            selectYear(CURRENT_VIEW.year, { noHashUpdate: true, fudgeYearIfNoData: false });
         }
         // Enable future years in yearpicker
         $('#yearpicker-future').removeClass('yearpicker-future-disabled');
@@ -1148,7 +1160,7 @@ window.selectBoundaryType = (boundtype, options={}) => {
 
     // save to the state and refresh the map + data
     // per 169 this invokes a new year-fudging should we encounter a no-data condition
-    CURRENT_VIEW.boundtype = boundtype;
+    // (CURRENT_VIEW.boundtype already set above)
 
     options = Object.assign({  // add fudgeYearIfNoData option for this special case, but do allow overrides by the caller
         fudgeYearIfNoData: true
