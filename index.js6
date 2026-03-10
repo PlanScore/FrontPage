@@ -220,8 +220,8 @@ window.updatePredictionCaption = (swing_value) => {
     // Vote share is derived from: vote_share = 0.5 + (seat_share - 0.5 - EG) / 2
     // This ensures displayed vote share is always consistent with seat share and bias
     if (CURRENT_VIEW.nationalVoteShareDem !== undefined) {
-        const dem_vote = (CURRENT_VIEW.nationalVoteShareDem * 100).toFixed(1);
-        const rep_vote = 100 - dem_vote;
+        const dem_vote = (Math.round(CURRENT_VIEW.nationalVoteShareDem * 200) / 2).toFixed(1); // Round to nearest 0.5
+        const rep_vote = (100 - dem_vote).toFixed(1);
 
         // Format swing label using existing helper
         const swing_label = swing_value === 0 ? '0' : formatSwingValue(swing_value);
