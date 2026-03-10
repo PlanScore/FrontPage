@@ -127,7 +127,8 @@ h3,
       margin-right: 4px;
       border: 1px solid rgb(149, 152, 154);
       position: relative;
-      top: 5px;
+      top: 2px;
+      vertical-align: top;
     }
     
     // Default display for narrow screens
@@ -135,6 +136,7 @@ h3,
     {
       display: inline-block;
       line-height: 1.2em;
+      max-width: 90%; /* leave room for the swatch */
 
       .caption, .bias { display: inline }
     }
@@ -143,9 +145,8 @@ h3,
     @media (min-width: 651px) {
       width: 240px;
 
-      span.swatch { top: -5px }
-
       div.content {
+        max-width: inherit; /* stop leaving room for the swatch */
         .caption, .bias { display: block }
       }
     }
@@ -165,6 +166,7 @@ h3,
 #map {
   height: 400px;
   width: 100%;
+  margin-bottom: 10px;
   overflow: visible; /* Allow tooltip to extend beyond SVG bounds */
 
   @media screen and (max-width: $screen-sm) {
@@ -257,7 +259,7 @@ body.ushouse-selected {
     margin-top: 36px;
     margin-bottom: 36px;
     display: grid;
-    grid-template-columns: 35px 1fr 150px;
+    grid-template-columns: 35px 1fr 170px;
     grid-template-rows: 65px;
 
     #yearpicker-playbutton {
@@ -291,7 +293,13 @@ body.ushouse-selected {
       }
       a.unavailable
       {
-          display: none;
+          cursor: not-allowed;
+          path, circle {
+            stroke: #999;
+          }
+          text {
+            fill: #999;
+          }
       }
       a .hitarea {
           fill: rgba(0, 0, 0, 0);
@@ -301,6 +309,13 @@ body.ushouse-selected {
       }
       a:hover circle {
           fill: #006C90;
+      }
+      &.yearpicker-future-disabled
+      {
+        line, path, circle { stroke: #999 }
+        text { fill: #999 }
+        a { cursor: not-allowed }
+        a:hover circle { fill: white }
       }
     }
 
@@ -320,15 +335,174 @@ body.ushouse-selected {
     }
 
     #yearpicker-future {
+      text {
+        font-size: 16px;
+      }
+      a.active {
+        cursor: inherit;
+      }
       a.active text {
         fill: white;
       }
-      a .background {
-        visibility: hidden;
+      a {
+        .background {
+          visibility: hidden;
+        }
       }
-      a.active .background {
-        visibility: visible;
+      a.active {
+        .background {
+          visibility: visible;
+        }
       }
+    }
+}
+
+#margin-swing {
+  display: none; // Hidden by default
+  text-align: center;
+  margin: -5px auto -35px auto;
+  height: 40px;
+  line-height: 20px;
+
+  @media (max-width: $screen-sm) {
+    margin: 0 auto 20px auto;
+  }
+
+  &.visible {
+    display: block; // Shown when predict mode is active
+  }
+
+  * {
+    display: inline-block;
+  }
+
+  #margin-range-caption {
+    font-size: 16px;
+    white-space: nowrap;
+  }
+
+  input[type="range"] {
+    direction: rtl; // Reverse slider: left=max=+12(D), right=min=-12(R)
+    cursor: pointer;
+    position: relative;
+    top: 4px; /* Nudge slightly to match labels */
+    margin: 0 5px;
+
+    width: 300px;
+    @media (max-width: $screen-sm) { width: 200px }
+  }
+
+  input#margin-swing-range[type=range]
+  {
+    height: 20px;
+    -webkit-appearance: none;
+    background-color: #f4f5f5; /* Light gray background */
+
+    width: 300px;
+    @media (max-width: $screen-sm) { width: 200px }
+  }
+
+    input#margin-swing-range[type=range]::-webkit-slider-runnable-track
+    {
+      height: 18px;
+      cursor: pointer;
+      animate: 0.2s;
+      box-shadow: none;
+      background: #0f2c3a; /* Track background */
+      border-radius: 10px;
+      border: 0px solid #0f2c3a; /* Track background */
+
+      width: 300px;
+      @media (max-width: $screen-sm) { width: 200px }
+    }
+
+    input#margin-swing-range[type=range]:focus::-webkit-slider-runnable-track { background: #0f2c3a; /* Track background */ }
+
+    input#margin-swing-range[type=range]::-moz-range-track
+    {
+      height: 18px;
+      cursor: pointer;
+      animate: 0.2s;
+      box-shadow: none;
+      background: #0f2c3a; /* Track background */
+      border-radius: 10px;
+      border: 0px solid #0f2c3a; /* Track background */
+
+      width: 300px;
+      @media (max-width: $screen-sm) { width: 200px }
+    }
+
+    input#margin-swing-range[type=range]::-webkit-slider-thumb
+    {
+      box-shadow: none;
+      border: 2px solid #0f2c3a; /* Track background */
+      height: 18px;
+      width: 18px;
+      border-radius: 10px;
+      background: #fff; /* Thumb color */
+      cursor: pointer;
+      -webkit-appearance: none;
+    }
+
+    input#margin-swing-range[type=range]::-moz-range-thumb
+    {
+      box-shadow: none;
+      border: 2px solid #0f2c3a; /* Track background */
+      height: 14px;
+      width: 14px;
+      border-radius: 10px;
+      background: #fff; /* Thumb color */
+      cursor: pointer;
+    }
+
+    input#margin-swing-range[type=range]::-ms-track
+    {
+      height: 18px;
+      cursor: pointer;
+      animate: 0.2s;
+      background: transparent;
+      border-color: transparent;
+      color: transparent;
+
+      width: 300px;
+      @media (max-width: $screen-sm) { width: 200px }
+    }
+
+    input#margin-swing-range[type=range]::-ms-fill-lower
+    {
+      background: #0f2c3a; /* Track background */
+      border: 0px solid #0f2c3a; /* Track background */
+      border-radius: 18px;
+      box-shadow: none;
+    }
+
+    input#margin-swing-range[type=range]::-ms-fill-upper
+    {
+      background: #0f2c3a; /* Track background */
+      border: 0px solid #0f2c3a; /* Track background */
+      border-radius: 18px;
+      box-shadow: none;
+    }
+
+    input#margin-swing-range[type=range]::-ms-thumb
+    {
+      margin-top: 1px;
+      box-shadow: none;
+      border: 2px solid #0f2c3a; /* Track background */
+      height: 18px;
+      width: 18px;
+      border-radius: 10px;
+      background: #fff; /* Thumb color */
+      cursor: pointer;
+    }
+
+    input#margin-swing-range[type=range]:focus::-ms-fill-lower { background: #0f2c3a; /* Track background */ }
+
+    input#margin-swing-range[type=range]:focus::-ms-fill-upper { background: #0f2c3a; /* Track background */ }
+
+    @media (-ms-high-contrast:none),(-ms-high-contrast:active)
+    {
+      input#margin-swing-range[type=range] { height: 70px; }
     }
 }
 
