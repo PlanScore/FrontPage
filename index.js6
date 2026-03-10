@@ -285,7 +285,7 @@ window.initBoundaryPicker = () => {
 window.initLoadStartingConditions = () => {
     // analyze the #year-polytype hash to see what year + type we should load
     // provide some defaults
-    let year = PLAN_YEARS[PLAN_YEARS.length - 1];
+    let year = 'predict0';
     let type = 'ushouse';
 
     // Match: predict, predict0, predict12D, predict12R, or 4-digit years
