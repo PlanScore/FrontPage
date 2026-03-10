@@ -466,7 +466,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                 const scalesList = Object.values(realScales).sort(function (a, b) { return a - b });
                 const p90RawScale = scalesList[Math.round(scalesList.length * 0.9)];
                 const p10RawScale = scalesList[Math.round(scalesList.length * 0.1)];
-                console.log(`p10RawScale ${p10RawScale.toFixed(2)}, p90RawScale ${p90RawScale.toFixed(2)}`);
+                // console.log(`p10RawScale ${p10RawScale.toFixed(2)}, p90RawScale ${p90RawScale.toFixed(2)}`);
 
                 // Set bounds for visual scale range
                 const minScaleFactor = 0.25;
@@ -600,7 +600,6 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             let totalSeats = 0;
             let totalDemSeats = 0;
             data.forEach(function(stateData) {
-                console.log('stateData:', stateData);
                 const seats = stateData.seats;
                 const demSeats = stateData.dem_seats;
                 if (stateData.value !== MAP_NODATA_VALUE && stateData.value !== undefined && seats) {
@@ -625,11 +624,11 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
                 const voteShareDem = 0.5 + (seatShareDem - 0.5 - nationalEG) / 2;
                 // Store for use in prediction caption
                 CURRENT_VIEW.nationalVoteShareDem = voteShareDem;
-                console.log(`Calculated vote share for ${CURRENT_VIEW.year}: ${(voteShareDem*100).toFixed(1)}% D (totalSeats=${totalSeats}, totalDemSeats=${totalDemSeats.toFixed(2)})`);
+                // console.log(`Calculated vote share for ${CURRENT_VIEW.year}: ${(voteShareDem*100).toFixed(1)}% D (totalSeats=${totalSeats}, totalDemSeats=${totalDemSeats.toFixed(2)})`);
             } else {
                 // Clear if we don't have valid data
                 CURRENT_VIEW.nationalVoteShareDem = undefined;
-                console.log(`No valid vote share data for ${CURRENT_VIEW.year}: totalSeats=${totalSeats}, totalDemSeats=${totalDemSeats}`);
+                // console.log(`No valid vote share data for ${CURRENT_VIEW.year}: totalSeats=${totalSeats}, totalDemSeats=${totalDemSeats}`);
             }
 
             const biasEval = lookupBias('eg', nationalEG, CURRENT_VIEW.boundtype);
@@ -782,10 +781,10 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
 
         // Update prediction caption if we're in prediction mode and data has loaded
         if (isPredictionYear(CURRENT_VIEW.year)) {
-            console.log(`Prediction year detected in renderMapWithNewData: ${CURRENT_VIEW.year}, voteShareDem=${CURRENT_VIEW.nationalVoteShareDem}`);
+            // console.log(`Prediction year detected in renderMapWithNewData: ${CURRENT_VIEW.year}, voteShareDem=${CURRENT_VIEW.nationalVoteShareDem}`);
             if (CURRENT_VIEW.nationalVoteShareDem !== undefined) {
                 const swingValue = parseSwingSlug(CURRENT_VIEW.year);
-                console.log(`Updating prediction caption with swing value: ${swingValue}`);
+                // console.log(`Updating prediction caption with swing value: ${swingValue}`);
                 updatePredictionCaption(swingValue);
             }
         }
