@@ -227,7 +227,7 @@ window.updatePredictionCaption = (swing_value) => {
         const swing_label = swing_value === 0 ? '0' : formatSwingValue(swing_value);
 
         // Update caption text
-        const caption_text = `${dem_vote}% D / ${rep_vote}% R vote share at ${swing_label} margin swing`;
+        const caption_text = `${dem_vote}%D / ${rep_vote}%R vote share at ${swing_label} margin swing`;
         $('#margin-range-caption').text(caption_text);
     } else {
         // Fallback if data hasn't loaded yet
@@ -650,10 +650,10 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             // Calculate seat share percentages
             let seatsHtml = '';
             if (totalSeats > 0 && totalDemSeats > 0) {
-                const demPercent = Math.round((totalDemSeats / totalSeats) * 100);
-                const repPercent = 100 - demPercent;
+                const demPercent = (Math.round((totalDemSeats / totalSeats) * 200) / 2).toFixed(1); // Round to nearest 0.
+                const repPercent = (100 - demPercent).toFixed(1);
                 const label = (CURRENT_VIEW.year <= 2024) ? 'Historical' : 'Predicted';
-                seatsHtml = `${label} ${demPercent}% D / ${repPercent}% R seat share`;
+                seatsHtml = `${label} ${demPercent}%D/${repPercent}%R seat share`;
             }
             $('#ushouse-legend .seats').html(seatsHtml);
         }
