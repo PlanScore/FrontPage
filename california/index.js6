@@ -151,7 +151,7 @@ window.initMap = () => {
         scrollWheelZoom: false,
     }).fitBounds(STATE_BBOX);
 
-    L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_nolabels/{z}/{x}/{y}{r}.png', {
+    L.tileLayer('https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?key=cb1_3hom_1_36a6e8b83eb81e2de4540c37', {
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
         subdomains: 'abcd',
     }).addTo(MAP);
