@@ -145,7 +145,7 @@ window.initYearPickers = () => {
     const $picker_small = $('#yearpicker-small');
     const $year_listing = $picker_small.find('div.readout');
     PLAN_YEARS.forEach((year) => {
-        $(`<span data-year="${year}">${year == 2026 ? '2024+Remaps<sup>*</sup>' : year}</span>`).appendTo($year_listing).hide();
+        $(`<span data-year="${year}">${year == 2026 ? '2026 Outcomes' : year}</span>`).appendTo($year_listing).hide();
     });
     // Add a prediction mode entry for the small yearpicker
     $(`<span data-year="predict0">2026 Scenarios</span>`).appendTo($year_listing).hide();
@@ -547,7 +547,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
     });
 
     function updateTooltipContent(stateInfo) {
-        const isPrediction = (CURRENT_VIEW.year == 2026 || isPredictionYear(CURRENT_VIEW.year)) && stateInfo.url;
+        const isPrediction = isPredictionYear(CURRENT_VIEW.year) && stateInfo.url;
 
         // Update tooltip content with state data
         $('#state-tooltip .state-name').text(stateInfo.name);
@@ -567,14 +567,12 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
         const plan_or_election = 'plan';
         const stateslug = stateInfo.name.toLowerCase().replace(/\W/g, '_');
         const currview = CURRENT_VIEW.boundtype;
-        const moreinfourl = stateInfo.url ? stateInfo.url : `/${stateslug}/#!${CURRENT_VIEW.year}-${plan_or_election}-${currview}`;
+        const moreinfourl = (isPrediction && stateInfo.url) ? stateInfo.url : `/${stateslug}/#!${CURRENT_VIEW.year}-${plan_or_election}-${currview}`;
         var linkHtml = `${CURRENT_VIEW.year} Plan`;
         if (isPredictionYear(CURRENT_VIEW.year)) {
             linkHtml = `${formatSwingValue(parseSwingSlug(CURRENT_VIEW.year))} Prediction`;
         } else if (isPrediction) {
-            linkHtml = '2024+Remaps<sup>*</sup> Plan';
-        } else if (CURRENT_VIEW.year == 2026) {
-            linkHtml = '2024 Plan';
+            linkHtml = '2026 Plan';
         }
         $('#state-tooltip .link').attr('href', moreinfourl).html(linkHtml);
 
@@ -639,9 +637,6 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             if (isPredictionYear(CURRENT_VIEW.year)) {
                 captionHtml = `Total ${formatSwingValue(parseSwingSlug(CURRENT_VIEW.year))} Scenario Bias:`;
                 turnoutNote = '<sup>†</sup>';
-            } else if(CURRENT_VIEW.year == 2026) {
-                captionHtml = `Total 2024+Remaps<sup>*</sup> Bias:`;
-                turnoutNote = '<sup>†</sup>';
             }
             $('#ushouse-legend .swatch').css({ 'background': biasEval.color });
             $('#ushouse-legend .caption').html(captionHtml);
@@ -652,7 +647,7 @@ window.loadDataForSelectedBoundaryAndYear = (options={}) => {
             if (totalSeats > 0 && totalDemSeats > 0) {
                 const demPercent = (Math.round((totalDemSeats / totalSeats) * 200) / 2).toFixed(1); // Round to nearest 0.
                 const repPercent = (100 - demPercent).toFixed(1);
-                const label = (CURRENT_VIEW.year <= 2024) ? 'Historical' : 'Predicted';
+                const label = (CURRENT_VIEW.year <= 2026) ? 'Historical' : 'Predicted';
                 seatsHtml = `${label} ${demPercent}%D/${repPercent}%R seat share`;
             }
             $('#ushouse-legend .seats').html(seatsHtml);
