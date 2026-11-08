@@ -43,10 +43,10 @@ STATE_ABBREVS = {
 #   - D+4 margin swing = +2 percentage point vote swing (0.02 passed to API)
 #   - R+4 margin swing = -2 percentage point vote swing (-0.02 passed to API)
 ZERO_HEADER = 'No-Swing'
-LINK_HASH_PARTS = ['12R', '11R', '10R', '9R', '8R', '7R', '6R', '5R', '4R', '3R', '2R', '1R',
-                 '0', '1D', '2D', '3D', '4D', '5D', '6D', '7D', '8D', '9D', '10D', '11D', '12D']
-SHIFT_HEADERS = ['R+12', 'R+11', 'R+10', 'R+9', 'R+8', 'R+7', 'R+6', 'R+5', 'R+4', 'R+3', 'R+2', 'R+1',
-                 ZERO_HEADER, 'D+1', 'D+2', 'D+3', 'D+4', 'D+5', 'D+6', 'D+7', 'D+8', 'D+9', 'D+10', 'D+11', 'D+12']
+LINK_HASH_PARTS = ['0', '1D', '2D', '3D', '4D', '5D', '6D', '7D', '8D', '9D', '10D', '11D', '12D',
+                   '13D', '14D', '15D', '16D', '17D', '18D', '19D', '20D', '21D', '22D', '23D', '24D']
+SHIFT_HEADERS = [ZERO_HEADER, 'D+1', 'D+2', 'D+3', 'D+4', 'D+5', 'D+6', 'D+7', 'D+8', 'D+9', 'D+10', 'D+11', 'D+12',
+                 'D+13', 'D+14', 'D+15', 'D+16', 'D+17', 'D+18', 'D+19', 'D+20', 'D+21', 'D+22', 'D+23', 'D+24']
 
 @dataclasses.dataclass
 class CloneTask:
@@ -700,8 +700,12 @@ def clone_or_reuse_plan(api_key: str, plan_id: str, base_plan_url: str, existing
     # Clone the plan with merged metadata
     return clone_plan_with_swings(api_key, plan_id, description, national_url, vote_swings, base_library_metadata)
 
-def build_state_swings(service, states: dict, district_swings: dict, api_key: str, existing_plan_urls: dict = {}) -> list:
-    """Build state swings by cloning plans with vote swings, using parallelism. Reuses existing plan URLs if they're new enough."""
+def build_state_swings(service, states: dict, district_swings: dict, api_key: str, existing_plan_urls: dict = {}, filter_states: set = None) -> list:
+    """Build state swings by cloning plans with vote swings, using parallelism. Reuses existing plan URLs if they're new enough.
+
+    If filter_states is set, only create clone tasks for those states;
+    other states still appear in the output with blank URL cells.
+    """
     logging.debug("Building state swings with cloned plans...")
 
     # Prepare all clone tasks
@@ -719,6 +723,19 @@ def build_state_swings(service, states: dict, district_swings: dict, api_key: st
         state_name = state_data.get('State Name', '')
         plan_name = state_data.get('Plan Name', '')
 
+        # Build row with state info (all states get a row)
+        row = {
+            'state_name': state_name,
+            'plan_name': plan_name,
+            'plan_urls': {}
+        }
+        state_rows.append(row)
+
+        # Skip clone tasks for states not in the filter
+        if filter_states and abbrev not in filter_states:
+            logging.debug(f"Leaving {abbrev} blank (not in --states filter)")
+            continue
+
         # Extract plan ID from URL
         plan_match = re.match(PLAN_URL_PAT_STR, plan_url)
         if not plan_match:
@@ -733,13 +750,6 @@ def build_state_swings(service, states: dict, district_swings: dict, api_key: st
             logging.warning(f"No district swings found for {abbrev}")
             continue
 
-        # Build row with state info
-        row = {
-            'state_name': state_name,
-            'plan_name': plan_name,
-            'plan_urls': {}
-        }
-
         # Create clone task for each scenario
         for link_hash_part, header in zip(LINK_HASH_PARTS, SHIFT_HEADERS):
             vote_swings = state_swings.get(header, [])
@@ -750,7 +760,7 @@ def build_state_swings(service, states: dict, district_swings: dict, api_key: st
             # Get existing URL if available
             existing_url = existing_plan_urls.get(abbrev, {}).get(header, '').strip()
 
-            # Format description like "Illinois 119th Congress Districts (National R+12 Environment)"
+            # Format description like "Illinois 119th Congress Districts (National D+12 Environment)"
             description = f"{plan_name} (National {header} Environment)"
 
             # Generate a link to the national map
@@ -767,8 +777,6 @@ def build_state_swings(service, states: dict, district_swings: dict, api_key: st
                 state_abbrev=abbrev,
                 header=header
             ))
-
-        state_rows.append(row)
 
     logging.debug(f"Prepared {len(clone_tasks)} clone tasks for {len(state_rows)} states")
 
@@ -821,7 +829,7 @@ def build_state_swings(service, states: dict, district_swings: dict, api_key: st
     logging.debug(f"Built state swings for {len(state_rows)} states")
     return state_rows
 
-def write_state_swings_worksheet(service, rows: list):
+def write_state_swings_worksheet(service, rows: list, worksheet_prefix: str = ''):
     """Write state swings to Google Sheets"""
     logging.debug("Writing state swings to Google Sheets...")
 
@@ -843,7 +851,7 @@ def write_state_swings_worksheet(service, rows: list):
 
     # Create worksheet name with today's date: "State Swings YYYY-MM-DD"
     today = datetime.date.today()
-    worksheet_name = f"State Swings {today.strftime('%Y-%m-%d')}"
+    worksheet_name = f"{worksheet_prefix}State Swings {today.strftime('%Y-%m-%d')}"
 
     # Delete existing worksheet if it exists
     delete_worksheet_if_exists(service, worksheet_name)
@@ -1013,13 +1021,13 @@ def calculate_all_district_shifts(rows: list) -> dict:
 
     # Calculate shifts for all districts (flat list indexed by district)
     all_shifts = {}
-    for margin_swing in range(-12, 13):  # -12 to +12 inclusive (margin swing in percentage points)
+    for margin_swing in range(0, 25):  # 0 to +24 inclusive (margin swing in percentage points)
         # Convert margin swing to vote swing: margin swing = 2 × vote swing
         # E.g., D+12 margin swing → +6 percentage point vote swing
         vote_swing = margin_swing / 2.0  # Vote swing in percentage points
         target_diff = vote_swing / 100.0  # Convert to decimal for API (e.g., 0.06 for 6pp)
 
-        header = ZERO_HEADER if margin_swing == 0 else f'D+{margin_swing}' if margin_swing > 0 else f'R+{abs(margin_swing)}'
+        header = ZERO_HEADER if margin_swing == 0 else f'D+{margin_swing}'
         shifts = calculate_district_shifts(rows, target_diff)
         all_shifts[header] = shifts
         logging.debug(f"Calculated shifts for {header} (margin={margin_swing}pp, vote={vote_swing}pp, target={target_diff:.3f})")
@@ -1037,7 +1045,7 @@ def calculate_all_district_shifts(rows: list) -> dict:
     logging.debug(f"Calculated district shifts for {len(state_shifts)} states")
     return state_shifts
 
-def write_predictions_worksheet(service, rows: list, shift_data: dict):
+def write_predictions_worksheet(service, rows: list, shift_data: dict, worksheet_prefix: str = ''):
     """Write district predictions to Google Sheets using pre-calculated shift data"""
     logging.debug("Writing predictions to Google Sheets...")
 
@@ -1089,7 +1097,7 @@ def write_predictions_worksheet(service, rows: list, shift_data: dict):
 
     # Create worksheet name with today's date: "District Swings YYYY-MM-DD"
     today = datetime.date.today()
-    worksheet_name = f"District Swings {today.strftime('%Y-%m-%d')}"
+    worksheet_name = f"{worksheet_prefix}District Swings {today.strftime('%Y-%m-%d')}"
 
     # Delete existing worksheet if it exists
     delete_worksheet_if_exists(service, worksheet_name)
@@ -1121,14 +1129,17 @@ def write_predictions_worksheet(service, rows: list, shift_data: dict):
         logging.error(f"Error writing to Google Sheets: {e}")
         raise
 
-def main(api_key: str, credentials_file: str):
+def main(api_key: str, credentials_file: str, filter_states: set = None):
     # Load Google Sheets service
     service = load_google_service(credentials_file)
 
     # Load states data
     states = load_states_from_google(service)
 
-    # Build district predictions
+    # Determine worksheet name prefix for test mode
+    worksheet_prefix = "TEST " if filter_states else ""
+
+    # Build district predictions (all states, for shift calculation)
     rows = build_district_predictions(states)
     logging.info(f"Total districts: {len(rows)}")
 
@@ -1146,18 +1157,20 @@ def main(api_key: str, credentials_file: str):
 
     # Build and write State Swings worksheet
     logging.info("Building State Swings worksheet...")
-    state_rows = build_state_swings(service, states, district_swings, api_key, existing_plan_urls)
-    write_state_swings_worksheet(service, state_rows)
+    state_rows = build_state_swings(service, states, district_swings, api_key, existing_plan_urls, filter_states)
+    write_state_swings_worksheet(service, state_rows, worksheet_prefix)
 
     # Write District Swings worksheet
-    write_predictions_worksheet(service, rows, district_swings)
+    write_predictions_worksheet(service, rows, district_swings, worksheet_prefix)
 
     logging.info("Done!")
 
 parser = argparse.ArgumentParser()
 parser.add_argument("api_key", help="PlanScore API key (empty string for dummy mode)")
 parser.add_argument("credentials_file", help="Path to Google service account credentials JSON file")
+parser.add_argument("--states", help="Comma-separated state abbreviations to process (others get blank cells)")
 
 if __name__ == "__main__":
     args = parser.parse_args()
-    exit(main(args.api_key, args.credentials_file))
+    filter_states = set(args.states.split(',')) if args.states else None
+    exit(main(args.api_key, args.credentials_file, filter_states))
