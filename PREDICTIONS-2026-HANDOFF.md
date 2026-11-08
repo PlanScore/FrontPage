@@ -240,11 +240,8 @@ districts total) before running against all 50.
 2. `calculate_all_district_shifts()` loop changed from `range(-12, 13)` to
    `range(0, 25)`
 
-**Test scaffolding (committed, remove after validation):**
-
-3. `--states` argument: comma-separated state abbreviations. Non-filtered
-   states still appear in all output with blank URL cells (not skipped).
-4. `--states` triggers "TEST " prefix on worksheet names.
+*(Test scaffolding `--states` and `--sheet-prefix` were added for
+validation, then removed after Step 5.)*
 
 ### Step 2: Run the Vote Swings Pipeline (New England Only) — DONE
 
@@ -309,26 +306,32 @@ cp WEBSITE_OUTPUT/data/bias_ushouse-elections.csv /tmp/test-elections.csv
 - Non-NE states show NaN at D+13–D+24 (expected: blank computed fields)
 - All states show data at D+0–D+12 (original data preserved)
 
-### Step 5: Full 50-State Run
+### Step 5: Full 50-State Run — DONE
 
-When ready:
-1. Run vote swings pipeline without `--states` (will create ~600 new D+13–D+24
-   clones; D+0–D+12 reused). Omit `--states` to get a production "State Swings"
-   worksheet instead of "TEST".
-2. Run data files pipeline without `--states`/`--sheet-prefix` against the
-   real elections CSV.
-3. Delete "TEST State Swings 2026-11-07" and "TEST District Swings 2026-11-07"
-   worksheets from the Google Sheet.
-4. Optionally remove `--states`/`--sheet-prefix` scaffolding from both scripts
-   (or keep for future partial reruns).
-5. Commit updated elections CSV.
+```bash
+.venv/bin/python update-ushouse-vote-swings.py \
+    P9GEnZU9 planscore-317316-d79165b0b57a.json
+.venv/bin/python update-ushouse-data-files.py \
+    planscore-317316-d79165b0b57a.json \
+    WEBSITE_OUTPUT/data/bias_ushouse-elections.csv
+```
 
-## Open Questions
+**Results:**
+- 650 existing plans reused (D+0–D+12 × 50 states, from September sheet)
+- 600 new plans cloned (D+13–D+24 × 50 states)
+- All 50 states × 25 scenarios = 1250 predict rows fully populated
+- No logit solver errors at any swing level
+- Google Sheet: "State Swings 2026-11-07" and "District Swings 2026-11-07"
+- TEST worksheets deleted
+- `--states` and `--sheet-prefix` scaffolding removed from both scripts
+- Default slider position changed from predict0 to predict12D
+- Elections CSV and all code changes committed
 
-1. **Slider labels**: Currently "D+24" at left and "2024 Baseline" at right.
-   Acceptable, or different wording?
-2. **Midpoint marker**: Show "≈ 2026 Actual" label at the D+12 position?
-3. **"2026 Scenarios" label**: Keep as-is, or rename to reflect the new range?
-4. **`formatSwingValue()` labels**: Currently shows "No-Swing" at 0 and
-   "D+N" for all others. May want "2024 Baseline" at 0 and "D+12 (≈ 2026)"
-   at 12.
+## Resolved Questions
+
+1. **Slider labels**: "D+24" at left and "2024 Baseline" at right — accepted.
+2. **Midpoint marker**: Not needed for now.
+3. **"2026 Scenarios" label**: Kept as-is.
+4. **`formatSwingValue()` labels**: Kept as-is ("No-Swing" at 0, "D+N" for
+   others). No special annotation at D+12.
+5. **Default slider position**: Changed to D+12 (predict12D).
