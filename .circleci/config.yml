@@ -4,7 +4,7 @@ jobs:
   # Run tests.
   Test:
     docker:
-      - image: cimg/node:lts # lts tracks the active LTS release https://nodejs.org/en/about/releases/
+      - image: cimg/node:16.20 # pinned: node-sass 6.x requires Node 16
     working_directory: ~/repo
     steps:
       - checkout
