@@ -265,80 +265,70 @@ districts total) before running against all 50.
   all shift columns filled (pure math, no API dependency)
 - Exit code 0
 
-### Step 3: Modify `update-ushouse-data-files.py`
+### Step 3: Modify `update-ushouse-data-files.py` — DONE
 
-**Changes needed:**
+**Changes (committed):**
 
-1. Add `--states` argument, same pattern as above. When set, only process
-   predict* rows for matching states. Also filter which cycle values to
-   process — skip predict1R through predict12R, process predict0 through
-   predict24D.
+1. `--sheet-prefix` argument: makes `load_google_state_swings()` search for
+   worksheets with the given prefix (e.g. `--sheet-prefix "TEST "` reads
+   "TEST State Swings" sheets).
+2. `--states` argument: limits which predict rows get API-fetched; others
+   pass through unchanged.
+3. CSV row swap logic in `main()`: removes predict*R rows, adds
+   predict13D–predict24D placeholder rows (templated from predict0), then
+   processes all rows through `process_row()`.
 
-2. The script reads the most recent "State Swings" worksheet, but for the
-   test it needs to read the "TEST State Swings 2026-11-07" worksheet. Add
-   a `--test` flag or `--sheet-prefix` argument that makes
-   `load_google_state_swings()` look for "TEST State Swings" worksheets
-   instead of "State Swings" worksheets.
+**Test run:**
+```bash
+cp WEBSITE_OUTPUT/data/bias_ushouse-elections.csv /tmp/test-elections.csv
+.venv/bin/python update-ushouse-data-files.py \
+    planscore-317316-d79165b0b57a.json \
+    /tmp/test-elections.csv \
+    --sheet-prefix "TEST " --states CT,ME,MA,NH,RI,VT
+```
 
-3. The CSV needs predict13D–predict24D rows to exist before `process_row()`
-   can update them. Two options:
-   - **Pre-seed**: Before running, add placeholder rows to the CSV for the
-     new cycles (copy predict12D rows, change cycle to predict13D–predict24D,
-     blank out the computed fields)
-   - **Create on the fly**: Modify the script to insert new rows when it
-     encounters a cycle in the State Swings sheet that doesn't exist in the
-     CSV yet
+**Results:**
+- Read 25 URLs for each of 6 NE states from "TEST State Swings 2026-11-07"
+- Removed 600 R-side predict rows, added 600 D-side predict rows
+- NE states: EG, dem_seats, URLs populated for all 25 cycles
+- Non-NE states: predict0–predict12D kept from original, predict13D–24D blank
+- No predict*R rows remain
 
-   Pre-seeding is simpler and avoids modifying production logic.
+### Step 4: Test Frontend with New England Data — DONE
 
-4. Run against a **copy** of the elections CSV to avoid touching production data:
-   ```bash
-   cp WEBSITE_OUTPUT/data/bias_ushouse-elections.csv /tmp/test-elections.csv
-   # Pre-seed predict13D–predict24D rows for NE states in the copy
-   .venv/bin/python update-ushouse-data-files.py \
-       credentials.json \
-       /tmp/test-elections.csv \
-       --states CT,ME,MA,NH,RI,VT \
-       --sheet-prefix "TEST"
-   ```
+**Changes (committed):**
 
-**What to verify:**
-- predict0 through predict12D rows for NE states have URLs matching the
-  "TEST State Swings" worksheet (reused plans)
-- predict13D through predict24D rows have new URLs from the cloned plans
-- EG, dem_seats values are populated and reasonable
-- No predict1R through predict12R rows remain for NE states
+`index.src.html` slider: `min="0" max="24" step="1" value="12"`, labels
+"D+24" (left) and "2024 Baseline" (right).
 
-### Step 4: Test Frontend with New England Data
+**Results:**
+- Slider range 0–24 works, URL hash navigation works (predict24D no longer
+  snaps back to predict12D — was caused by browser clamping slider value to
+  old max="12")
+- NE states show data at all 25 cycles
+- Non-NE states show NaN at D+13–D+24 (expected: blank computed fields)
+- All states show data at D+0–D+12 (original data preserved)
 
-After Step 3, the test CSV has 0–24 data for NE states but still has ±12
-data for all other states. To test the slider:
+### Step 5: Full 50-State Run
 
-1. Copy the test CSV into WEBSITE_OUTPUT/data/ (backing up the original)
-2. Make the `index.src.html` slider changes: `min="0" max="24" value="12"`
-3. Make the `index.js6` `formatSwingValue()` label changes
-4. Load the site in a browser, navigate to 2026 Scenarios
-5. Drag slider to 0 (predict0) — should show data for all states
-6. Drag slider to 12 (predict12D) — should show data for all states
-7. Drag slider to 24 (predict24D) — NE states should show data; other
-   states will show nothing (no predict24D rows yet)
-8. Click a NE state tooltip — should link to the cloned plan on PlanScore
-9. Click the plan link — PlanScore plan page should load and show the plan
-   with D+24 vote swings applied
-
-### Step 5: Clean Up and Full Run
-
-After validation:
-1. Remove `--states` and `--sheet-prefix` / test prefix scaffolding
-2. Delete "TEST State Swings" and "TEST District Swings" worksheets
-3. Run the full pipeline for all 50 states
-4. Commit the permanent changes
+When ready:
+1. Run vote swings pipeline without `--states` (will create ~600 new D+13–D+24
+   clones; D+0–D+12 reused). Omit `--states` to get a production "State Swings"
+   worksheet instead of "TEST".
+2. Run data files pipeline without `--states`/`--sheet-prefix` against the
+   real elections CSV.
+3. Delete "TEST State Swings 2026-11-07" and "TEST District Swings 2026-11-07"
+   worksheets from the Google Sheet.
+4. Optionally remove `--states`/`--sheet-prefix` scaffolding from both scripts
+   (or keep for future partial reruns).
+5. Commit updated elections CSV.
 
 ## Open Questions
 
-1. **Slider labels**: "2024 Baseline" at 0 and "D+24" at 24? Or something else?
-2. **Default position**: Land on D+12 (≈ 2026) or D+0 (2024 baseline)?
-3. **Midpoint marker**: Show "≈ 2026 Actual" label at the D+12 position?
-4. **D+24 feasibility**: Will the logit shift solver handle 0.12 target_diff
-   for all 50 states? Need to test with New England first.
-5. **"2026 Scenarios" label**: Keep as-is, or rename to reflect the new range?
+1. **Slider labels**: Currently "D+24" at left and "2024 Baseline" at right.
+   Acceptable, or different wording?
+2. **Midpoint marker**: Show "≈ 2026 Actual" label at the D+12 position?
+3. **"2026 Scenarios" label**: Keep as-is, or rename to reflect the new range?
+4. **`formatSwingValue()` labels**: Currently shows "No-Swing" at 0 and
+   "D+N" for all others. May want "2024 Baseline" at 0 and "D+12 (≈ 2026)"
+   at 12.
