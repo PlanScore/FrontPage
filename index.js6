@@ -153,8 +153,8 @@ window.initYearPickers = () => {
     $picker_small.on('click', 'div.nextprev.right', function () {
         // Handle transition from 2026 to prediction mode in US House view
         if (CURRENT_VIEW.year == 2026 && CURRENT_VIEW.boundtype === 'ushouse') {
-            // Restore the remembered prediction year, or default to predict0
-            const year_to_select = remembered_prediction_year || 'predict0';
+            // Restore the remembered prediction year, or default to predict12D
+            const year_to_select = remembered_prediction_year || 'predict12D';
             selectYear(year_to_select);
             logToGoogleAnalytics('yearselected', year_to_select);
             return;

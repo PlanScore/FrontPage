@@ -700,12 +700,8 @@ def clone_or_reuse_plan(api_key: str, plan_id: str, base_plan_url: str, existing
     # Clone the plan with merged metadata
     return clone_plan_with_swings(api_key, plan_id, description, national_url, vote_swings, base_library_metadata)
 
-def build_state_swings(service, states: dict, district_swings: dict, api_key: str, existing_plan_urls: dict = {}, filter_states: set = None) -> list:
-    """Build state swings by cloning plans with vote swings, using parallelism. Reuses existing plan URLs if they're new enough.
-
-    If filter_states is set, only create clone tasks for those states;
-    other states still appear in the output with blank URL cells.
-    """
+def build_state_swings(service, states: dict, district_swings: dict, api_key: str, existing_plan_urls: dict = {}) -> list:
+    """Build state swings by cloning plans with vote swings, using parallelism. Reuses existing plan URLs if they're new enough."""
     logging.debug("Building state swings with cloned plans...")
 
     # Prepare all clone tasks
@@ -730,11 +726,6 @@ def build_state_swings(service, states: dict, district_swings: dict, api_key: st
             'plan_urls': {}
         }
         state_rows.append(row)
-
-        # Skip clone tasks for states not in the filter
-        if filter_states and abbrev not in filter_states:
-            logging.debug(f"Leaving {abbrev} blank (not in --states filter)")
-            continue
 
         # Extract plan ID from URL
         plan_match = re.match(PLAN_URL_PAT_STR, plan_url)
@@ -829,7 +820,7 @@ def build_state_swings(service, states: dict, district_swings: dict, api_key: st
     logging.debug(f"Built state swings for {len(state_rows)} states")
     return state_rows
 
-def write_state_swings_worksheet(service, rows: list, worksheet_prefix: str = ''):
+def write_state_swings_worksheet(service, rows: list):
     """Write state swings to Google Sheets"""
     logging.debug("Writing state swings to Google Sheets...")
 
@@ -851,14 +842,14 @@ def write_state_swings_worksheet(service, rows: list, worksheet_prefix: str = ''
 
     # Create worksheet name with today's date: "State Swings YYYY-MM-DD"
     today = datetime.date.today()
-    worksheet_name = f"{worksheet_prefix}State Swings {today.strftime('%Y-%m-%d')}"
+    worksheet_name = f"State Swings {today.strftime('%Y-%m-%d')}"
 
     # Delete existing worksheet if it exists
     delete_worksheet_if_exists(service, worksheet_name)
 
     # Create the worksheet with exact dimensions
-    # 51 rows (1 header + 50 states), 26 columns (2 base + 24 scenarios)
-    logging.debug(f"Creating worksheet: {worksheet_name} (51 rows, 26 columns)")
+    # 51 rows (1 header + 50 states), 27 columns (2 base + 25 scenarios)
+    logging.debug(f"Creating worksheet: {worksheet_name} (51 rows, 27 columns)")
 
     body = {
         'requests': [{
@@ -1045,7 +1036,7 @@ def calculate_all_district_shifts(rows: list) -> dict:
     logging.debug(f"Calculated district shifts for {len(state_shifts)} states")
     return state_shifts
 
-def write_predictions_worksheet(service, rows: list, shift_data: dict, worksheet_prefix: str = ''):
+def write_predictions_worksheet(service, rows: list, shift_data: dict):
     """Write district predictions to Google Sheets using pre-calculated shift data"""
     logging.debug("Writing predictions to Google Sheets...")
 
@@ -1097,7 +1088,7 @@ def write_predictions_worksheet(service, rows: list, shift_data: dict, worksheet
 
     # Create worksheet name with today's date: "District Swings YYYY-MM-DD"
     today = datetime.date.today()
-    worksheet_name = f"{worksheet_prefix}District Swings {today.strftime('%Y-%m-%d')}"
+    worksheet_name = f"District Swings {today.strftime('%Y-%m-%d')}"
 
     # Delete existing worksheet if it exists
     delete_worksheet_if_exists(service, worksheet_name)
@@ -1129,15 +1120,12 @@ def write_predictions_worksheet(service, rows: list, shift_data: dict, worksheet
         logging.error(f"Error writing to Google Sheets: {e}")
         raise
 
-def main(api_key: str, credentials_file: str, filter_states: set = None):
+def main(api_key: str, credentials_file: str):
     # Load Google Sheets service
     service = load_google_service(credentials_file)
 
     # Load states data
     states = load_states_from_google(service)
-
-    # Determine worksheet name prefix for test mode
-    worksheet_prefix = "TEST " if filter_states else ""
 
     # Build district predictions (all states, for shift calculation)
     rows = build_district_predictions(states)
@@ -1157,20 +1145,18 @@ def main(api_key: str, credentials_file: str, filter_states: set = None):
 
     # Build and write State Swings worksheet
     logging.info("Building State Swings worksheet...")
-    state_rows = build_state_swings(service, states, district_swings, api_key, existing_plan_urls, filter_states)
-    write_state_swings_worksheet(service, state_rows, worksheet_prefix)
+    state_rows = build_state_swings(service, states, district_swings, api_key, existing_plan_urls)
+    write_state_swings_worksheet(service, state_rows)
 
     # Write District Swings worksheet
-    write_predictions_worksheet(service, rows, district_swings, worksheet_prefix)
+    write_predictions_worksheet(service, rows, district_swings)
 
     logging.info("Done!")
 
 parser = argparse.ArgumentParser()
 parser.add_argument("api_key", help="PlanScore API key (empty string for dummy mode)")
 parser.add_argument("credentials_file", help="Path to Google service account credentials JSON file")
-parser.add_argument("--states", help="Comma-separated state abbreviations to process (others get blank cells)")
 
 if __name__ == "__main__":
     args = parser.parse_args()
-    filter_states = set(args.states.split(',')) if args.states else None
-    exit(main(args.api_key, args.credentials_file, filter_states))
+    exit(main(args.api_key, args.credentials_file))

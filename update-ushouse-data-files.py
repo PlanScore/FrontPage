@@ -88,14 +88,14 @@ def load_google_states(credentials_file: str) -> GdocsStates:
 
     return GdocsStates(states, service)
 
-def load_google_state_swings(service: typing.Any, sheet_prefix: str = '') -> dict:
+def load_google_state_swings(service: typing.Any) -> dict:
     """Load most recent State Swings worksheet data"""
     # Get all sheets in the spreadsheet
     spreadsheet = service.spreadsheets().get(spreadsheetId=SPREADSHEET_ID).execute()
     sheets = spreadsheet.get('sheets', [])
 
     # Find all State Swings worksheets
-    search_prefix = f'{sheet_prefix}State Swings '
+    search_prefix = 'State Swings '
     swings_sheets = []
     for sheet in sheets:
         title = sheet['properties']['title']
@@ -228,7 +228,7 @@ def planscore2election(plan_url: str, row: dict) -> typing.Optional[Election]:
         districts_json,
     )
 
-def process_row(index: int, row: dict, gdocs: GdocsStates, state_swings: dict, state_2024_data: dict, filter_states: set = None) -> tuple[int, Election]:
+def process_row(index: int, row: dict, gdocs: GdocsStates, state_swings: dict, state_2024_data: dict) -> tuple[int, Election]:
     """Process a single row and return (index, Election) tuple"""
     cycle = row.get("cycle")
 
@@ -265,10 +265,6 @@ def process_row(index: int, row: dict, gdocs: GdocsStates, state_swings: dict, s
         # For predict* rows, check State Swings worksheet
         stateabrev = row.get("stateabrev")
 
-        # Skip API fetches for states not in the filter
-        if filter_states and stateabrev not in filter_states:
-            return (index, Election(*(row.get(f, '') for f in ELECTION_FIELDS)))
-
         column_name = get_state_swings_column_name(cycle)
 
         if column_name and stateabrev in state_swings:
@@ -293,7 +289,7 @@ def process_row(index: int, row: dict, gdocs: GdocsStates, state_swings: dict, s
         # Not a 2026 or predict cycle, keep row as-is
         return (index, Election(*(row.get(f, '') for f in ELECTION_FIELDS)))
 
-def main(credentials_file: str, filename: str, sheet_prefix: str = '', filter_states: set = None):
+def main(credentials_file: str, filename: str):
     # Load Google Sheets states data
     logging.debug("Loading Google Sheets states data...")
     gdocs = load_google_states(credentials_file)
@@ -301,7 +297,7 @@ def main(credentials_file: str, filename: str, sheet_prefix: str = '', filter_st
 
     # Load State Swings data
     logging.debug("Loading State Swings data...")
-    state_swings = load_google_state_swings(gdocs.service, sheet_prefix)
+    state_swings = load_google_state_swings(gdocs.service)
     logging.debug(f"Loaded {len(state_swings)} states from State Swings")
 
     with open(filename, "r") as file1:
@@ -373,7 +369,7 @@ def main(credentials_file: str, filename: str, sheet_prefix: str = '', filter_st
     with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
         # Submit all rows with their indices
         futures = [
-            executor.submit(process_row, index, row, gdocs, state_swings, state_2024_data, filter_states)
+            executor.submit(process_row, index, row, gdocs, state_swings, state_2024_data)
             for index, row in enumerate(rows)
         ]
 
@@ -399,10 +395,7 @@ def main(credentials_file: str, filename: str, sheet_prefix: str = '', filter_st
 parser = argparse.ArgumentParser()
 parser.add_argument("credentials_file")
 parser.add_argument("filename")
-parser.add_argument("--sheet-prefix", default='', help="Prefix for State Swings worksheet name (e.g. 'TEST ')")
-parser.add_argument("--states", help="Comma-separated state abbreviations to process (others pass through)")
 
 if __name__ == "__main__":
     args = parser.parse_args()
-    filter_states = set(args.states.split(',')) if args.states else None
-    exit(main(args.credentials_file, args.filename, args.sheet_prefix, filter_states))
+    exit(main(args.credentials_file, args.filename))
