@@ -95,12 +95,13 @@ def load_google_state_swings(service: typing.Any) -> dict:
     sheets = spreadsheet.get('sheets', [])
 
     # Find all State Swings worksheets
+    search_prefix = 'State Swings '
     swings_sheets = []
     for sheet in sheets:
         title = sheet['properties']['title']
-        if title.startswith('State Swings '):
+        if title.startswith(search_prefix):
             # Extract date from title like "State Swings 2026-01-17"
-            date_str = title.replace('State Swings ', '')
+            date_str = title.replace(search_prefix, '')
             swings_sheets.append((date_str, title))
 
     if not swings_sheets:
@@ -180,7 +181,16 @@ def planscore2election(plan_url: str, row: dict) -> typing.Optional[Election]:
     logging.debug(f"Processing plan: {plan_url}")
     plan_bucket = STACK_BUCKETS[plan_match.group("stack")]
     index_url = INDEX_URL_FMT.format(bucket=plan_bucket, id=plan_match.group("id"))
-    index_data = json.load(urllib.request.urlopen(index_url))
+    for attempt in range(3):
+        try:
+            index_data = json.load(urllib.request.urlopen(index_url, timeout=5))
+        except:
+            if attempt == 2:
+                raise
+            else:
+                continue
+        else:
+            break
 
     districts = [
         District(
@@ -254,6 +264,7 @@ def process_row(index: int, row: dict, gdocs: GdocsStates, state_swings: dict, s
     elif cycle and cycle.startswith("predict"):
         # For predict* rows, check State Swings worksheet
         stateabrev = row.get("stateabrev")
+
         column_name = get_state_swings_column_name(cycle)
 
         if column_name and stateabrev in state_swings:
