@@ -303,52 +303,6 @@ def main(credentials_file: str, filename: str):
     with open(filename, "r") as file1:
         rows = list(csv.DictReader(file1))
 
-    # Swap R-side predict rows for D+13–D+24 rows: remove predict*R,
-    # add predict13D–predict24D with blank computed fields
-    r_side_cycles = {f'predict{n}R' for n in range(1, 13)}
-    new_d_cycles = [f'predict{n}D' for n in range(13, 25)]
-    existing_d_cycles = {r['cycle'] for r in rows}
-
-    # Collect predict0 rows as templates for new cycles (seats, newplan)
-    predict0_by_state = {
-        r['stateabrev']: r for r in rows if r['cycle'] == 'predict0'
-    }
-    # Ordered list of states from predict0 rows
-    predict0_states = [r['stateabrev'] for r in rows if r['cycle'] == 'predict0']
-
-    # Remove R-side rows
-    kept_rows = [r for r in rows if r['cycle'] not in r_side_cycles]
-    removed_count = len(rows) - len(kept_rows)
-    logging.info(f"Removed {removed_count} R-side predict rows")
-
-    # Add new D-side rows if they don't already exist
-    new_rows = []
-    for cycle in new_d_cycles:
-        if cycle not in existing_d_cycles:
-            for state in predict0_states:
-                template = predict0_by_state[state]
-                new_rows.append({
-                    'cycle': cycle,
-                    'stateabrev': state,
-                    'newplan': template['newplan'],
-                    'EG': '',
-                    'seats': template['seats'],
-                    'dem_seats': '',
-                    'url': '',
-                    'districts': '',
-                })
-
-    # Insert new rows after existing predict rows
-    if new_rows:
-        predict_end = max(
-            i for i, r in enumerate(kept_rows)
-            if r['cycle'].startswith('predict')
-        ) + 1
-        kept_rows = kept_rows[:predict_end] + new_rows + kept_rows[predict_end:]
-        logging.info(f"Added {len(new_rows)} new D-side predict rows")
-
-    rows = kept_rows
-
     logging.info(f"{rows[:3]}, {rows[-3:]}")
 
     # Create dict mapping state abbreviation to 2024 data (EG, seats, dem_seats)

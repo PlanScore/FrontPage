@@ -153,8 +153,8 @@ window.initYearPickers = () => {
     $picker_small.on('click', 'div.nextprev.right', function () {
         // Handle transition from 2026 to prediction mode in US House view
         if (CURRENT_VIEW.year == 2026 && CURRENT_VIEW.boundtype === 'ushouse') {
-            // Restore the remembered prediction year, or default to predict12D
-            const year_to_select = remembered_prediction_year || 'predict12D';
+            // Restore the remembered prediction year, or default to predict10D
+            const year_to_select = remembered_prediction_year || 'predict10D';
             selectYear(year_to_select);
             logToGoogleAnalytics('yearselected', year_to_select);
             return;
@@ -224,10 +224,11 @@ window.updatePredictionCaption = (swing_value) => {
         const rep_vote = (100 - dem_vote).toFixed(1);
 
         // Format swing label using existing helper
-        const swing_label = swing_value === 0 ? '0' : formatSwingValue(swing_value);
+        // Format generic ballot label
+        const ballot_label = formatSwingValue(swing_value);
 
         // Update caption text
-        const caption_text = `${dem_vote}%D / ${rep_vote}%R vote share at ${swing_label} margin swing`;
+        const caption_text = `${dem_vote}%D / ${rep_vote}%R vote share at ${ballot_label} generic ballot`;
         $('#margin-range-caption').text(caption_text);
     } else {
         // Fallback if data hasn't loaded yet
@@ -285,7 +286,7 @@ window.initBoundaryPicker = () => {
 window.initLoadStartingConditions = () => {
     // analyze the #year-polytype hash to see what year + type we should load
     // provide some defaults
-    let year = 'predict0';
+    let year = 'predict10D';
     let type = 'ushouse';
 
     // Match: predict, predict0, predict12D, predict12R, or 4-digit years
@@ -328,7 +329,7 @@ window.parseSwingSlug = (slug) => {
 };
 
 window.formatSwingValue = (value) => {
-    if (value === 0) return 'No-Swing';
+    if (value === 0) return '50/50';
     return value > 0 ? `D+${value}` : `R+${Math.abs(value)}`;
 };
 
